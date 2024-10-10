@@ -1,0 +1,445 @@
+import DefaultConfig from "../Amaterasu/core/DefaultConfig"
+import Settings from "../Amaterasu/core/Settings"
+
+// Movable guis
+export const stormTickTimerGui = new Gui()
+export const melodyWarningGui = new Gui()
+// export const tickShiftGui = new Gui()
+
+const config = new DefaultConfig("CatgirlYharimAddons", "data/settings.json")
+
+
+config
+    .addSwitch({
+        configName: "stormTickTimerEnabled",
+        title: "Storm Tick Timer",
+        description: "Tick timer for when the pad will pad, and also when storm will get crushed. Tick is every 1 second. The timer goes red 0.15s before the tick.",
+        category: "Dungeons",
+        subcategory: "Storm"
+    })
+    .addButton({
+        configName: "moveStorkTickTimer",
+        title: "Move Timer",
+        description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
+        category: "Dungeons",
+        subcategory: "Storm",
+        title: "Move",
+        onClick() {
+            stormTickTimerGui.open()
+        }
+    })
+    .addSwitch({
+        configName: "relicTimerEnabled",
+        title: "Relic Timer",
+        description: "Tells you when the relic is going to spawn and how long it took to spawn, place and both.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
+        configName: "relicLook",
+        title: "Relic Look",
+        description: "Rotates to the cauldron instantly after you click the orange/red relic.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
+        configName: "relicTriggerbot",
+        title: "Relic Triggerbot",
+        description: "Triggerbot to place the relic automatically.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
+        configName: "dragPrio",
+        title: "Drag Prio",
+        description: "Tells you what dragon to go to and has a timer.",
+        category: "Wither King",
+        subcategory: "Drag Prio"
+    })
+    .addSwitch({
+        configName: "healerGoWithArch",
+        title: "Go with Archer as Healer",
+        description: "Tells you to go to the Archer's dragon on split if you are Healer.",
+        category: "Wither King",
+        subcategory: "Drag Prio"
+    })
+    .addSlider({
+        configName: "minSplitPower",
+        title: "Minimum Power",
+        description: "Minumum power to split on.",
+        category: "Wither King",
+        subcategory: "Drag Prio",
+        options: [5, 31]
+    })
+    .addSwitch({
+        configName: "partyFinderNotification",
+        title: "Party Finder Notification Sound",
+        description: "Makes a sound when someone joins your party.",
+        category: "Dungeons",
+        subcategory: "Party Finder"
+    })
+    .addDropDown({
+        configName: "partyFinderSound",
+        title: "Party Finder Sound",
+        description: "",
+        category: "Dungeons",
+        subcategory: "Party Finder",
+        options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
+        value: 4
+    })
+    .addSlider({
+        configName: "partyFinderPitch",
+        title: "Party Finder Sound Pitch",
+        description: "",
+        category: "Dungeons",
+        subcategory: "Party Finder",
+        options: [0.5, 2],
+        value: 1
+    })
+    .addSwitch({
+        configName: "stonkSwapDing",
+        title: "Stonk Swap Ding Toggle",
+        description: "Makes a sound when you successfully stonk swap.",
+        category: "Dungeons",
+        subcategory: "Stonk Swap Ding"
+    })
+    .addDropDown({
+        configName: "stonkSwapSound",
+        title: "Stonk Swap Sound",
+        description: "",
+        category: "Dungeons",
+        subcategory: "Stonk Swap Ding",
+        options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
+        value: 4
+    })
+    .addSlider({
+        configName: "stonkSwapPitch",
+        title: "Stonk Swap Sound Pitch",
+        description: "",
+        category: "Dungeons",
+        subcategory: "Stonk Swap Ding",
+        options: [0.5, 2],
+        value: 1
+    })
+    .addSwitch({
+        category: "Dungeons",
+        description: "VClips you down on boss enter.",
+        configName: "bossClip",
+        title: "Boss VClip",
+        subcategory: "VClip",
+        description: ""
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "autop3",
+        title: "AutoP3",
+        description: "Toggle AutoP3.",
+        subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "silentLook",
+        title: "SilentLook",
+        description: "Causes you not to rotate clientside when you Bonzo Staff & Superboom.",
+        subcategory: "Auto P3"
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "route",
+        title: "Route",
+        description: "Which route to load. Do /load to reload routes.",
+        value: "",
+        placeHolder: "",
+        subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "render",
+        title: "Render as rings",
+        description: "Render AutoP3 config as rings instead of boxes.",
+        subcategory: "Auto P3"
+    })
+    .addSwitch({
+        configName: "terminalTimestamps",
+        title: "Terminal Timestamps",
+        description: "Tells you exactly when a terminal was completed in terminals. Shows how far into the current phase and how far into terminals.",
+        category: "Terminals",
+        subcategory: "Terminal Timestamps"
+
+    })
+    .addSwitch({
+        configName: "melodyWarningEnabled",
+        title: "Toggle Melody Warning",
+        description: "Warns you when someone has Melody and tells you their progress.",
+        category: "Terminals",
+        subcategory: "Melody Warning"
+    })
+    .addDropDown({
+        configName: "melodyColor",
+        title: "Melody Warning Text Color",
+        description: "",
+        category: "Terminals",
+        subcategory: "Melody Warning",
+        options: ["Dark Red", "Red", "Gold", "Yellow", "Dark Green", "Green", "Aqua", "Dark Aura", "Dark Blue", "Blue", "Light Purple", "Dark Purple", "White", "Gray", "Dark Gray", "Black"],
+        value: 3
+    })
+    .addDropDown({
+        configName: "melodyWarningSound",
+        title: "Melody Warning Sound",
+        description: "",
+        category: "Terminals",
+        subcategory: "Melody Warning",
+        options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
+        value: 4
+    })
+    .addSlider({
+        configName: "melodyWarningPitch",
+        title: "Melody Warning Sound Pitch",
+        description: "",
+        category: "Terminals",
+        subcategory: "Melody Warning",
+        options: [0.5, 2],
+        value: 1
+    })
+    .addButton({
+        configName: "moveMelodyWarning",
+        title: "Move Melody Warning",
+        description: "You can set exact positions in the posData.json file in Teerene's directory.",
+        category: "Terminals",
+        subcategory: "Melody Warning",
+        placeholder: "Move",
+        onClick() {
+            melodyWarningGui.open()
+        }
+    })
+    .addSwitch({
+        configName: "auto4",
+        title: "Auto 4",
+        description: "(Should be) an effective auto i4.",
+        category: "Terminals",
+        subcategory: "Auto 4"
+    })
+
+    .addSlider({
+        configName: "auto4PredictionTimeout",
+        title: "Max Prediction Blocks",
+        description: "The maximum amount of blocks it will prefire before going back to prefire them again.\nThe optimal setting of this value may vary with ping. This option also won't work properly if you don't have 100 attack speed.",
+        category: "Terminals",
+        subcategory: "Auto 4",
+        options: [1, 4],
+        value: 2
+    })
+    .addSwitch({
+        configName: "auto4Stats",
+        title: "Statistics",
+        description: "Tells you how many shots it took to finish i4 and how long it took (may not be accurate with lag).",
+        category: "Terminals",
+        subcategory: "Auto 4"
+    })
+
+    .addSwitch({
+        configName: "auto4Solver",
+        title: "Solver",
+        description: "Simple solver that shows what was recently predicted and what it thinks has already been shot.",
+        category: "Terminals",
+        subcategory: "Auto 4"
+    })
+
+    .addColorPicker({
+        configName: "predictionColor",
+        title: "Prediction Color",
+        description: "Color of blocks that were recently predicted.",
+        category: "Terminals",
+        subcategory: "Auto 4",
+        value: [0, 255, 255, 89]
+    })
+    .addColorPicker({
+        configName: "alreadyShotColor",
+        title: "Already Shot Color",
+        description: "Color of blocks that have already been shot.",
+        category: "Terminals",
+        subcategory: "Auto 4",
+        value: [255, 0, 0, 89]
+    })
+    .addSwitch({
+        configName: "autoRod",
+        title: "Auto Rod",
+        description: "Automatically rod swaps.",
+        category: "Terminals",
+        subcategory: "Auto 4"
+    })
+    .addTextInput({
+        category: "Pet Keybinds",
+        configName: "petOne",
+        title: "#1",
+        description: "Index of the Pet you want to click.",
+        value: "",
+        placeHolder: "",
+    })
+    .addTextInput({
+        category: "Pet Keybinds",
+        configName: "petTwo",
+        title: "#2",
+        description: "Index of the Pet you want to click.",
+        value: "",
+        placeHolder: "",
+    })
+    .addTextInput({
+        category: "Pet Keybinds",
+        configName: "petThree",
+        title: "#3",
+        description: "Index of the Pet you want to click.",
+        value: "",
+        placeHolder: "",
+    })
+    .addTextInput({
+        category: "Pet Keybinds",
+        configName: "petFour",
+        title: "#4",
+        description: "Index of the Pet you want to click.",
+        value: "",
+        placeHolder: "",
+    })
+    .addTextInput({
+        category: "Pet Keybinds",
+        configName: "petFive",
+        title: "#5",
+        description: "Index of the Pet you want to click.",
+        value: "",
+        placeHolder: "",
+    })
+    .addSwitch({
+        configName: "i4AutoLeap",
+        title: "Auto Leap",
+        description: "Leaps to the specified person after you complete 4th device. Seperate from Auto 4 but they are good to use in tandem.",
+        category: "Leap",
+        subcategory: "4th Device Auto Leap"
+    })
+    .addSwitch({
+        configName: "autoLeapMode",
+        title: "Leap to class",
+        description: "Leaps to a chosen class instead of a chosen name.",
+        category: "Leap",
+        subcategory: "4th Device Auto Leap"
+    })
+    .addDropDown({
+        configName: "leapClass",
+        title: "Class to leap to",
+        description: "",
+        category: "Leap",
+        subcategory: "4th Device Auto Leap",
+        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
+        value: 4
+    })
+    .addTextInput({
+        configName: "leapPlayer",
+        title: "Person to leap to",
+        description: "Person to leap to after i4.",
+        category: "Leap",
+        subcategory: "4th Device Auto Leap",
+        value: "ITheSerenity"
+    })
+    .addSwitch({
+        category: "Leap",
+        configName: "ee2",
+        title: "Leap to EE2",
+        description: "Leap to selected class for EE2.",
+    })
+    .addSwitch({
+        category: "Leap",
+        configName: "ee3",
+        title: "Leap to EE3",
+        description: "Leap to selected class for EE3.",
+    })
+    .addSwitch({
+        category: "Leap",
+        configName: "core",
+        title: "Leap to Core",
+        description: "Leap to selected class for Core.",
+    })
+    .addSelection({
+        category: "Leap",
+        configName: "ee2Class",
+        title: "Class for EE2",
+        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
+        placeHolder: "",
+        description: ""
+    })
+    .addSelection({
+        category: "Leap",
+        configName: "ee3Class",
+        title: "Class for EE3",
+        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
+        placeHolder: "",
+        description: ""
+    })
+    .addSelection({
+        category: "Leap",
+        configName: "coreClass",
+        title: "Class for Core",
+        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
+        placeHolder: "",
+        description: ""
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "coreTimer",
+        title: "Core Timer",
+        subcategory: "Core Timer",
+        description: "Time it takes for everyone to get into core.",
+    })
+    .addSwitch({
+        category: "Simulation",
+        configName: "simulation",
+        title: "Simulation",
+        description: "Simulates 500 speed and lava bounce in singleplayer.",
+    })
+    .addSwitch({
+        category: "ESP",
+        configName: "espWither",
+        title: "Wither ESP",
+        description: "ESP for Withers in F7 & M7.",
+    })
+    .addSwitch({
+        category: "ESP",
+        configName: "espTerminals",
+        title: "Terminal ESP",
+        description: "ESP for uncompleted Terminals.",
+    })
+    /*
+    .addSwitch({
+        configName: "tickShiftToggle",
+        title: "TickShift",
+        description: "§cDO NOT USE PROBABLY\nAllows you to go significantly faster for a second after standing still. You need to bind this to a key in Controls.",
+        category: "TickShift"
+    })
+    .addSlider({
+        configName: "tickShiftMaxTicks",
+        title: "Max Ticks",
+        description: "Suggested value: 20",
+        category: "TickShift",
+        options: [20, 26],
+        value: 20
+    })
+    .addSlider({
+        configName: "tickShiftSpeed",
+        title: "Speed Multiplier",
+        description: "Suggested value: 5",
+        category: "TickShift",
+        options: [1.01, 10],
+        value: 5
+    })
+    .addButton({
+        configName: "moveTickShiftDisplay",
+        title: "Move HUD",
+        description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
+        category: "TickShift",
+        placeholder: "Move",
+        onClick() {
+            tickShiftGui.open()
+        }
+    })
+        */
+
+const mySettings = new Settings("CatgirlYharimAddons", config, "data/ColorScheme.json")
+export default () => mySettings.settings

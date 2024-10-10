@@ -1,0 +1,15 @@
+{
+    "name": "Catgirl Yharim Addons",
+    "creator": "ITheSerenity & turtleonfire2 & teeTu97",
+    "version": "1.0",
+    "description": "bomb denmark",
+    "entry": "index.js",
+	"requires": [
+        "PogData",
+        "Amaterasu",
+		"BloomCore",
+		"Atomx",
+		"KeybindFix",
+		"RenderLibV2"
+    ]
+}
