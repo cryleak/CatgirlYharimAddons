@@ -92,8 +92,6 @@ register("command", (...args) => {
     let active = true
     let route = parseInt(selectedRoute)
 
-    chat(route)
-
     if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge"].includes(type)) {
         chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip!")
         return;
