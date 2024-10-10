@@ -3,7 +3,7 @@ import { getDistance3D } from "../../../BloomCore/utils/Utils"
 import Dungeons from "../../../Atomx/skyblock/Dungeons"
 import { chat } from "../../utils/utils"
 
-const dragonNames = ["Purple", "Blue", "Red", "Green", "Orange"] // I am not using a map here since I am assigning dragons to different numbers anyways.
+const dragonNames = ["Purple", "Blue", "Red", "Green", "Orange"] // I am not using a map here since I am assigning dragons to numbers anyways.
 const dragonColors = ["§5", "§b", "§4", "§2", "§6"]
 
 const particleCoords = [

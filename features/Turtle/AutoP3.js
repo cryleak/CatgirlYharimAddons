@@ -24,6 +24,7 @@ const keybinds = [
 
 register("Chat", () => {
     inp3 = true;
+    if (!Settings().autop3) return
     if (!Settings().render) {
         renderBox.register()
     }
@@ -155,6 +156,7 @@ register("Command", (y) => {
     toggled = true;
     currDepth = parseInt(y)
     vclip.register()
+    vclipOverlay.register()
 }).setName("clip")
 
 register("Command", () => {
@@ -170,6 +172,7 @@ register("Command", () => {
     else {
         renderRing.register()
     }
+    chat(`P3 Started!`)
 }).setName("startp3")
 
 register("Command", () => {
@@ -208,7 +211,7 @@ const renderRing = register("renderWorld", () => {
     })
 }).unregister()
 
-const renderMove = register("renderOverlay", () => {
+const renderMove = register("renderWorld", () => {
     if (!Settings().autop3) return;
     if (!inp3) return
     let playerX = Player.getX();
@@ -223,135 +226,155 @@ const renderMove = register("renderOverlay", () => {
         if (((distanceX > (rings.w / 2) || (distanceY > (rings.h) && distanceY >= -0.5) || distanceZ > (rings.w / 2)) && !rings.active)) {
             rings.active = true;
         }
+        if (!rings.active) return
         if (distanceX < (rings.w / 2) && distanceY < (rings.h) && distanceY >= -0.5 && distanceZ < (rings.w / 2) && !cooldown) {
-            if (rings.type === "walk2") {
-                chat("Walking")
-                stop()
-                rotate(rings.yaw, rings.pitch)
-                walk()
-            }
-            if (!rings.active) return
-            rings.active = false;
-            if (rings.type === "walk") {
-                chat("Walking")
-                rotate(rings.yaw, rings.pitch)
-                walk()
-            }
-            else if (rings.type === "jump") {
-                chat("Jumping")
-                stop()
-                rotate(rings.yaw, rings.pitch)
-                jump()
-            }
-            else if (rings.type === "jump2") {
-                chat("Jumping")
-                jump()
-            }
-            else if (rings.type === "stop") {
-                chat("Stopping")
-                stop()
-                noWalk()
-            }
-            else if (rings.type === "boom") {
-                chat("Exploding")
-                swapToItem("Infinityboom TNT")
-                if (Settings().silentLook) {
-                    ServerRotations.set(rings.yaw, rings.pitch)
-                    Client.scheduleTask(() => {
-                        leftClick()
-                        ServerRotations.resetRotations()
-                    })
-                } else {
-                    Client.scheduleTask(() => {
-                        leftClick()
-                    })
-                }
-            }
-            else if (rings.type === "hclip") {
-                chat("Hclipping")
-                let speed = (Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8);
-                let yaw = (rings.yaw) * Math.PI / 180;
-
-                keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-                Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-                Client.scheduleTask(0, () => {
-                    Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
-                })
-            }
-            else if (rings.type === "hclip2") {
-                chat("Hclipping")
-                let speed = (Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8);
-                let yaw = (rings.yaw) * Math.PI / 180;
-
-                keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-                Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-                Client.scheduleTask(0, () => {
-                    Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            rings.active = false
+            let speed
+            let yaw
+            switch (rings.type) {
+                case "walk":
+                    chat("Walking")
+                    rotate(rings.yaw, rings.pitch)
                     walk()
-                })
-            }
-            else if (rings.type === "vclip") {
-                chat("Vclipping")
-                ChatLib.command("clip " + parseInt(rings.depth), true)
-            }
-            else if (rings.type === "bonzo") {
-                chat("Bonzoing")
-                swapToItem("Bonzo's Staff")
-                stop()
-                if (Settings().silentLook) {
-                    ServerRotations.set(rings.yaw, rings.pitch)
-                    Client.scheduleTask(1, () => {
-                        rightClick()
-                        ServerRotations.resetRotations()
-                    })
-                } else {
+                    break
+
+                case "walk2":
+                    chat("Walking")
+                    stop()
                     rotate(rings.yaw, rings.pitch)
-                    Client.scheduleTask(() => {
-                        rightClick()
-                    })
-                }
-            }
-            else if (rings.type === "bonzo2") {
-                chat("Bonzoing")
-                swapToItem("Bonzo's Staff")
-                if (Settings().silentLook) {
-                    ServerRotations.set(rings.yaw, rings.pitch)
-                    Client.scheduleTask(1, () => {
-                        rightClick()
-                        ServerRotations.resetRotations()
-                    })
-                } else {
+                    walk()
+                    break
+
+                case "jump":
+                    chat("Jumping")
+                    stop()
                     rotate(rings.yaw, rings.pitch)
-                    Client.scheduleTask(() => {
-                        rightClick()
+                    jump()
+                    break
+
+                case "jump2":
+                    chat("Jumping")
+                    jump()
+                    break
+
+                case "stop":
+                    chat("Stopping")
+                    stop()
+                    noWalk()
+                    break
+
+                case "boom":
+                    chat("Exploding")
+                    swapToItem("Infinityboom TNT")
+                    if (Settings().silentLook) {
+                        ServerRotations.set(rings.yaw, rings.pitch)
+                        Client.scheduleTask(() => {
+                            leftClick()
+                            ServerRotations.resetRotations()
+                        })
+                    } else {
+                        Client.scheduleTask(() => {
+                            leftClick()
+                        })
+                    }
+                    break
+
+                case "hclip":
+                    chat("Hclipping")
+                    speed = (Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8);
+                    yaw = (rings.yaw) * Math.PI / 180;
+
+                    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+                    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+
+                    Client.scheduleTask(0, () => {
+                        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
                     })
-                }
-            }
-            else if (rings.type === "look") {
-                chat("Looking")
-                rotate(rings.yaw, rings.pitch)
-            }
-            else if (rings.type === "aura") {
-                chat("Auraing")
-                ChatLib.command("sg toggle", true)
-            }
-            else if (rings.type === "block") {
-                chat("Blocking")
-                Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-                if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                block(rings.lookX, rings.lookY, rings.lookZ)
-            }
-            else if (rings.type === "block2") {
-                chat("Blocking")
-                if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                block(rings.lookX, rings.lookY, rings.lookZ)
-                walk()
-            }
-            else if (rings.type === "edge") {
-                chat("Edging")
-                ChatLib.command("edgejump", true)
+                    break
+
+                case "hclip2":
+                    chat("Hclipping")
+                    speed = (Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8);
+                    yaw = (rings.yaw) * Math.PI / 180;
+
+                    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+                    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+
+                    Client.scheduleTask(0, () => {
+                        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+                        walk()
+                    })
+                    break
+
+                case "vclip":
+                    chat("Vclipping")
+                    ChatLib.command("clip " + parseInt(rings.depth), true)
+                    break
+
+                case "bonzo":
+                    chat("Bonzoing")
+                    swapToItem("Bonzo's Staff")
+                    stop()
+                    if (Settings().silentLook) {
+                        ServerRotations.set(rings.yaw, rings.pitch)
+                        Client.scheduleTask(1, () => {
+                            rightClick()
+                            ServerRotations.resetRotations()
+                        })
+                    } else {
+                        rotate(rings.yaw, rings.pitch)
+                        Client.scheduleTask(() => {
+                            rightClick()
+                        })
+                    }
+                    break
+
+                case "bonzo2":
+                    chat("Bonzoing")
+                    swapToItem("Bonzo's Staff")
+                    if (Settings().silentLook) {
+                        ServerRotations.set(rings.yaw, rings.pitch)
+                        Client.scheduleTask(1, () => {
+                            rightClick()
+                            ServerRotations.resetRotations()
+                        })
+                    } else {
+                        rotate(rings.yaw, rings.pitch)
+                        Client.scheduleTask(() => {
+                            rightClick()
+                        })
+                    }
+                    break
+
+                case "look":
+                    chat("Looking")
+                    rotate(rings.yaw, rings.pitch)
+                    break
+
+                case "aura":
+                    chat("Auraing")
+                    ChatLib.command("sg toggle", true)
+                    break
+
+                case "block":
+                    chat("Blocking")
+                    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+                    if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
+                    block(rings.lookX, rings.lookY, rings.lookZ)
+                    break
+
+                case "block2":
+                    chat("Blocking")
+                    if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
+                    block(rings.lookX, rings.lookY, rings.lookZ)
+                    walk()
+                    break
+
+                case "edge":
+                    chat("Edging")
+                    ChatLib.command("edgejump", true)
+                    break
+
             }
         }
     })
@@ -384,13 +407,12 @@ register("Command", () => {
     vclip.unregister()
 }).setName("noclip")
 
-register("renderOverlay", () => {
-    if (!toggled) return;
+const vclipOverlay = register("renderOverlay", () => {
     let text = "Dirty Cheater!"
     let scale = 1.5
     Renderer.scale(scale)
     Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
-})
+}).unregister()
 
 const vclip = register("tick", () => {
     if (!Player.getPlayer().func_180799_ab()) return
@@ -401,6 +423,7 @@ const vclip = register("tick", () => {
         cancel(event)
         veloPacket.unregister();
         vclip.unregister();
+        vclipOverlay.unregister()
         toggled = false
     }).setFilteredClass(S12PacketEntityVelocity);
 }).unregister();
