@@ -224,7 +224,7 @@ const renderMove = register("renderWorld", () => {
         if (((distanceX > (rings.w / 2) || (distanceY > (rings.h) && distanceY >= -0.5) || distanceZ > (rings.w / 2)) && !rings.active)) {
             rings.active = true;
         }
-        if (Settings().activateOnce && !rings.active) return
+        if (Settings().activeOnce && !rings.active) return
         if (distanceX < (rings.w / 2) && distanceY < (rings.h) && distanceY >= -0.5 && distanceZ < (rings.w / 2) && !cooldown) {
             rings.active = false
             let speed
