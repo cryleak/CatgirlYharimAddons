@@ -143,6 +143,13 @@ config
         description: "Causes you not to rotate clientside when you Bonzo Staff & Superboom.",
         subcategory: "Auto P3"
     })
+    .addSwitch({
+        category: "Terminals",
+        configName: "activeOnce",
+        title: "Activate rings once",
+        description: "Causes to activate every ring only once. Resets when stepping out",
+        subcategory: "Auto P3"
+    })
     .addTextInput({
         category: "Terminals",
         configName: "route",
