@@ -10,7 +10,7 @@ register("Tick", () => {
     if (!Keyboard.isKeyDown(Settings().witherAimbot)) return
     if (toggleCooldown) return
     toggleCooldown = true
-    Client.scheduleTask(4, () => { toggleCooldown = false })
+    Client.scheduleTask(4, () => toggleCooldown = false)
     if (!toggled) {
         aimbot.register()
         toggled = true

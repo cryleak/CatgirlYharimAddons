@@ -68,30 +68,35 @@ import Dungeons from "../../Atomx/skyblock/Dungeons"
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 let awaitingLeap = false
 
-export function leap(Class) {
+export function leap(player) {
     awaitingLeap = true
     swapToItem("Leap")
-    Client.scheduleTask(1, () => {
-        rightClick()
-    })
+    Client.scheduleTask(0, () => rightClick())
+
     register("packetReceived", () => {
         if (!awaitingLeap) return
         awaitingLeap = false
-        const teamMembers = Dungeons.getTeamMembers()
-        Client.scheduleTask(() => {
+        Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
             Client.getMinecraft().func_147108_a(null)
-            toClick = Object.getOwnPropertyNames(teamMembers).find(playerName => teamMembers[playerName].class === Class)
-            if (!toClick) { chat("Class not found!") }
-            const item = Player.getContainer()?.getItems().findIndex(x => x?.getName()?.substring(2)?.toLowerCase() === toClick.toLowerCase()) // Gets the slot to click
+            let playerName
+            const teamMembers = Dungeons.getTeamMembers()
+            if (teamMembers.some(teamMember => player === teamMember.class)) { // (Hopefully) detect if you are trying to leap to a class
+                playerName = Object.getOwnPropertyNames(teamMembers).find(playerName => teamMembers[playerName].class === player)
+                if (!toClick) { chat("Class not found!"); return }
+            } else playerName = player
+
+
+            const item = Player.getContainer()?.getItems().findIndex(x => x?.getName()?.substring(2)?.toLowerCase() === playerName.toLowerCase())
             if (!item) {
-                chat("Could not find " + Class)
+                chat("Could not find " + player)
                 Client.currentGui.close()
                 return
             }
             Player.getContainer().click(item)
         })
     }).setFilteredClass(S2DPacketOpenWindow)
+
 }
 
 let awaitingPet = false
