@@ -96,19 +96,26 @@ config
         options: [0.5, 2],
         value: 1
     })
+    .addKeybind({
+        category: "Dungeons",
+        description: "",
+        configName: "stonkSwap",
+        title: "Stonk Swap Keybind",
+        subcategory: "Stonk Swap"
+    })
     .addSwitch({
         configName: "stonkSwapDing",
         title: "Stonk Swap Ding Toggle",
         description: "Makes a sound when you successfully stonk swap.",
         category: "Dungeons",
-        subcategory: "Stonk Swap Ding"
+        subcategory: "Stonk Swap"
     })
     .addDropDown({
         configName: "stonkSwapSound",
         title: "Stonk Swap Sound",
         description: "",
         category: "Dungeons",
-        subcategory: "Stonk Swap Ding",
+        subcategory: "Stonk Swap",
         options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
         value: 4
     })
@@ -117,7 +124,7 @@ config
         title: "Stonk Swap Sound Pitch",
         description: "",
         category: "Dungeons",
-        subcategory: "Stonk Swap Ding",
+        subcategory: "Stonk Swap",
         options: [0.5, 2],
         value: 1
     })
@@ -139,7 +146,7 @@ config
         category: "Terminals",
         configName: "activeOnce",
         title: "Activate rings once",
-        description: "Causes to activate every ring only once. Resets when stepping out",
+        description: "Causes every ring to activate only once. Resets when stepping out of the ring.",
         subcategory: "Auto P3"
     })
     .addTextInput({
@@ -203,7 +210,7 @@ config
     .addButton({
         configName: "moveMelodyWarning",
         title: "Move Melody Warning",
-        description: "You can set exact positions in the posData.json file in Teerene's directory.",
+        description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
         category: "Terminals",
         subcategory: "Melody Warning",
         placeholder: "Move",
@@ -222,7 +229,7 @@ config
     .addSlider({
         configName: "auto4PredictionTimeout",
         title: "Max Prediction Blocks",
-        description: "Max amount of blocks that get predicted.\nOptimal setting may vary with ping.",
+        description: "Max amount of blocks that will get predicted before repredicting them.\nOptimal setting may vary with ping.",
         category: "Terminals",
         subcategory: "Auto 4",
         options: [1, 4],
@@ -421,6 +428,12 @@ config
         title: "Simulation",
         description: "Simulates 500 speed and lava bounce in singleplayer.",
     })
+    .addKeybind({
+        category: "ESP",
+        description: "Will get fucked by mage witherborn.",
+        configName: "witherAimbot",
+        title: "Wither Aimbot"
+    })
     .addSwitch({
         category: "ESP",
         configName: "espWither",
@@ -449,61 +462,48 @@ config
         category: "Clip",
         description: "",
         configName: "hclipKeybind",
-        title: "Hclip"
+        title: "HClip Keybind"
     })
     .addKeybind({
         category: "Leap",
         description: "",
         configName: "tankKeybind",
-        title: "Tank keybind",
+        title: "Tank Keybind",
         subcategory: "Class Leap"
     })
     .addKeybind({
         category: "Leap",
         description: "",
         configName: "mageKeybind",
-        title: "Mage keybind",
+        title: "Mage Keybind",
         subcategory: "Class Leap"
     })
     .addKeybind({
         category: "Leap",
         description: "",
         configName: "berserkKeybind",
-        title: "Berserk keybind",
+        title: "Berserk Keybind",
         subcategory: "Class Leap"
     })
     .addKeybind({
         category: "Leap",
         description: "",
         configName: "archerKeybind",
-        title: "Archer keybind",
+        title: "Archer Keybind",
         subcategory: "Class Leap"
     })
     .addKeybind({
         category: "Leap",
         description: "",
         configName: "healerKeybind",
-        title: "Healer keybind",
+        title: "Healer Keybind",
         subcategory: "Class Leap"
-    })
-    .addKeybind({
-        category: "Stonk",
-        description: "",
-        configName: "stonkSwap",
-        title: "Stonkswap keybind",
-        subcategory: "Class Leap"
-    })
-    .addKeybind({
-        category: "Aimbot",
-        description: "Will get fucked by mage witherborn.",
-        configName: "witherAimbot",
-        title: "Wither Aimbot"
     })
     .addKeybind({
         category: "Clip",
-        description: "Enables/Disables lava vclip.",
+        description: "Enables/Disables Lava VClip.",
         configName: "lavaVclipKeybind",
-        title: "Lava vclip keybind"
+        title: "Lava VClip Leybind"
     })
     .addKeybind({
         category: "Wardrobe",
