@@ -203,7 +203,7 @@ config
     .addButton({
         configName: "moveMelodyWarning",
         title: "Move Melody Warning",
-        description: "You can set exact positions in the posData.json file in Teerene's directory.",
+        description: "You can set exact positions in the posData.json file in CatgirlYharimAddons's directory.",
         category: "Terminals",
         subcategory: "Melody Warning",
         placeholder: "Move",

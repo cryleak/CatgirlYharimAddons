@@ -69,7 +69,7 @@ register("scrolled", (_0, _1, dir) => {
     else data.tickShift.scale -= 0.01
     data.tickShift.scale = Math.round(data.tickShift.scale * 100) / 100
     ChatLib.clearChat(69420) // Prevent clogging chat by deleting the previous message
-    new Message(`§8[§bTeerene§8] §7Current scale: ${data.tickShift.scale}`).setChatLineId(69420).chat()
+    new Message(`§0[§6Yharim§0] §7Current scale: ${data.tickShift.scale}`).setChatLineId(69420).chat()
     data.save()
 })
 
