@@ -4,13 +4,6 @@ import RenderLibV2 from "../../RenderLibV2"
 
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 
-const keybinds = [
-    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
-];
-
 export function stop() {
     Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
 }

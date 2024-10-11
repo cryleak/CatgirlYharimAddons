@@ -122,14 +122,6 @@ config
         value: 1
     })
     .addSwitch({
-        category: "Dungeons",
-        description: "VClips you down on boss enter.",
-        configName: "bossClip",
-        title: "Boss VClip",
-        subcategory: "VClip",
-        description: ""
-    })
-    .addSwitch({
         category: "Terminals",
         configName: "autop3",
         title: "AutoP3",
@@ -413,40 +405,52 @@ config
         title: "Terminal ESP",
         description: "ESP for uncompleted Terminals.",
     })
-    /*
     .addSwitch({
-        configName: "tickShiftToggle",
-        title: "TickShift",
-        description: "§cDO NOT USE PROBABLY\nAllows you to go significantly faster for a second after standing still. You need to bind this to a key in Controls.",
-        category: "TickShift"
+        category: "Clip",
+        description: "VClips you down on boss enter.",
+        configName: "bossClip",
+        title: "Boss VClip"
     })
-    .addSlider({
-        configName: "tickShiftMaxTicks",
-        title: "Max Ticks",
-        description: "Suggested value: 20",
-        category: "TickShift",
-        options: [20, 26],
-        value: 20
+    .addKeybind({
+        category: "Clip",
+        description: "Clips you through 1 block thick walls. Make sure you are touching and facing the wall you wish to clip through. Also requires 500 speed.",
+        configName: "blockClipKeybind",
+        title: "Block Clip Keybind"
     })
-    .addSlider({
-        configName: "tickShiftSpeed",
-        title: "Speed Multiplier",
-        description: "Suggested value: 5",
-        category: "TickShift",
-        options: [1.01, 10],
-        value: 5
-    })
-    .addButton({
-        configName: "moveTickShiftDisplay",
-        title: "Move HUD",
-        description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
-        category: "TickShift",
-        placeholder: "Move",
-        onClick() {
-            tickShiftGui.open()
-        }
-    })
-        */
+/*
+.addSwitch({
+    configName: "tickShiftToggle",
+    title: "TickShift",
+    description: "§cDO NOT USE PROBABLY\nAllows you to go significantly faster for a second after standing still. You need to bind this to a key in Controls.",
+    category: "TickShift"
+})
+.addSlider({
+    configName: "tickShiftMaxTicks",
+    title: "Max Ticks",
+    description: "Suggested value: 20",
+    category: "TickShift",
+    options: [20, 26],
+    value: 20
+})
+.addSlider({
+    configName: "tickShiftSpeed",
+    title: "Speed Multiplier",
+    description: "Suggested value: 5",
+    category: "TickShift",
+    options: [1.01, 10],
+    value: 5
+})
+.addButton({
+    configName: "moveTickShiftDisplay",
+    title: "Move HUD",
+    description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
+    category: "TickShift",
+    placeholder: "Move",
+    onClick() {
+        tickShiftGui.open()
+    }
+})
+    */
 
 const mySettings = new Settings("CatgirlYharimAddons", config, "data/ColorScheme.json")
 export default () => mySettings.settings

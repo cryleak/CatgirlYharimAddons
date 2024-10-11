@@ -51,3 +51,15 @@ const defaultColor = "§7"
 export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
 }
+
+
+
+const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
+const movementKeys = [
+    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
+]
+export const releaseMovementKeys = () => movementKeys.forEach(keybind => KeyBinding.func_74510_a(keybind, false))
+export const repressMovementKeys = () => movementKeys.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind)))

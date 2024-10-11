@@ -8,6 +8,7 @@ import "./features/Serenity/StormTickTimer"
 import "./features/Serenity/StonkSwap"
 import "./features/Serenity/StonkSwapDing"
 import "./features/Serenity/PartyFinderSound"
+import "./features/Serenity/BlockClip"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 
 import "./features/Turtle/AutoP3"

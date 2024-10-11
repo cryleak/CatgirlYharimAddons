@@ -1,5 +1,5 @@
-import { chat } from "../../utils/utils"
-import { leftClick } from "../../utils/utils";
+import { chat,leftClick } from "../../utils/utils"
+
 let active = false
 const stonkSwapKeyBind = new KeyBind("Stonk Swap", Keyboard.KEY_NONE, "CatgirlYharim")
 const validPickaxeIDs = [278, 285, 257, 274, 270] // All 5 pickaxes
