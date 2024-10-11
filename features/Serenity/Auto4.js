@@ -66,12 +66,12 @@ register("step", () => { // Main thread
             const shotBlocks = [unshotBlocks[index], unshotBlocks[index + 1]]
             predictedBlocks.add(shotBlocks[0]) // I don't think rhino lets you put an iterable object in a set
             predictedBlocks.add(shotBlocks[1])
-            Client.scheduleTask((Settings().auto4PredictionTimeout * 5) - 3, () => { predictedBlocks.delete(shotBlocks[0]); predictedBlocks.delete(shotBlocks[1]); })
+            Client.scheduleTask((Settings().auto4PredictionTimeout * 5) - 4, () => { predictedBlocks.delete(shotBlocks[0]); predictedBlocks.delete(shotBlocks[1]); })
         }
         else {
             const shotBlocks = unshotBlocks[index]
             predictedBlocks.add(shotBlocks)
-            Client.scheduleTask((Settings().auto4PredictionTimeout * 5) - 3, () => predictedBlocks.delete(shotBlocks))
+            Client.scheduleTask((Settings().auto4PredictionTimeout * 5) - 4, () => predictedBlocks.delete(shotBlocks))
         }
     }
     let offset = 0.5
@@ -98,7 +98,7 @@ register("chat", () => {
             if (!active) return
             active = false
             const heldItemIndex = Player.getHeldItemIndex()
-            chat("rod swapping")
+            chat("Rod Swapping.")
             Client.scheduleTask(1, () => Player.setHeldItemIndex(rodSlot))
             Client.scheduleTask(2, () => rightClick())
             Client.scheduleTask(3, () => {
@@ -149,16 +149,15 @@ register("command", () => {
 register("renderWorld", () => {
     if (!Settings().auto4 || !Settings().auto4Solver) return
     if (!active) return
-    for (let i = 0; i < blocks.length; i++) {
-        let block = blocks[i];
+    blocks.forEach(block => {
         let color
-        if (World.getBlockAt(block.x, block.y, block.z).type.getID() === 133) color = [0, 255, 0, Settings().predictionColor.getAlpha() / 255]
-        else if (!unshotBlocks.includes(block)) color = [Settings().alreadyShotColor.getRed() / 255, Settings().alreadyShotColor.getGreen() / 255, Settings().alreadyShotColor.getBlue() / 255, Settings().alreadyShotColor.getAlpha() / 255]
-        else if (predictedBlocks.has(block)) color = [Settings().predictionColor.getRed() / 255, Settings().predictionColor.getGreen() / 255, Settings().predictionColor.getBlue() / 255, Settings().predictionColor.getAlpha() / 255]
-        else continue
+        if (World.getBlockAt(block.x, block.y, block.z).type.getID() === 133) color = [0, 255, 0, Settings().predictionColor[3] / 255]
+        else if (!unshotBlocks.includes(block)) color = [Settings().alreadyShotColor[0], Settings().alreadyShotColor[1], Settings().alreadyShotColor[2], Settings().alreadyShotColor[3] / 255]
+        else if (predictedBlocks.has(block)) color = [Settings().predictionColor[0], Settings().predictionColor[1], Settings().predictionColor[2], Settings().predictionColor[3] / 255]
+        else return
         RenderLibV2.drawInnerEspBox(block.x + 0.5, block.y, block.z + 0.5, 1, 1, ...color, true)
         RenderLibV2.drawEspBox(block.x + 0.5, block.y, block.z + 0.5, 1, 1, color[0], color[1], color[2], 1, true)
-    }
+    })
 })
 
 register("worldLoad", () => {

@@ -232,7 +232,7 @@ config
         description: "Max amount of blocks that will get predicted before repredicting them.\nOptimal setting may vary with ping.",
         category: "Terminals",
         subcategory: "Auto 4",
-        options: [1, 4],
+        options: [2, 4],
         value: 2
     })
     .addSwitch({
