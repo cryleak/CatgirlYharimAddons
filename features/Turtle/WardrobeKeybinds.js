@@ -1,26 +1,7 @@
 import Settings from "../../config"
 import { equipWardrobe } from "../../utils/utils"
 
-const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
-
 let wardrobeCooldown = false
-
-register("packetReceived", () => {
-    if (!awaitingWardrobe) return
-    awaitingWardrobe = false
-    Client.scheduleTask(() => {
-        if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
-        Client.getMinecraft().func_147108_a(null)
-    })
-    Client.scheduleTask(1, () => {
-        if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
-        const item = itemIndex
-        Player.getContainer().click(item)
-    })
-    Client.scheduleTask(2, () => {
-        Client.currentGui.close()
-    })
-}).setFilteredClass(S2DPacketOpenWindow)
 
 function wardrobe() {
     wardrobeCooldown = true
