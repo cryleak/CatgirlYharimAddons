@@ -2,12 +2,11 @@
 
 
 import Settings from "../../config"
-import { chat, leap } from "../../utils/utils"
+import { chat, leap, classes } from "../../utils/utils"
 import Dungeons from "../../../Atomx/skyblock/Dungeons"
 import { getDistanceToCoord } from "../../../BloomCore/utils/Utils"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
-const classes = ["Archer", "Berserk", "Mage", "Healer", "Tank"]
 
 register("command", (args) => {
     if (args === "toggle") {

@@ -1,4 +1,5 @@
 export const soundNames = ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"]
+export const classes = ["Archer", "Berserk", "Mage", "Healer", "Tank"]
 
 // Plays a sound!!!
 export function playSound(soundName, volume, pitch) {
@@ -20,8 +21,8 @@ export function rightClick() {
 }
 
 export const swapToItem = (targetItemName) => {
-    itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.includes(targetItemName))
-    if (itemSlot > 7 || itemSlot < 0) { chat(`${targetItemName} Not Found in Hotbar`); return } else {
+    itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()))
+    if (itemSlot > 7 || itemSlot < 0) { chat(`${targetItemName} Not Found in Hotbar`); throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`) } else { // Throw error in order to stop execution of the code below it because it will be completely fucked probably
         heldItem = Player.getHeldItemIndex()
         Player.setHeldItemIndex(itemSlot)
     }
@@ -69,30 +70,29 @@ const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPack
 let awaitingLeap = false
 
 export function leap(player) {
-    awaitingLeap = true
     swapToItem("Leap")
     Client.scheduleTask(0, () => rightClick())
+    awaitingLeap = true
 
     register("packetReceived", () => {
         if (!awaitingLeap) return
         awaitingLeap = false
         Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
-            Client.getMinecraft().func_147108_a(null)
             let playerName
-            const teamMembers = Dungeons.getTeamMembers()
-            if (teamMembers.some(teamMember => player === teamMember.class)) { // (Hopefully) detect if you are trying to leap to a class
+            if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class
+                const teamMembers = Dungeons.getTeamMembers()
                 playerName = Object.getOwnPropertyNames(teamMembers).find(playerName => teamMembers[playerName].class === player)
-                if (!toClick) { chat("Class not found!"); return }
+                if (!playerName) { chat("Class not found!"); return }
             } else playerName = player
 
 
             const item = Player.getContainer()?.getItems().findIndex(x => x?.getName()?.substring(2)?.toLowerCase() === playerName.toLowerCase())
-            if (!item) {
+            if (item === -1) {
                 chat("Could not find " + player)
-                Client.currentGui.close()
                 return
             }
+            // ChatLib.chat(`item: ${item}`)
             Player.getContainer().click(item)
         })
     }).setFilteredClass(S2DPacketOpenWindow)
