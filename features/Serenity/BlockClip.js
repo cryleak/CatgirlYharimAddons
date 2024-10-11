@@ -12,7 +12,7 @@ register("tick", () => {
     releaseMovementKeys()
     clipForward(0.0625)
     Client.scheduleTask(0, () => {
-        clipForward(1.4755)
+        clipForward(1.4756)
         repressMovementKeys()
         chat("Clipped.")
     })
