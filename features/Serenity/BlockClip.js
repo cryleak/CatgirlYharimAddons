@@ -1,13 +1,6 @@
 import { chat, releaseMovementKeys, repressMovementKeys } from "../../utils/utils"
 import Settings from "../../config"
 
-const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
-const keybinds = [
-    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
-]
 let lastUse = Date.now()
 
 register("tick", () => {
@@ -19,7 +12,7 @@ register("tick", () => {
     releaseMovementKeys()
     clipForward(0.0625)
     Client.scheduleTask(0, () => {
-        clipForward(1.5375)
+        clipForward(1.4756)
         repressMovementKeys()
         chat("Clipped.")
     })
