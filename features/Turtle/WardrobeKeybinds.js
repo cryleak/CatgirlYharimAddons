@@ -1,13 +1,13 @@
-import { Keybind } from "../../../KeybindFix"
-const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
+import Settings from "../../config"
+import { equipWardrobe } from "../../utils/utils"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 
-awaitingPet = false;
+let wardrobeCooldown = false
 
 register("packetReceived", () => {
-    if (!awaitingPet) return
-    awaitingPet = false
+    if (!awaitingWardrobe) return
+    awaitingWardrobe = false
     Client.scheduleTask(() => {
         if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
         Client.getMinecraft().func_147108_a(null)
@@ -22,57 +22,21 @@ register("packetReceived", () => {
     })
 }).setFilteredClass(S2DPacketOpenWindow)
 
+function wardrobe() {
+    wardrobeCooldown = true
+    Client.scheduleTask(19, () => { wardrobeCooldown = false })
+}
 
-new Keybind("Swap to Armor #1", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 36
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #2", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 37
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #3", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 38
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #4", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 39
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #5", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 40
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #6", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 41
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #7", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 42
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #8", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 43
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Armor #9", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("wd")
-    itemIndex = 44
-    awaitingPet = true;
+register("Tick", () => {
+    if (Client.isInGui()) return
+    if (wardrobeCooldown) return
+    if (Keyboard.isKeyDown(Settings().wdOneKeybind)) { wardrobe(); equipWardrobe(36) }
+    if (Keyboard.isKeyDown(Settings().wdTwoKeybind)) { wardrobe(); equipWardrobe(37) }
+    if (Keyboard.isKeyDown(Settings().wdThreeKeybind)) { wardrobe(); equipWardrobe(38) }
+    if (Keyboard.isKeyDown(Settings().wdFourKeybind)) { wardrobe(); equipWardrobe(39) }
+    if (Keyboard.isKeyDown(Settings().wdFiveKeybind)) { wardrobe(); equipWardrobe(40) }
+    if (Keyboard.isKeyDown(Settings().wdSixKeybind)) { wardrobe(); equipWardrobe(41) }
+    if (Keyboard.isKeyDown(Settings().wdSevenKeybind)) { wardrobe(); equipWardrobe(42) }
+    if (Keyboard.isKeyDown(Settings().wdEightKeybind)) { wardrobe(); equipWardrobe(43) }
+    if (Keyboard.isKeyDown(Settings().wdNineKeybind)) { wardrobe(); equipWardrobe(44) }
 })

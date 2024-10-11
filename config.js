@@ -161,7 +161,7 @@ config
     .addSwitch({
         configName: "terminalTimestamps",
         title: "Terminal Timestamps",
-        description: "Tells you exactly when a terminal was completed in terminals. Shows how far into the current phase and how far into terminals.",
+        description: "Adds a message for how far into the phase and terminals the terminal was completed",
         category: "Terminals",
         subcategory: "Terminal Timestamps"
 
@@ -222,7 +222,7 @@ config
     .addSlider({
         configName: "auto4PredictionTimeout",
         title: "Max Prediction Blocks",
-        description: "The maximum amount of blocks it will prefire before going back to prefire them again.\nThe optimal setting of this value may vary with ping. This option also won't work properly if you don't have 100 attack speed.",
+        description: "Max amount of blocks that get predicted.\nOptimal setting may vary with ping.",
         category: "Terminals",
         subcategory: "Auto 4",
         options: [1, 4],
@@ -273,7 +273,12 @@ config
         title: "#1",
         description: "Index of the Pet you want to click.",
         value: "",
-        placeHolder: "",
+    })
+    .addKeybind({
+        category: "Pet Keybinds",
+        configName: "petOneKeybind",
+        title: "Keybind #1",
+        description: "Keybind to equip the pet.",
     })
     .addTextInput({
         category: "Pet Keybinds",
@@ -281,7 +286,12 @@ config
         title: "#2",
         description: "Index of the Pet you want to click.",
         value: "",
-        placeHolder: "",
+    })
+    .addKeybind({
+        category: "Pet Keybinds",
+        configName: "petTwoKeybind",
+        title: "Keybind #2",
+        description: "Keybind to equip the pet.",
     })
     .addTextInput({
         category: "Pet Keybinds",
@@ -289,7 +299,12 @@ config
         title: "#3",
         description: "Index of the Pet you want to click.",
         value: "",
-        placeHolder: "",
+    })
+    .addKeybind({
+        category: "Pet Keybinds",
+        configName: "petThreeKeybind",
+        title: "Keybind #3",
+        description: "Keybind to equip the pet.",
     })
     .addTextInput({
         category: "Pet Keybinds",
@@ -297,7 +312,12 @@ config
         title: "#4",
         description: "Index of the Pet you want to click.",
         value: "",
-        placeHolder: "",
+    })
+    .addKeybind({
+        category: "Pet Keybinds",
+        configName: "petFourKeybind",
+        title: "Keybind #4",
+        description: "Keybind to equip the pet.",
     })
     .addTextInput({
         category: "Pet Keybinds",
@@ -305,7 +325,12 @@ config
         title: "#5",
         description: "Index of the Pet you want to click.",
         value: "",
-        placeHolder: "",
+    })
+    .addKeybind({
+        category: "Pet Keybinds",
+        configName: "petFiveKeybind",
+        title: "Keybind #5",
+        description: "Keybind to equip the pet.",
     })
     .addSwitch({
         configName: "i4AutoLeap",
@@ -343,42 +368,45 @@ config
         configName: "ee2",
         title: "Leap to EE2",
         description: "Leap to selected class for EE2.",
+        subcategory: "Autoleap"
     })
     .addSwitch({
         category: "Leap",
         configName: "ee3",
         title: "Leap to EE3",
         description: "Leap to selected class for EE3.",
+        subcategory: "Autoleap"
     })
     .addSwitch({
         category: "Leap",
         configName: "core",
         title: "Leap to Core",
         description: "Leap to selected class for Core.",
+        subcategory: "Autoleap"
     })
     .addSelection({
         category: "Leap",
         configName: "ee2Class",
         title: "Class for EE2",
         options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
-        placeHolder: "",
-        description: ""
+        description: "",
+        subcategory: "Autoleap"
     })
     .addSelection({
         category: "Leap",
         configName: "ee3Class",
         title: "Class for EE3",
         options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
-        placeHolder: "",
-        description: ""
+        description: "",
+        subcategory: "Autoleap"
     })
     .addSelection({
         category: "Leap",
         configName: "coreClass",
         title: "Class for Core",
         options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
-        placeHolder: "",
-        description: ""
+        description: "",
+        subcategory: "Autoleap"
     })
     .addSwitch({
         category: "Terminals",
@@ -413,9 +441,123 @@ config
     })
     .addKeybind({
         category: "Clip",
-        description: "Clips you through 1 block thick walls. Make sure you are touching and facing the wall you wish to clip through. Also requires 500 speed.",
+        description: "Clips through 1 block thick walls. Requires 500 speed (Might work on 400 speed as well). ",
         configName: "blockClipKeybind",
         title: "Block Clip Keybind"
+    })
+    .addKeybind({
+        category: "Clip",
+        description: "",
+        configName: "hclipKeybind",
+        title: "Hclip"
+    })
+    .addKeybind({
+        category: "Leap",
+        description: "",
+        configName: "tankKeybind",
+        title: "Tank keybind",
+        subcategory: "Class Leap"
+    })
+    .addKeybind({
+        category: "Leap",
+        description: "",
+        configName: "mageKeybind",
+        title: "Mage keybind",
+        subcategory: "Class Leap"
+    })
+    .addKeybind({
+        category: "Leap",
+        description: "",
+        configName: "berserkKeybind",
+        title: "Berserk keybind",
+        subcategory: "Class Leap"
+    })
+    .addKeybind({
+        category: "Leap",
+        description: "",
+        configName: "archerKeybind",
+        title: "Archer keybind",
+        subcategory: "Class Leap"
+    })
+    .addKeybind({
+        category: "Leap",
+        description: "",
+        configName: "healerKeybind",
+        title: "Healer keybind",
+        subcategory: "Class Leap"
+    })
+    .addKeybind({
+        category: "Stonk",
+        description: "",
+        configName: "stonkSwap",
+        title: "Stonkswap keybind",
+        subcategory: "Class Leap"
+    })
+    .addKeybind({
+        category: "Aimbot",
+        description: "Will get fucked by mage witherborn.",
+        configName: "witherAimbot",
+        title: "Wither Aimbot"
+    })
+    .addKeybind({
+        category: "Clip",
+        description: "Enables/Disables lava vclip.",
+        configName: "lavaVclipKeybind",
+        title: "Lava vclip keybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#1 Keybind",
+        configName: "wdOneKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#2 Keybind",
+        configName: "wdTwoKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#3 Keybind",
+        configName: "wdThreeKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#4 Keybind",
+        configName: "wdFourKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#5 Keybind",
+        configName: "wdFiveKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#6 Keybind",
+        configName: "wdSixKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#7 Keybind",
+        configName: "wdSevenKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#8 Keybind",
+        configName: "wdEightKeybind"
+    })
+    .addKeybind({
+        category: "Wardrobe",
+        description: "Automatically equips wardrobe",
+        title: "#9 Keybind",
+        configName: "wdNineKeybind"
     })
 /*
 .addSwitch({

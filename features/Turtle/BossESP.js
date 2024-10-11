@@ -1,10 +1,16 @@
 import RenderLibV2 from "../../../RenderLibV2"
 import { block, chat } from "../../utils/utils"
-import { Keybind } from "../../../KeybindFix"
 import Settings from "../../config"
 
 let toggled = false
-new Keybind("Wither Aimbot", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
+let toggleCooldown = false
+
+register("Tick", () => {
+    if (Client.isInGui()) return
+    if (!Keyboard.isKeyDown(Settings().witherAimbot)) return
+    if (toggleCooldown) return
+    toggleCooldown = true
+    Client.scheduleTask(4, () => { toggleCooldown = false })
     if (!toggled) {
         aimbot.register()
         toggled = true
@@ -14,12 +20,12 @@ new Keybind("Wither Aimbot", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPres
         toggled = false
         chat("Aimbot off")
     }
-});
+})
 
 register("Chat", () => {
     if (!Settings().espWither) return
     render.register()
-}).setCriteria("[BOSS] Maxor: WELL WELL WELL LOOK WHO’S HERE!")
+}).setCriteria(/^Maxor*/)
 
 register("Chat", () => {
     render.unregister()

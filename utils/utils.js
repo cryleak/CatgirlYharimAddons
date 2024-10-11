@@ -63,3 +63,76 @@ const movementKeys = [
 ]
 export const releaseMovementKeys = () => movementKeys.forEach(keybind => KeyBinding.func_74510_a(keybind, false))
 export const repressMovementKeys = () => movementKeys.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind)))
+
+import Dungeons from "../../Atomx/skyblock/Dungeons"
+const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
+let awaitingLeap = false
+
+export function leap(Class) {
+    awaitingLeap = true
+    swapToItem("Leap")
+    Client.scheduleTask(1, () => {
+        rightClick()
+    })
+    register("packetReceived", () => {
+        if (!awaitingLeap) return
+        awaitingLeap = false
+        const teamMembers = Dungeons.getTeamMembers()
+        Client.scheduleTask(() => {
+            if (Player.getContainer().getName() !== "Spirit Leap") return
+            Client.getMinecraft().func_147108_a(null)
+            toClick = Object.getOwnPropertyNames(teamMembers).find(playerName => teamMembers[playerName].class === Class)
+            if (!toClick) { chat("Class not found!") }
+            const item = Player.getContainer()?.getItems().findIndex(x => x?.getName()?.substring(2)?.toLowerCase() === toClick.toLowerCase()) // Gets the slot to click
+            if (!item) {
+                chat("Could not find " + Class)
+                Client.currentGui.close()
+                return
+            }
+            Player.getContainer().click(item)
+        })
+    }).setFilteredClass(S2DPacketOpenWindow)
+}
+
+let awaitingPet = false
+
+export function equipPet(petIndex) {
+    if (!petIndex) {
+        chat("Index not defined")
+        return
+    }
+    ChatLib.command("pets")
+    awaitingPet = true
+    register("packetReceived", () => {
+        if (!awaitingPet) return
+        awaitingPet = false
+        Client.scheduleTask(() => {
+            Client.getMinecraft().func_147108_a(null)
+        })
+        Client.scheduleTask(1, () => {
+            Player.getContainer().click(petIndex)
+        })
+    }).setFilteredClass(S2DPacketOpenWindow)
+}
+
+let awaitingWardrobe = false
+
+export function equipWardrobe(index) {
+    ChatLib.command("wardrobe")
+    awaitingWardrobe = true
+    register("packetReceived", () => {
+        if (!awaitingWardrobe) return
+        awaitingWardrobe = false
+        Client.scheduleTask(() => {
+            if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
+            Client.getMinecraft().func_147108_a(null)
+        })
+        Client.scheduleTask(1, () => {
+            if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
+            Player.getContainer().click(index)
+        })
+        Client.scheduleTask(3, () => {
+            Client.currentGui.close()
+        })
+    }).setFilteredClass(S2DPacketOpenWindow)
+}
