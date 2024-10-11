@@ -25,6 +25,8 @@ const keybinds = [
 register("Chat", () => {
     inp3 = true;
     if (!Settings().autop3) return
+    renderBox.unregister()
+    renderRing.unregister()
     if (!Settings().render) {
         renderBox.register()
     }
@@ -164,6 +166,8 @@ register("Command", () => {
 register("Command", () => {
     inp3 = true;
     renderMove.register()
+    renderBox.unregister()
+    renderRing.unregister()
     if (!Settings().render) {
         renderBox.register()
     }
