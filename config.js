@@ -11,6 +11,12 @@ const config = new DefaultConfig("CatgirlYharimAddons", "data/settings.json")
 
 config
     .addSwitch({
+        configName: "alwaysSprint",
+        title: "Always Sprint",
+        description: "Will make you always sprint.",
+        category: "General",
+    })
+    .addSwitch({
         configName: "stormTickTimerEnabled",
         title: "Storm Tick Timer",
         description: "Tick timer for when the pad will pad, and also when storm will get crushed. Tick is every 1 second. The timer goes red 0.15s before the tick.",
