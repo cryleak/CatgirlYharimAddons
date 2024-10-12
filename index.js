@@ -9,6 +9,7 @@ import "./features/Serenity/StonkSwap"
 import "./features/Serenity/StonkSwapDing"
 import "./features/Serenity/PartyFinderSound"
 import "./features/Serenity/BlockClip"
+import "./features/Serenity/Blink"
 import "./features/Serenity/AlwaysSprint"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 

@@ -18,5 +18,6 @@ register("tick", () => {
     // const denmark = Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e()
     // if (denmark) ChatLib.chat(denmark)
     if (!Settings().simulation) return
+    if (Server.getIP() !== "localhost") return
     Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111128_a(0.50000000745)
 });

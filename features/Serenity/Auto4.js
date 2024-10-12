@@ -160,7 +160,7 @@ register("renderWorld", () => {
     })
 })
 
-register("worldLoad", () => {
+register("worldUnload", () => {
     predictedBlocks.clear()
     while (unshotBlocks.length) unshotBlocks.pop()
     blocks.forEach(block => unshotBlocks.push(block))

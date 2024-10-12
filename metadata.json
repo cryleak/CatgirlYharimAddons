@@ -1,6 +1,6 @@
 {
     "name": "Catgirl Yharim Addons",
-    "creator": "ITheSerenity & turtleonfire2 & teeTu97",
+    "creator": "ITheSerenity, turtleonfire2 and teeTu97",
     "version": "1.0",
     "description": "bomb denmark",
     "entry": "index.js",
@@ -9,7 +9,6 @@
         "Amaterasu",
 		"BloomCore",
 		"Atomx",
-		"KeybindFix",
 		"RenderLibV2"
     ]
 }
