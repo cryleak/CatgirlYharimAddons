@@ -1,5 +1,14 @@
-import { Keybind } from "../../../KeybindFix"
+import Settings from "../../config";
 
-new Keybind("HClip", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
+hclipCooldown = false
+
+register("Tick", () => {
+    if (Client.isInGui()) return
+    if (!Keyboard.isKeyDown(Settings().hclipKeybind)) return
+    if (hclipCooldown) return
+    hclipCooldown = true
     ChatLib.command("hclip", true)
-});
+    Client.scheduleTask(4, () => {
+        hclipCooldown = false
+    })
+})

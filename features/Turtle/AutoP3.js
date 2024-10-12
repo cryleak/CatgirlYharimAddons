@@ -165,6 +165,8 @@ register("Command", () => {
 
 register("Command", () => {
     inp3 = true;
+    renderBox.unregister()
+    renderRing.unregister()
     renderMove.register()
     renderBox.unregister()
     renderRing.unregister()

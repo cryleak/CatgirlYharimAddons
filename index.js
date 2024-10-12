@@ -11,6 +11,8 @@ import "./features/Serenity/PartyFinderSound"
 import "./features/Serenity/BlockClip"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 
+
+// I take no responsibilty for Turtle's incredibly schizo code. -Serenity
 import "./features/Turtle/AutoP3"
 import "./features/Turtle/LeapKeybinds"
 import "./features/Turtle/WardrobeKeybinds"

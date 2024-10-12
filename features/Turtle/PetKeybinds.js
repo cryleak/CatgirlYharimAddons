@@ -1,51 +1,33 @@
-import { Keybind } from "../../../KeybindFix"
 import Settings from "../../config"
+import { equipPet } from "../../utils/utils"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 
+let petCooldown = false
 awaitingPet = false;
-inMenu = false
 
 register("packetReceived", () => {
     if (!awaitingPet) return
     awaitingPet = false
     Client.scheduleTask(() => {
-        //if (Player.getContainer().getName() !== "Pets (1/2)") return
         Client.getMinecraft().func_147108_a(null)
     })
     Client.scheduleTask(1, () => {
-        //if (Player.getContainer().getName() !== "Pets (1/2)") return
         Player.getContainer().click(itemIndex)
     })
 }).setFilteredClass(S2DPacketOpenWindow)
 
+function pet() {
+    petCooldown = true
+    Client.scheduleTask(19, () => { petCooldown = false })
+}
 
-new Keybind("Swap to Pet #1", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("pets")
-    itemIndex = Settings().petOne
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Pet #2", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("pets")
-    itemIndex = Settings().petTwo
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Pet #3", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("pets")
-    itemIndex = Settings().petThree
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Pet #4", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("pets")
-    itemIndex = Settings().petFour
-    awaitingPet = true;
-});
-
-new Keybind("Swap to Pet #5", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
-    ChatLib.command("pets")
-    itemIndex = Settings().petFive
-    awaitingPet = true;
-});
+register("Tick", () => {
+    if (Client.isInGui()) return
+    if (petCooldown) return
+    if (Keyboard.isKeyDown(Settings().petOneKeybind)) { equipPet(Settings().petOne); pet() }
+    if (Keyboard.isKeyDown(Settings().petTwoKeybind)) { equipPet(Settings().petTwo); pet() }
+    if (Keyboard.isKeyDown(Settings().petThreeKeybind)) { equipPet(Settings().petThree); pet() }
+    if (Keyboard.isKeyDown(Settings().petFourKeybind)) { equipPet(Settings().petFour); pet() }
+    if (Keyboard.isKeyDown(Settings().petFiveKeybind)) { equipPet(Settings().petFive); pet() }
+})

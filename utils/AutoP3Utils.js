@@ -52,7 +52,6 @@ const ringColors = new Map([
     ["block", [0, 0, 1]],
     ["block2", [0, 1, 1]],
     ["edge", [1, 0, 1]]
-
 ])
 
 export function renderRings(x, y, z, w, type) {

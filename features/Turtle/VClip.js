@@ -1,4 +1,3 @@
-import { Keybind } from "../../../KeybindFix"
 import Settings from "../../config"
 
 const S08PacketPlayerPosLook = Java.type("net.minecraft.network.play.server.S08PacketPlayerPosLook")
@@ -6,8 +5,14 @@ const S32PacketConfirmTransaction = Java.type("net.minecraft.network.play.server
 
 let toggled = false
 let delay = 0
-
-new Keybind("VClip", Keyboard.KEY_NONE, "CatgirlYharim").registerKeyPress(() => {
+let vclipCooldown = false
+register("Tick", () => {
+    if (vclipCooldown) return
+    vclipCooldown = true
+    Client.scheduleTask(4, () => { 
+        vclipCooldown = false
+    })
+    if (!Keyboard.isKeyDown(Settings().lavaVclipKeybind)) return
     if (!toggled) {
         toggled = true
         vclip.register()
