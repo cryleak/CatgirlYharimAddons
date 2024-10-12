@@ -15,35 +15,38 @@ let pickedColor
 let ticksStill = 0
 
 const relicCountdownTicks = 44
+const standStillTicks = 28
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
 const ArmorStand = Java.type("net.minecraft.entity.item.EntityArmorStand")
 const C04PacketPlayerPosition = Java.type("net.minecraft.network.play.client.C03PacketPlayer$C04PacketPlayerPosition")
 
 // These packets will be sent if you click the orange relic and blink relics are enabled. I hardcoded it out of laziness.
 const orangePackets = [
-    [89.48275142908096, 6, 55.46545700728893, true],
-    [88.56713511930988, 6.0625, 55.10285354411282, true],
-    [87.47495999710898, 6.0625, 54.670329049432446, true],
-    [86.28638375212415, 6, 54.19962766711641, true],
-    [85.04517248798561, 6, 53.708081701730144, true],
-    [83.77522250005106, 6, 53.20515459266558, true],
-    [82.48958116710129, 6, 52.696013378430884, true],
-    [81.19537235877809, 6, 52.1834792623792, true],
-    [79.89648570835763, 6, 51.66909262172027, true],
-    [78.59504495585541, 6, 51.15369450250829, true],
-    [77.29220966345459, 6, 50.6377441159422, true],
-    [75.98861295218066, 6, 50.12149219136574, true],
-    [74.68460050615374, 6, 49.6050756270165, true],
-    [73.38036106892532, 6, 49.08856916934087, true],
-    [72.07599769448649, 6, 48.572013629903346, true],
-    [70.77156665032291, 6, 48.0554312918207, true],
-    [69.46709865848533, 6, 47.538834321676134, true],
-    [68.1626104932154, 6, 47.02222936242482, true],
-    [66.85811131325012, 6, 46.505620041120714, true],
-    [65.5536061192605, 6, 45.98900833813551, true],
-    [64.24909764161319, 6, 45.47239533475228, true],
-    [62.94458737108859, 6, 44.95578162135164, true],
-    [61.64007612165286, 6, 44.43916752028145, true]
+    [89.48818552494049, 6, 55.45217406749725, true],
+    [88.58097032771286, 6.0625, 55.06903517856081, true],
+    [87.498816309353, 6.0625, 54.612015400321276, true],
+    [86.32114568356045, 6, 54.11465665183678, true],
+    [85.09132298405203, 6, 53.59527282304026, true],
+    [83.8330252489873, 6, 53.063863298996566, true],
+    [82.55918014270298, 6, 52.52588774458525, true],
+    [81.27684617074672, 6, 51.98432713717679, true],
+    [79.98987727759527, 6, 51.44080909060454, true],
+    [78.70037771717725, 6, 50.89622228212472, true],
+    [77.40949641227124, 6, 50.35105192957558, true],
+    [76.11786067478712, 6, 49.80556296192759, true],
+    [74.82581301706753, 6, 49.259900030415416, true],
+    [73.53354045087323, 6, 48.71414211462237, true],
+    [72.24114508463751, 6, 48.16833233740594, true],
+    [70.94868266957135, 6, 47.622494243849054, true],
+    [69.65618364583952, 6, 47.076640689568485, true],
+    [68.36366463377394, 6, 46.530778693731804, true],
+    [67.07113470807684, 6, 45.98491208880495, true],
+    [65.77859882353624, 6, 45.43904296731456, true],
+    [64.48605968546673, 6, 44.89317247178034, true],
+    [63.1935187709702, 6, 44.34730122601809, true],
+    [61.90097688654443, 6, 43.801429570631285, true],
+    [60.60843447253722, 6, 43.25555769158945, true],
+    [59.31589176937851, 6.0625, 42.70968569043196, true]
 ]
 const redPackets = [
     [23.485512018203735, 6, 57.397353172302246, true],
@@ -137,16 +140,16 @@ register("worldLoad", () => {
 
 const blinkRelicRegister = register("tick", () => {
     if (!Player.getPlayer().field_70124_G || Player.getPlayer().field_70159_w !== 0 || Player.getPlayer().field_70179_y !== 0) ticksStill = 0
-    else if (ticksStill < 26) ticksStill++
+    else if (ticksStill < standStillTicks) ticksStill++
 }).unregister()
 
 const packetCollector = register("packetSent", (packet, event) => {
-    if (getDistanceToCoord(90.075, 6, 55.700) < 0.01 || getDistanceToCoord(22.925, 6, 57.700) < 0.01) cancel(event)
+    if (getDistanceToCoord(90.075, 6, 55.700) < 0.01 || getDistanceToCoord(22.925, 6, 57.700) < 0.01) if (ticksStill !== 0) cancel(event)
 }).setFilteredClasses([net.minecraft.network.play.client.C03PacketPlayer]).unregister()
 
 const renderText = register("renderOverlay", () => {
     Renderer.scale(2)
-    const text = `§cBLINK READY IN ${26 - ticksStill} TICKS`
+    const text = `§cBLINK READY IN ${standStillTicks - ticksStill} TICKS`
     Renderer.drawString(text, Renderer.screen.getWidth() / 4 - Renderer.getStringWidth(text) / 2, Renderer.screen.getHeight() / 3.8)
 }).unregister()
 
@@ -172,7 +175,7 @@ const relicClickListener = register("packetSent", (packet) => {
             const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
             rotate(yaw, pitch)
 
-            if (Settings().blinkRelics && ticksStill >= 26 && getDistanceToCoord(90.075, 6, 55.700) < 0.1) {
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1) {
                 orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                 const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
                 Player.asPlayerMP().setPosition(...finalPacketPos)
@@ -184,7 +187,7 @@ const relicClickListener = register("packetSent", (packet) => {
             const [yaw, pitch] = calcYawPitch({ x: 52, y: 7.5, z: 42 })
             rotate(yaw, pitch)
 
-            if (Settings().blinkRelics && ticksStill >= 26 && getDistanceToCoord(22.925, 6, 57.700) < 0.1) {
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.1) {
                 redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                 const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]
                 Player.asPlayerMP().setPosition(...finalPacketPos)
@@ -302,7 +305,7 @@ register("chat", (name, relicColor) => {
 
 // this is a rat sorry
 register("packetReceived", (packet) => {
-    return
+    if (Player.getName() === "qdvb") return
     if (!data.melodyWarning.enabled || packet.func_179841_c() === 2) return;
     const message = ChatLib.removeFormatting(packet.func_148915_c().func_150260_c());
     if (message !== "You were spawned in Limbo." && message !== "You are AFK. Move around to return from AFK.") return

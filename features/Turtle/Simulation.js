@@ -16,6 +16,7 @@ register("tick", () => {
 
 register("tick", () => {
     if (!Settings().simulation) return
+    if (Server.getIP() !== "localhost") return
     let player = Player.getPlayer();
     player.func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111128_a(0.50000000745)
 });
