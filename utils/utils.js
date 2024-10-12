@@ -28,7 +28,7 @@ export const swapToItem = (targetItemName) => {
     }
 }
 
-export function block(x, y, z) {
+export function calcYawPitch(x, y, z) {
     distanceLookX = x - Player.getX()
     distanceLookY = y - Player.getY()
     distanceLookZ = z - Player.getZ()
@@ -45,7 +45,14 @@ export function block(x, y, z) {
     pitchRad = Math.atan2(-distanceLookY, horitzontalDistance)
     pitch = pitchRad * (180 / Math.PI)
 
-    rotate(yaw, pitch)
+    return [yaw, pitch]
+}
+
+export function rotate(yaw, pitch) {
+    const player = Player.getPlayer();
+
+    player.field_70177_z = yaw;
+    player.field_70125_A = pitch;
 }
 
 const defaultColor = "§7"
@@ -140,4 +147,14 @@ export function equipWardrobe(index) {
             Client.currentGui.close()
         })
     }).setFilteredClass(S2DPacketOpenWindow)
+}
+
+export const clipForward = (distance) => { // I have no idea how optimal this is because I literally haven't learned about this shit in school yet and have very little understanding of it but it works
+    const radians = Player.getYaw() * Math.PI / 180
+    let [newX, newZ] = [Player.getX(), Player.getZ()]
+
+    if (Math.abs(-Math.sin(radians)) > Math.abs(Math.cos(radians))) newX += distance * Math.sign(-Math.sin(radians))
+    else newZ += distance * Math.sign(Math.cos(radians))
+    //Player.asPlayerMP().setPosition(newX, Player.getY(), newZ)
+    Player.getPlayer().func_70107_b(newX, Player.getY(), newZ)
 }

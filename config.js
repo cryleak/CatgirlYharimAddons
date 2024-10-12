@@ -565,6 +565,12 @@ config
         title: "#9 Keybind",
         configName: "wdNineKeybind"
     })
+    .addKeybind({
+        category: "Clip",
+        description: "Barphase",
+        title: "Barphase",
+        configName: "barphaseKeybind"
+    })
 /*
 .addSwitch({
     configName: "tickShiftToggle",
