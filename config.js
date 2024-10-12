@@ -52,7 +52,7 @@ config
     .addSwitch({
         configName: "blinkRelics",
         title: "Blink Relics",
-        description: "Teleport to the relic instantly.",
+        description: "§cRequires Relic Look and Relic Triggerbot to be enabled.\n§cAlso requires a custom brush config, which can be found in the Features List.\nThis features instantly teleports you to the relic. You must stand still for at least 26 ticks for this to work, otherwise it will default to simply Relic Looking.",
         category: "Wither King",
         subcategory: "Relic"
     })
