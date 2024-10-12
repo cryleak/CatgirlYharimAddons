@@ -6,6 +6,7 @@ let lastUse = Date.now()
 register("tick", () => {
     if (!Keyboard.isKeyDown(Settings().blockClipKeybind)) return
     if (Date.now() - lastUse < 300) return
+    if (Client.isInGui()) return
     if (!Player.getPlayer().field_70124_G) return
     lastUse = Date.now()
 
