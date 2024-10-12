@@ -136,7 +136,6 @@ register("worldLoad", () => {
 })
 
 const blinkRelicRegister = register("tick", () => {
-    ChatLib.chat(`Red: ${redPackets.length} Orange: ${orangePackets.length}`)
     if (!Player.getPlayer().field_70124_G || Player.getPlayer().field_70159_w !== 0 || Player.getPlayer().field_70179_y !== 0) ticksStill = 0
     else if (ticksStill < 26) ticksStill++
 }).unregister()
