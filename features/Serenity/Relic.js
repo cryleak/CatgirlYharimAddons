@@ -123,6 +123,7 @@ const placeListener = register("playerInteract", (action, pos) => {
     chat("Relic placed &b" + ((Date.now() - p5StartTime) / 1000) + "s into P5.")
     chat("Relic took &b" + ((pickedUpTime - spawnTime) / 1000) + "s to get picked up.")
     placeListener.unregister()
+    KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), false)
 }).unregister()
 
 register("worldLoad", () => {
@@ -175,7 +176,7 @@ const relicClickListener = register("packetSent", (packet) => {
             const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
             rotate(yaw, pitch)
 
-            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1) {
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
                 orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                 const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
                 Player.asPlayerMP().setPosition(...finalPacketPos)
@@ -187,7 +188,7 @@ const relicClickListener = register("packetSent", (packet) => {
             const [yaw, pitch] = calcYawPitch({ x: 52, y: 7.5, z: 42 })
             rotate(yaw, pitch)
 
-            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.1) {
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
                 redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                 const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]
                 Player.asPlayerMP().setPosition(...finalPacketPos)
