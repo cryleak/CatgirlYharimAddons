@@ -50,6 +50,13 @@ config
         subcategory: "Relic"
     })
     .addSwitch({
+        configName: "blinkRelics",
+        title: "Blink Relics",
+        description: "Teleport to the relic instantly.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
         configName: "dragPrio",
         title: "Drag Prio",
         description: "Tells you what dragon to go to and has a timer.",
@@ -463,6 +470,12 @@ config
         description: "",
         configName: "hclipKeybind",
         title: "HClip Keybind"
+    })
+    .addKeybind({
+        category: "Clip",
+        description: "Allows you to teleport somewhere instantly by collecting movement packets and sending them all at once.",
+        configName: "blinkKey",
+        title: "Blink toggle"
     })
     .addKeybind({
         category: "Leap",
