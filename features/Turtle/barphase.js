@@ -12,5 +12,4 @@ register("Tick", () => {
         })
         chat("Phasing")
     }
-
 })
