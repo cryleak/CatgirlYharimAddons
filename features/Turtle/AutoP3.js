@@ -168,6 +168,8 @@ register("Command", () => {
     renderBox.unregister()
     renderRing.unregister()
     renderMove.register()
+    renderBox.unregister()
+    renderRing.unregister()
     if (!Settings().render) {
         renderBox.register()
     }
