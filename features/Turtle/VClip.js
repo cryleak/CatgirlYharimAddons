@@ -9,6 +9,7 @@ let delay = 0
 let active = true
 
 register("Tick", () => {
+    if (Client.isInGui()) return
     if (!Keyboard.isKeyDown(Settings().lavaVclipKeybind)) return
     if (!active) return
     active = false

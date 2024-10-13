@@ -60,8 +60,6 @@ export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
 }
 
-
-
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 const S12PacketEntityVelocity = Java.type("net.minecraft.network.play.server.S12PacketEntityVelocity")
 
@@ -79,7 +77,7 @@ const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPack
 let awaitingLeap = false
 
 export function leap(player) {
-    swapToItem("Leap")
+    swapToItem("leap")
     Client.scheduleTask(0, () => rightClick())
     awaitingLeap = true
 
@@ -88,6 +86,7 @@ export function leap(player) {
         awaitingLeap = false
         Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
+            Client.getMinecraft().func_147108_a(null)
             let playerName
             if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class
                 const teamMembers = Dungeons.getTeamMembers()
@@ -120,9 +119,7 @@ export function equipPet(petIndex) {
     register("packetReceived", () => {
         if (!awaitingPet) return
         awaitingPet = false
-        Client.scheduleTask(() => {
-            Client.getMinecraft().func_147108_a(null)
-        })
+        Client.getMinecraft().func_147108_a(null)
         Client.scheduleTask(1, () => {
             Player.getContainer().click(petIndex)
         })

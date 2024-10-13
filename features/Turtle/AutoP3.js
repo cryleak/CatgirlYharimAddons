@@ -1,15 +1,14 @@
 import { autoP3Data as data } from "../../utils/data"
 import Settings from "../../config"
-import { stop, walk, jump, noWalk, edgeJump, renderBoxes, renderRings } from "../../utils/AutoP3Utils"
+import { stop, walk, jump, noWalk, renderBoxes, renderRings } from "../../utils/AutoP3Utils"
 import { lavaclip, leftClick, rightClick } from "../../utils/utils"
-import { swapToItem, calcYawPitch, chat, rotate, slingshot } from "../../utils/utils"
+import { swapToItem, calcYawPitch, chat, rotate, slingshot, leap } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
 
 let inp3 = false;
 let cooldown = false;
 let selectedRoute = parseInt(Settings().route)
 let rings = [];
-let toggled = false;
 
 rings = data.rings
 
@@ -76,12 +75,12 @@ register("command", (...args) => {
     let active = true
     let route = parseInt(selectedRoute)
 
-    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge"].includes(type)) {
-        chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip!")
+    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge", "leap"].includes(type)) {
+        chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip, leap!")
         return;
     }
 
-    if (["vclip", "block", "block2"].includes(type)) {
+    if (["vclip", "block", "block2", "leap"].includes(type)) {
         if (type === "vclip") {
             if (args.length != 4 && args.length != 2) {
                 chat("Invalid Parameters! Use /ring vclip h w depth")
@@ -96,6 +95,20 @@ register("command", (...args) => {
                 w = 1
             }
             rings.push({ type, x, y, z, w, h, depth, active, route })
+        } else if (type === "leap") {
+            if (args.length != 4 && args.length != 2) {
+                chat("Invalid Parameters! Use /ring leap h w class/IGN")
+                return
+            }
+            h = parseFloat(args[1]);
+            w = parseFloat(args[2]);
+            target = parseInt(args[3])
+            if (!h || !w) {
+                target = parseInt(args[1])
+                h = 1
+                w = 1
+            }
+            rings.push({ type, x, y, z, w, h, target, active, route })
         } else {
             if (args.length != 4 && args.length != 6) {
                 chat("Invalid Parameters! Use /ring block/block2 h w x y z")
@@ -135,10 +148,6 @@ register("command", (...args) => {
 }).setName("ring")
 
 register("Command", () => {
-    edgeJump.register()
-}).setName("edgejump")
-
-register("Command", () => {
     inp3 = true;
     renderMove.register()
     renderRing.register()
@@ -150,16 +159,6 @@ register("Command", () => {
     renderMove.unregister()
     renderRing.unregister()
 }).setName("stopp3")
-
-register("Command", (yaw, pitch) => {
-    if (Math.abs(yaw) > 180 || Math.abs(pitch) > 90) {
-        chat(`Pitch and/or Yaw out of bounds.`)
-        return
-    }
-    chat(`Rotating.`)
-    Player.getPlayer().field_70177_z = yaw;
-    Player.getPlayer().field_70125_A = pitch;
-}).setName("rotating")
 
 const renderRing = register("renderWorld", () => {
     if (!Settings().autop3) return;
@@ -324,7 +323,14 @@ const renderMove = register("renderWorld", () => {
                     chat("Edging")
                     ChatLib.command("edgejump", true)
                     break
-
+                case "leap":
+                    if (inTerminal) {
+                        rings.active = true
+                        return
+                    }
+                    chat("Leaping")
+                    leap(rings.target)
+                    break
             }
         }
     })
@@ -334,4 +340,21 @@ register("worldLoad", () => {
     inp3 = false;
     renderMove.unregister()
     renderRing.unregister()
+});
+
+//inTermina check for leap ring
+
+import packetOpenWindow from "../../utils/packetOpenWindow";
+import closeWindow from "../../utils/closeWindow";
+
+let inTerminal = false
+
+packetOpenWindow.addListener(() => {
+    inTerminal = true;
+    //ChatLib.chat("inGui")
+});
+
+closeWindow.addListener(() => {
+    inTerminal = false;
+    //ChatLib.chat("notInGui")
 });

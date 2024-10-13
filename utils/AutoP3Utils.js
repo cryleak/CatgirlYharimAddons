@@ -37,21 +37,22 @@ export const edgeJump = register("renderOverlay", () => {
 
 const ringColors = new Map([
     ["walk", [0, 1, 0]],
-    ["walk2", [0, 1, 1]],
-    ["jump", [0, 0, 1]],
+    ["walk2", [0, 1, 0]],
+    ["jump", [1, 0, 1]],
     ["jump2", [1, 0, 1]],
     ["stop", [1, 0, 0]],
     ["boom", [0, 1, 1]],
     ["hclip", [0, 0, 0]],
     ["hclip2", [0, 0, 0]],
     ["bonzo", [1, 1, 1]],
-    ["bonzo2", [1, 0, 1]],
+    ["bonzo2", [1, 1, 1]],
     ["look", [1, 0, 1]],
     ["aura", [1, 1, 0]],
     ["vclip", [1, 1, 0]],
     ["block", [0, 0, 1]],
-    ["block2", [0, 1, 1]],
-    ["edge", [1, 0, 1]]
+    ["block2", [0, 0, 1]],
+    ["edge", [1, 0, 1]],
+    ["leap", [0, 0, 1]]
 ])
 
 export function renderRings(x, y, z, w, type) {
