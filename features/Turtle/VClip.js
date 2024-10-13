@@ -1,52 +1,20 @@
 import Settings from "../../config"
+import { lavaclip } from "../../utils/utils"
 
 const S08PacketPlayerPosLook = Java.type("net.minecraft.network.play.server.S08PacketPlayerPosLook")
 const S32PacketConfirmTransaction = Java.type("net.minecraft.network.play.server.S32PacketConfirmTransaction")
 
-let toggled = false
 let delay = 0
-let vclipCooldown = false
+
+let active = true
 
 register("Tick", () => {
-    if (vclipCooldown) return
-    vclipCooldown = true
-    Client.scheduleTask(4, () => { 
-        vclipCooldown = false
-    })
     if (!Keyboard.isKeyDown(Settings().lavaVclipKeybind)) return
-    if (!toggled) {
-        toggled = true
-        vclip.register()
-    } else {
-        toggled = false
-        vclip.unregister()
-    }
+    if (!active) return
+    active = false
+    Client.scheduleTask(5, () => { active = true })
+    lavaclip(20)
 })
-
-register("Command", () => {
-    toggled = false
-    vclip.unregister()
-}).setName("noclip")
-
-register("renderOverlay", () => {
-    if (!toggled) return;
-    let text = "Dirty Cheater!"
-    let scale = 1.5
-    Renderer.scale(scale)
-    Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
-})
-
-const vclip = register("tick", () => {
-    if (!Player.getPlayer().func_180799_ab()) return
-    Player.getPlayer().func_70107_b(Player.getX(), Player.getY() - 20, Player.getZ())
-    const veloPacket = register("packetReceived", (packet, event) => {
-        if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
-        if (packet.func_149410_e() !== 28000) return;
-        cancel(event)
-        veloPacket.unregister();
-        vclip.unregister();
-    }).setFilteredClass(S12PacketEntityVelocity);
-}).unregister();
 
 register("packetReceived", (packet) => {
     const x = Math.floor(packet.func_148932_c());

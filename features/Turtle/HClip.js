@@ -1,4 +1,5 @@
 import Settings from "../../config";
+import { slingshot } from "../../utils/utils";
 
 hclipCooldown = false
 
@@ -7,7 +8,7 @@ register("Tick", () => {
     if (!Keyboard.isKeyDown(Settings().hclipKeybind)) return
     if (hclipCooldown) return
     hclipCooldown = true
-    ChatLib.command("hclip", true)
+    slingshot(Player.getYaw())
     Client.scheduleTask(4, () => {
         hclipCooldown = false
     })

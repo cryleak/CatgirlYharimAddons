@@ -63,6 +63,8 @@ export function chat(message) {
 
 
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
+const S12PacketEntityVelocity = Java.type("net.minecraft.network.play.server.S12PacketEntityVelocity")
+
 const movementKeys = [
     Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
     Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
@@ -158,3 +160,76 @@ export const clipForward = (distance) => { // I have no idea how optimal this is
     //Player.asPlayerMP().setPosition(newX, Player.getY(), newZ)
     Player.getPlayer().func_70107_b(newX, Player.getY(), newZ)
 }
+
+const keybinds = [
+    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
+];
+
+export function slingshot(direction) {
+    let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+    let yaw = (direction) * Math.PI / 180;
+
+    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+
+    Client.scheduleTask(0, () => {
+        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
+    })
+}
+
+let toggled = false
+let currDepth = 20
+
+export function lavaclip(distance) {
+    if (toggled) {
+        toggled = false
+        vclip.unregister()
+        vclipOverlay.unregister()
+        return
+    }
+    if (isNaN(distance)) {
+        chat("please use a number")
+        return
+    }
+    if (distance < 40.1 && distance > 3) {
+        currDepth = distance
+        toggled = true
+        vclip.register()
+        vclipOverlay.register()
+
+    } else {
+        chat("Distance has to be between 40 and 3")
+    }
+}
+
+const vclipOverlay = register("renderOverlay", () => {
+    if (!toggled) return
+    let text = "Dirty Cheater!"
+    let scale = 1.5
+    Renderer.scale(scale)
+    Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
+}).unregister()
+
+const vclip = register("tick", () => {
+    if (!Player.getPlayer().func_180799_ab()) return
+    Player.getPlayer().func_70107_b(Player.getX(), Player.getY() - currDepth, Player.getZ())
+    const veloPacket = register("packetReceived", (packet, event) => {
+        if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
+        if (packet.func_149410_e() !== 28000) return;
+        cancel(event)
+        veloPacket.unregister();
+        vclip.unregister();
+        vclipOverlay.unregister()
+        toggled = false
+    }).setFilteredClass(S12PacketEntityVelocity);
+}).unregister();
+
+register("Command", () => {
+    toggled = false
+    vclip.unregister()
+    vclipOverlay.unregister()
+}).setName("noclip")
