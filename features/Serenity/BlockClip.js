@@ -1,6 +1,5 @@
-import { chat, releaseMovementKeys, repressMovementKeys } from "../../utils/utils"
+import { chat, releaseMovementKeys, repressMovementKeys, clipForward } from "../../utils/utils"
 import Settings from "../../config"
-import { clipForward } from "../../utils/utils"
 
 let lastUse = Date.now()
 
@@ -12,7 +11,7 @@ register("tick", () => {
     lastUse = Date.now()
 
     releaseMovementKeys()
-    clipForward(0.0625)
+    clipForward(0.062)
     Client.scheduleTask(0, () => {
         clipForward(1.4756)
         repressMovementKeys()

@@ -582,7 +582,7 @@ config
         category: "Clip",
         description: "Barphase",
         title: "Barphase",
-        configName: "barphaseKeybind"
+        configName: "barPhaseKeybind"
     })
 /*
 .addSwitch({
