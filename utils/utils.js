@@ -60,7 +60,12 @@ export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
 }
 
+function rotate(yaw, pitch) {
+    const player = Player.getPlayer();
 
+    player.field_70177_z = yaw;
+    player.field_70125_A = pitch;
+}
 
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 const movementKeys = [

@@ -100,7 +100,7 @@ const render = register("renderOverlay", () => {
 
 import { noWalk, walk, stop, jump, rotate } from "../../utils/AutoP3Utils"
 import { calcYawPitch } from "../../utils/utils"
-import RenderLib from "../../../RenderLib"
+import RenderLibV2 from "../../../RenderLibV2"
 
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 
@@ -182,7 +182,7 @@ const jumpOn = register("renderWorld", () => {
     if (ID !== 0 && ID !== 171) {
         jump()
     }
-    RenderLib.drawEspBox(Player.getX() - Math.sin(yawRad) * 5, Player.getY(), Player.getZ() + Math.cos(yawRad) * 5, 1, 1, 1, 0, 0, 1, true)
+    RenderLibV2.drawEspBox(Player.getX() - Math.sin(yawRad) * 5, Player.getY(), Player.getZ() + Math.cos(yawRad) * 5, 1, 1, 1, 0, 0, 1, true)
 }).unregister()
 
 const walkBack = register("renderWorld", () => {
