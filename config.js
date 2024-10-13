@@ -263,7 +263,6 @@ config
         category: "Terminals",
         subcategory: "Auto 4"
     })
-
     .addColorPicker({
         configName: "predictionColor",
         title: "Prediction Color",
@@ -452,6 +451,13 @@ config
         configName: "espWither",
         title: "Wither ESP",
         description: "ESP for Withers in F7 & M7.",
+    })
+    .addColorPicker({
+        configName: "witherESPColor",
+        title: "Wither ESP Color",
+        description: "",
+        category: "ESP",
+        value: [0, 255, 255, 89]
     })
     .addSwitch({
         category: "ESP",
