@@ -1,8 +1,8 @@
 import { autoP3Data as data } from "../../utils/data"
 import Settings from "../../config"
-import { stop, walk, rotate, jump, noWalk, edgeJump, renderBoxes, renderRings } from "../../utils/autoP3Utils"
+import { stop, walk, jump, noWalk, edgeJump, renderBoxes, renderRings } from "../../utils/AutoP3Utils"
 import { leftClick, rightClick } from "../../utils/utils"
-import { swapToItem, block, chat } from "../../utils/utils"
+import { swapToItem, calcYawPitch, chat, rotate } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
 
 let inp3 = false;
@@ -157,7 +157,7 @@ register("Command", (y) => {
     currDepth = parseInt(y)
     vclip.register()
     vclipOverlay.register()
-}).setName("clip")
+}).setName("lavaclip")
 
 register("Command", () => {
     edgeJump.register()
@@ -312,7 +312,7 @@ const renderMove = register("renderWorld", () => {
 
                 case "vclip":
                     chat("Vclipping")
-                    ChatLib.command("clip " + parseInt(rings.depth), true)
+                    ChatLib.command("lavaclip " + parseInt(rings.depth), true)
                     break
 
                 case "bonzo":
@@ -364,13 +364,15 @@ const renderMove = register("renderWorld", () => {
                     chat("Blocking")
                     Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
                     if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                    block(rings.lookX, rings.lookY, rings.lookZ)
+                    [yaw, pitch] = calcYawPitch(rings.lookX, rings.lookY, rings.lookZ)
+                    rotate(yaw, pitch)
                     break
 
                 case "block2":
                     chat("Blocking")
                     if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                    block(rings.lookX, rings.lookY, rings.lookZ)
+                    [yaw, pitch] = calcYawPitch(rings.lookX, rings.lookY, rings.lookZ)
+                    rotate(yaw, pitch)
                     walk()
                     break
 
@@ -405,13 +407,15 @@ register("Command", (y) => {
     } else {
         chat("Distance has to be between 40 and 3")
     }
-}).setName("clip")
+}).setName("lavaclip")
 
 register("Command", () => {
+    toggled = false
     vclip.unregister()
 }).setName("noclip")
 
 const vclipOverlay = register("renderOverlay", () => {
+    if (!toggled) return
     let text = "Dirty Cheater!"
     let scale = 1.5
     Renderer.scale(scale)

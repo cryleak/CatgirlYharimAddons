@@ -1,5 +1,5 @@
 import RenderLibV2 from "../../../RenderLibV2"
-import { block, chat } from "../../utils/utils"
+import { calcYawPitch, chat, rotate, } from "../../utils/utils"
 import Settings from "../../config"
 
 let toggled = false
@@ -43,6 +43,7 @@ const render = register("renderWorld", () => {
 
 const aimbot = register("renderWorld", () => {
     World.getAllEntitiesOfType(net.minecraft.entity.boss.EntityWither).forEach(ent => {
-        block(ent.getRenderX(), ent.getRenderY(), ent.getRenderZ())
+        [yaw, pitch] = calcYawPitch(ent.getRenderX(), ent.getRenderY(), ent.getRenderZ())
+        rotate(yaw, pitch)
     })
 }).unregister()

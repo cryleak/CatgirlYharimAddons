@@ -11,6 +11,12 @@ const config = new DefaultConfig("CatgirlYharimAddons", "data/settings.json")
 
 config
     .addSwitch({
+        configName: "alwaysSprint",
+        title: "Always Sprint",
+        description: "Will make you always sprint.",
+        category: "General",
+    })
+    .addSwitch({
         configName: "stormTickTimerEnabled",
         title: "Storm Tick Timer",
         description: "Tick timer for when the pad will pad, and also when storm will get crushed. Tick is every 1 second. The timer goes red 0.15s before the tick.",
@@ -46,6 +52,13 @@ config
         configName: "relicTriggerbot",
         title: "Relic Triggerbot",
         description: "Triggerbot to place the relic automatically.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
+        configName: "blinkRelics",
+        title: "Blink Relics",
+        description: "§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed. You must stand still for at least 26 ticks for this to work, otherwise it will default to simply Relic Looking.",
         category: "Wither King",
         subcategory: "Relic"
     })
@@ -465,6 +478,12 @@ config
         title: "HClip Keybind"
     })
     .addKeybind({
+        category: "Clip",
+        description: "Allows you to teleport somewhere instantly by collecting movement packets and sending them all at once.",
+        configName: "blinkKey",
+        title: "Blink toggle"
+    })
+    .addKeybind({
         category: "Leap",
         description: "",
         configName: "tankKeybind",
@@ -558,6 +577,12 @@ config
         description: "Automatically equips wardrobe",
         title: "#9 Keybind",
         configName: "wdNineKeybind"
+    })
+    .addKeybind({
+        category: "Clip",
+        description: "Barphase",
+        title: "Barphase",
+        configName: "barphaseKeybind"
     })
 /*
 .addSwitch({

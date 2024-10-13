@@ -6,6 +6,7 @@ const S32PacketConfirmTransaction = Java.type("net.minecraft.network.play.server
 let toggled = false
 let delay = 0
 let vclipCooldown = false
+
 register("Tick", () => {
     if (vclipCooldown) return
     vclipCooldown = true
@@ -23,6 +24,7 @@ register("Tick", () => {
 })
 
 register("Command", () => {
+    toggled = false
     vclip.unregister()
 }).setName("noclip")
 

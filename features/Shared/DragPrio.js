@@ -1,10 +1,7 @@
 import Settings from "../../config"
 import { getDistance3D } from "../../../BloomCore/utils/Utils"
 import Dungeons from "../../../Atomx/skyblock/Dungeons"
-import { chat } from "../../utils/utils"
-import { noWalk, walk, stop, jump } from "../../utils/AutoP3Utils"
-import { block } from "../../utils/utils"
-import RenderLib from "../../../RenderLib"
+import { calcYawPitch, chat } from "../../utils/utils"
 
 const dragonNames = ["Purple", "Blue", "Red", "Green", "Orange"] // I am not using a map here since I am assigning dragons to numbers anyways.
 const dragonColors = ["§5", "§b", "§4", "§2", "§6"]
@@ -101,6 +98,10 @@ const render = register("renderOverlay", () => {
 
 //AutoP5
 
+import { noWalk, walk, stop, jump, rotate } from "../../utils/AutoP3Utils"
+import { calcYawPitch } from "../../utils/utils"
+import RenderLibV2 from "../../../RenderLibV2"
+
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 
 const stackLocations = [
@@ -129,7 +130,9 @@ const autop5 = register("renderWorld", () => {
     //if (playerClass !== "Archer" && playerClass !== "Berserk") return
     //if (!dragonIndex || !inP5) return
     if (!atStackSpot) {
-        block(stackLocations[dragonIndex].x, Player.getY(), stackLocations[dragonIndex].z)
+        [yaw, pitch] = calcYawPitch(stackLocations[dragonIndex].x, Player.getY(), stackLocations[dragonIndex].z)
+        rotate(yaw, pitch)
+        //block(stackLocations[dragonIndex].x, Player.getY(), stackLocations[dragonIndex].z)
         if (stackLocations[dragonIndex].shouldJump) {
             jumpOn.register()
         }
@@ -149,7 +152,9 @@ const autop5 = register("renderWorld", () => {
             KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74313_G.func_151463_i(), true)
         }
         if (!dragonSpawned) {
-            block(shootLocations[dragonIndex].x, shootLocations[dragonIndex].y, shootLocations[dragonIndex].z)
+            [yaw, pitch] = calcYawPitch(shootLocations[dragonIndex].x, shootLocations[dragonIndex].y, shootLocations[dragonIndex].z)
+            rotate(yaw, pitch)
+            //block(shootLocations[dragonIndex].x, shootLocations[dragonIndex].y, shootLocations[dragonIndex].z)
         }
         World.getAllEntitiesOfType(net.minecraft.entity.boss.EntityDragon).forEach(ent => {
             if (ent.getName().includes(dragonList[dragonIndex])) {
@@ -173,15 +178,16 @@ const autop5 = register("renderWorld", () => {
 
 const jumpOn = register("renderWorld", () => {
     let yawRad = (Player.getYaw()) * Math.PI / 180;
-    let ID = World.getBlockAt(Player.getX() - Math.sin(yawRad) * 6, Player.getY(), Player.getZ() + Math.cos(yawRad) * 6).type.getID()
+    let ID = World.getBlockAt(Player.getX() - Math.sin(yawRad) * 5, Player.getY(), Player.getZ() + Math.cos(yawRad) * 5).type.getID()
     if (ID !== 0 && ID !== 171) {
         jump()
     }
-    RenderLib.drawEspBox(Player.getX() - Math.sin(yawRad) * 6, Player.getY(), Player.getZ() + Math.cos(yawRad) * 6, 1, 1, 1, 0, 0, 1, true)
+    RenderLibV2.drawEspBox(Player.getX() - Math.sin(yawRad) * 5, Player.getY(), Player.getZ() + Math.cos(yawRad) * 5, 1, 1, 1, 0, 0, 1, true)
 }).unregister()
 
 const walkBack = register("renderWorld", () => {
-    block(54.5, 5, 87, 5)
+    [yaw, pitch] = calcYawPitch(54.5, 5, 87)
+    rotate(yaw, pitch)
     walk()
     if (getDistance3D(54.5, 5, 87, Player.getX(), Player.getY(), Player.getZ()) < 1) {
         noWalk()
@@ -190,7 +196,7 @@ const walkBack = register("renderWorld", () => {
     }
 }).unregister()
 
-/*register("Command", (index) => {
+register("Command", (index) => {
     if (index < 0 || index > 4) return
     ticks = 100
     atStackSpot = false
@@ -209,4 +215,4 @@ register("Command", () => {
 
 register("Command", () => {
     ticks = 10
-}).setName("test")*/
+}).setName("test")
