@@ -158,6 +158,7 @@ register("Command", () => {
     inp3 = false;
     renderMove.unregister()
     renderRing.unregister()
+    chat(`P3 Stopped!`)
 }).setName("stopp3")
 
 const renderRing = register("renderWorld", () => {
@@ -192,8 +193,6 @@ const renderMove = register("renderWorld", () => {
         if (Settings().activeOnce && !rings.active) return
         if (distanceX < (rings.w / 2) && distanceY < (rings.h) && distanceY >= -0.5 && distanceZ < (rings.w / 2) && !cooldown) {
             rings.active = false
-            let speed
-            let yaw
             switch (rings.type) {
                 case "walk":
                     chat("Walking")
@@ -342,7 +341,7 @@ register("worldLoad", () => {
     renderRing.unregister()
 });
 
-//inTermina check for leap ring
+//inTerminal check for leap ring
 
 import packetOpenWindow from "../../utils/packetOpenWindow";
 import closeWindow from "../../utils/closeWindow";

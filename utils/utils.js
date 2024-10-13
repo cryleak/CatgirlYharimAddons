@@ -73,6 +73,7 @@ export const releaseMovementKeys = () => movementKeys.forEach(keybind => KeyBind
 export const repressMovementKeys = () => movementKeys.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind)))
 
 import Dungeons from "../../Atomx/skyblock/Dungeons"
+import { jump } from "./AutoP3Utils";
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 let awaitingLeap = false
 
@@ -166,16 +167,33 @@ const keybinds = [
 ];
 
 export function slingshot(direction) {
-    let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
-    let yaw = (direction) * Math.PI / 180;
+    if (Player.asPlayerMP().isOnGround()) {
+        jump()
+        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+        let yaw = (direction) * Math.PI / 180;
 
-    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+        Client.scheduleTask(3, () => {
+            Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+        })
 
-    Client.scheduleTask(0, () => {
-        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
-        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
-    })
+        Client.scheduleTask(4, () => {
+            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
+        })
+    } else {
+        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+        let yaw = (direction) * Math.PI / 180;
+
+        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+        Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+
+        Client.scheduleTask(0, () => {
+            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
+        })
+    }
+
 }
 
 let toggled = false

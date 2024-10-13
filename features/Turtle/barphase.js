@@ -5,7 +5,7 @@ let lastUse = Date.now()
 
 register("tick", () => {
     if (!Keyboard.isKeyDown(Settings().barPhaseKeybind)) return
-    if (Date.now() - lastUse < 300) return
+    if (Date.now() - lastUse < 200) return
     if (Client.isInGui()) return
     if (!Player.getPlayer().field_70124_G || !Player.getPlayer().field_70123_F) return
     if (World.getBlockAt(Math.floor(Player.getX()), Math.floor(Player.getY()), Math.floor(Player.getZ())).type.getID() !== 101) return
