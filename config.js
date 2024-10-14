@@ -150,6 +150,13 @@ config
     })
     .addSwitch({
         category: "Terminals",
+        configName: "editMode",
+        title: "Edit Mode",
+        description: "Stops rings from moving you",
+        subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
         configName: "silentLook",
         title: "SilentLook",
         description: "Causes you not to rotate clientside when you Bonzo Staff & Superboom.",
@@ -177,6 +184,48 @@ config
         title: "Render as rings",
         description: "Render AutoP3 config as rings instead of boxes.",
         subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "startOn",
+        description: "Start on a chat message of your own choice",
+        subcategory: "Auto P3",
+        title: "Start on special message."
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "startOnText",
+        description: "Chat message to start autop3 on (You need to ct reload after.).",
+        subcategory: "Auto P3",
+        title: "Trigger message."
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "routeP1On",
+        description: "Automatically select a route on Boss start.",
+        subcategory: "Auto P3",
+        title: "Select Route on Boss start."
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "routeP1",
+        description: "Route to automatically select on Boss start.",
+        subcategory: "Auto P3",
+        title: "Route on Boss start."
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "routeP3On",
+        description: "Automatically select a route on P3 start.",
+        subcategory: "Auto P3",
+        title: "Select Route on P3 start."
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "routeP3",
+        description: "Route to automatically select on P3 start.",
+        subcategory: "Auto P3",
+        title: "Route on P3 start."
     })
     .addSwitch({
         configName: "terminalTimestamps",

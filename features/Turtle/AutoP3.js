@@ -10,6 +10,10 @@ let cooldown = false;
 let selectedRoute = parseInt(Settings().route)
 let rings = [];
 
+if (Settings().startOn) {
+    triggerMessage = Settings().startOnText
+} else triggerMessage = "[BOSS] Storm: I should have known that I stood no chance."
+
 rings = data.rings
 
 register("Chat", () => {
@@ -17,6 +21,23 @@ register("Chat", () => {
     if (!Settings().autop3) return
     renderRing.register()
     renderMove.register()
+}).setCriteria(triggerMessage)
+
+register("Command", () => {
+    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
+}).setName("render")
+
+register("Chat", () => {
+    if (Settings().routeP1On) {
+        selectedRoute = parseInt(Settings().routeP1)
+        ChatLib.command("startp3", true)
+    }
+}).setCriteria("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")
+
+register("Chat", () => {
+    if (Settings().routeP3On) {
+        selectedRoute = parseInt(Settings().routeP3)
+    }
 }).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
 
 register("Chat", () => {
@@ -57,23 +78,18 @@ register("command", (range) => {
 }).setName("removering")
 
 register("Step", () => {
+    if (Settings().routeP1On || Settings().routeP3On) return
     selectedRoute = parseInt(Settings().route)
 }).setFps(1)
 
 register("command", (...args) => {
-    if (!args) {
-        chat("Usage: /ring §8<§7type§8> [§7height§8] [§7width§8] [§7x§8] [§7y§8] [§7z§8] [§7time§8]")
-        return;
-    }
 
+    let mc = Client.getMinecraft().func_175598_ae()
     let type = args[0].toLowerCase();
-    let x = Math.round(Player.getX() * 2) / 2;
-    let y = Math.round(Player.getY() * 2) / 2;
-    let z = Math.round(Player.getZ() * 2) / 2;
-    let yaw = Player.getYaw();
-    let pitch = Player.getPitch();
     let active = true
     let route = parseInt(selectedRoute)
+    let [x, y, z] = [Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2]
+    let [yaw, pitch] = [mc.field_78735_i, mc.field_78732_j]
 
     if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge", "leap"].includes(type)) {
         chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip, leap!")
@@ -176,7 +192,7 @@ const renderRing = register("renderWorld", () => {
 }).unregister()
 
 const renderMove = register("renderWorld", () => {
-    if (!Settings().autop3) return;
+    if (!Settings().autop3 || Settings().editMode) return;
     if (!inp3) return
     let playerX = Player.getX();
     let playerY = Player.getY();

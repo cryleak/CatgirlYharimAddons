@@ -248,3 +248,7 @@ register("Command", () => {
     vclip.unregister()
     vclipOverlay.unregister()
 }).setName("noclip")
+
+export function getIdOfBlock(x, y, z) {
+    return World.getBlockAt(x, y, z).type.getID()
+}
