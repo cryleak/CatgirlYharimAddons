@@ -1,7 +1,7 @@
-Owbu is black
+Owbu is goat
 
-Bomb Denmark
+Bomb Denmark & France
 
 Austria > Germany
 
-Genshin is a good ~~shit~~ game
+Genshin Impact is a ~~good~~ shit game
