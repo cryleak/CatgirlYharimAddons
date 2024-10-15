@@ -22,7 +22,8 @@ export function rightClick() {
 
 export const swapToItem = (targetItemName) => {
     itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()))
-    if (itemSlot > 7 || itemSlot < 0) { chat(`${targetItemName} Not Found in Hotbar`); throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`) } else { // Throw error in order to stop execution of the code below it because it will be completely fucked probably
+    if (itemSlot == -1) {chat(`${targetItemName} Not Found in Hotbar`); return}
+    if (itemSlot > 7 || itemSlot < 0 ) { chat(`${targetItemName} Not Found in Hotbar`); throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`); return } else { // Throw error in order to stop execution of the code below it because it will be completely fucked probably
         heldItem = Player.getHeldItemIndex()
         Player.setHeldItemIndex(itemSlot)
     }
