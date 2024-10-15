@@ -29,6 +29,13 @@ config
         }
     })
     .addSwitch({
+        configName: "relicAura",
+        title: "Relic Aura",
+        description: "Has higher range than Odin.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
         configName: "relicTimerEnabled",
         title: "Relic Timer",
         description: "Tells you when the relic is going to spawn and how long it took to spawn, place and both.",

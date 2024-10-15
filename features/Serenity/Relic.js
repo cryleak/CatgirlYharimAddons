@@ -5,7 +5,7 @@
 import Settings from "../../config"
 import { chat } from "../../utils/utils"
 import data from "../../utils/data"
-import { getDistanceToCoord } from "../../../BloomCore/utils/Utils"
+import { getDistanceToCoord, getDistanceToEntity } from "../../../BloomCore/utils/Utils"
 
 let pickedUpTime
 let ticks
@@ -22,31 +22,31 @@ const C04PacketPlayerPosition = Java.type("net.minecraft.network.play.client.C03
 
 // These packets will be sent if you click the orange relic and blink relics are enabled. I hardcoded it out of laziness.
 const orangePackets = [
-    [89.48818552494049, 6, 55.45217406749725, true],
-    [88.58097032771286, 6.0625, 55.06903517856081, true],
-    [87.498816309353, 6.0625, 54.612015400321276, true],
-    [86.32114568356045, 6, 54.11465665183678, true],
-    [85.09132298405203, 6, 53.59527282304026, true],
-    [83.8330252489873, 6, 53.063863298996566, true],
-    [82.55918014270298, 6, 52.52588774458525, true],
-    [81.27684617074672, 6, 51.98432713717679, true],
-    [79.98987727759527, 6, 51.44080909060454, true],
-    [78.70037771717725, 6, 50.89622228212472, true],
-    [77.40949641227124, 6, 50.35105192957558, true],
-    [76.11786067478712, 6, 49.80556296192759, true],
-    [74.82581301706753, 6, 49.259900030415416, true],
-    [73.53354045087323, 6, 48.71414211462237, true],
-    [72.24114508463751, 6, 48.16833233740594, true],
-    [70.94868266957135, 6, 47.622494243849054, true],
-    [69.65618364583952, 6, 47.076640689568485, true],
-    [68.36366463377394, 6, 46.530778693731804, true],
-    [67.07113470807684, 6, 45.98491208880495, true],
-    [65.77859882353624, 6, 45.43904296731456, true],
-    [64.48605968546673, 6, 44.89317247178034, true],
-    [63.1935187709702, 6, 44.34730122601809, true],
-    [61.90097688654443, 6, 43.801429570631285, true],
-    [60.60843447253722, 6, 43.25555769158945, true],
-    [59.31589176937851, 6.0625, 42.70968569043196, true]
+    [89.48818552494049, 6, 55.45217406749726, true],
+    [88.58097032771286, 6.0625, 55.06903517856082, true],
+    [87.498816309353, 6.0625, 54.61201540032128, true],
+    [86.32114568356045, 6, 54.11465665183679, true],
+    [85.09132298405203, 6, 53.59527282304027, true],
+    [83.83302524898733, 6, 53.06386329899657, true],
+    [82.55918014270298, 6, 52.525887744585255, true],
+    [81.27684617074675, 6, 51.9843271371768, true],
+    [79.98987727759527, 6, 51.440809090604546, true],
+    [78.70037771717728, 6, 50.896222282124725, true],
+    [77.40949641227124, 6, 50.35105192957559, true],
+    [76.11786067478712, 6, 49.8055629619276, true],
+    [74.82581301706753, 6, 49.25990003041542, true],
+    [73.53354045087326, 6, 48.714142114622376, true],
+    [72.24114508463751, 6, 48.16833233740595, true],
+    [70.94868266957135, 6, 47.62249424384906, true],
+    [69.65618364583955, 6, 47.07664068956849, true],
+    [68.36366463377394, 6, 46.53077869373181, true],
+    [67.07113470807684, 6, 45.984912088804954, true],
+    [65.77859882353624, 6, 45.43904296731457, true],
+    [64.48605968546673, 6, 44.893172471780346, true],
+    [63.193518770970215, 6, 44.3473012260181, true],
+    [61.90097688654444, 6, 43.80142957063129, true],
+    [60.60843447253723, 6, 43.25555769158946, true],
+    [59.315891769378524, 6.0625, 42.70968569043197, true]
 ]
 const redPackets = [
     [23.485512018203735, 6, 57.397353172302246, true],
@@ -90,6 +90,7 @@ register("chat", () => {
         packetCollector.register()
     }
     relicClickListener.register()
+    if (Settings().relicAura) relicAura.register()
 
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
@@ -116,7 +117,7 @@ const relicDetect = register("RenderWorld", () => {
 const placeListener = register("playerInteract", (action, pos) => {
     if (action.toString() != "RIGHT_CLICK_BLOCK") return
     const blockClicked = World.getBlockAt(pos.getX(), pos.getY(), pos.getZ()).type.getRegistryName()
-    if (blockClicked !== "minecraft:cauldron" && blockClicked !== "minecraft:anvil" && blockClicked !== "minecraft:chest" || !Player.getHeldItem()?.getName()?.includes("Relic")) return
+    if (blockClicked !== "minecraft:cauldron" && blockClicked !== "minecraft:anvil" && blockClicked !== "minecraft:chest") return
 
     chat("Relic spawned in &b" + ((spawnTime - p5StartTime) / 1000) + "s.")
     chat("Relic placed in &b" + ((Date.now() - pickedUpTime) / 1000) + "s.")
@@ -135,8 +136,46 @@ register("worldLoad", () => {
     blinkRelicRegister.unregister()
     renderText.unregister()
     packetCollector.unregister()
+    relicAura.unregister()
     ticksStill = 0
 })
+
+register("command", () => {
+    relicClickListener.unregister()
+    blinkRelicRegister.unregister()
+    packetCollector.unregister()
+    renderText.unregister()
+    const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
+    rotate(yaw, pitch)
+
+    if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+        orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
+        const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
+        Player.getPlayer().func_70107_b(...finalPacketPos)
+        triggerbot.register()
+        pickedColor = "Orange"
+    } else chat("no")
+}).setName("test")
+
+// Relic aura. This code is such a fucking mess.
+const Vec3 = Java.type("net.minecraft.util.Vec3")
+const relicAura = register("tick", () => {
+    const armorStands = World.getAllEntitiesOfType(ArmorStand)
+    const entity = armorStands.find(e => new EntityLivingBase(e?.getEntity()).getItemInSlot(4)?.getNBT()?.toString()?.includes("Relic") && getDistanceToEntity(e) < 4)
+    if (!entity) return
+    chat(getDistanceToEntity(entity))
+    interactWithEntity(entity.getEntity())
+    Client.scheduleTask(1, () => relicAura.unregister())
+}).unregister()
+
+const interactWithEntity = (entity) => {
+    const objectMouseOver = Client.getMinecraft().field_71476_x.field_72307_f
+    const dx = objectMouseOver.xCoord - entity.field_70165_t
+    const dy = objectMouseOver.yCoord - entity.field_70163_u
+    const dz = objectMouseOver.zCoord - entity.field_70161_v
+    const packet = new net.minecraft.network.play.client.C02PacketUseEntity(entity, new Vec3(dx, dy, dz))
+    Client.sendPacket(packet)
+}
 
 const blinkRelicRegister = register("tick", () => {
     if (!Player.getPlayer().field_70124_G || Player.getPlayer().field_70159_w !== 0 || Player.getPlayer().field_70179_y !== 0) ticksStill = 0
@@ -144,7 +183,7 @@ const blinkRelicRegister = register("tick", () => {
 }).unregister()
 
 const packetCollector = register("packetSent", (packet, event) => {
-    if (getDistanceToCoord(90.075, 6, 55.700) < 0.01 || getDistanceToCoord(22.925, 6, 57.700) < 0.01) if (ticksStill !== 0) cancel(event)
+    if (getDistanceToCoord(90.075, 6, 55.700) < 0.01 || getDistanceToCoord(22.925, 6, 57.700) < 0.01) if (ticksStill > 1) cancel(event)
 }).setFilteredClasses([net.minecraft.network.play.client.C03PacketPlayer]).unregister()
 
 const renderText = register("renderOverlay", () => {
@@ -167,32 +206,56 @@ const relicClickListener = register("packetSent", (packet) => {
     blinkRelicRegister.unregister()
     packetCollector.unregister()
     renderText.unregister()
+    relicAura.unregister()
 
     pickedUpTime = Date.now()
 
     if (Settings().relicLook) {
+        Player.setHeldItemIndex(8)
         if (helmetName === "Corrupted Orange Relic") {
             const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
             rotate(yaw, pitch)
 
+<<<<<<< Updated upstream
             if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1) {
                 orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                 const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
                 Player.asPlayerMP().setPosition(...finalPacketPos)
                 triggerbot.register()
                 pickedColor = "Orange"
+=======
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+                Client.scheduleTask(0, () => {
+                    orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
+                    const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
+                    Player.getPlayer().func_70107_b(...finalPacketPos)
+                    triggerbot.register()
+                    pickedColor = "Orange"
+                })
+>>>>>>> Stashed changes
             } else KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
 
         } else if (helmetName === "Corrupted Red Relic") {
             const [yaw, pitch] = calcYawPitch({ x: 52, y: 7.5, z: 42 })
             rotate(yaw, pitch)
 
+<<<<<<< Updated upstream
             if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.1) {
                 redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                 const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]
                 Player.asPlayerMP().setPosition(...finalPacketPos)
                 triggerbot.register()
                 pickedColor = "Red"
+=======
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+                Client.scheduleTask(0, () => {
+                    redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
+                    const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]
+                    Player.getPlayer().func_70107_b(...finalPacketPos)
+                    triggerbot.register()
+                    pickedColor = "Red"
+                })
+>>>>>>> Stashed changes
             } else KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
         }
     }

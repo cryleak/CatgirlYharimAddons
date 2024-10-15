@@ -26,7 +26,7 @@ register("packetReceived", () => {
 
 register("chat", () => {
     inP5 = true
-}).setCriteria("[BOSS] Wither King: We will decide it all, here, now.")
+}).setCriteria("[BOSS] Necron: All this, for nothing...")
 
 register("packetReceived", (packet) => {
     if (!Settings().dragPrio) return
@@ -45,13 +45,14 @@ register("packetReceived", (packet) => {
         if (!spawningDrags.length) return
         dragonIndex = getPrio()
         while (spawningDrags.length) spawningDrags.pop()
-        if (!dragonIndex) return
+        if (!dragonIndex && dragonIndex !== 0) return
         ticks = 100
         render.register()
     })
 }).setFilteredClass(net.minecraft.network.play.server.S2APacketParticles)
 
 const getPrio = () => {
+    chat(spawningDrags.length)
     if (spawningDrags.length === 1) return spawningDrags[0]
 
     let split = true
@@ -62,6 +63,8 @@ const getPrio = () => {
 
     const playerClass = Dungeons.getCurrentClass()
     let playerTeam // 1 = arch team 0 = bers team
+    chat(playerClass)
+    chat(`Bers: ${dragonNames[priority[0]]} Arch: ${dragonNames[priority[1]]}`)
     if (!split) playerTeam = 0
     else if (playerClass === "Archer" || playerClass === "Tank" || playerClass === "Healer" && Settings().healerGoWithArch && !spawningDrags.includes(0)) playerTeam = 1
     else if (playerClass === "Berserk" || playerClass === "Mage" || playerClass === "Healer") playerTeam = 0
