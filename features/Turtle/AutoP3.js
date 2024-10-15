@@ -1,6 +1,6 @@
 import { autoP3Data as data } from "../../utils/data"
 import Settings from "../../config"
-import { stop, walk, jump, noWalk, renderBoxes, renderRings } from "../../utils/AutoP3Utils"
+import { stop, walk, jump, noWalk, renderBoxes, renderRings, edge } from "../../utils/AutoP3Utils"
 import { lavaclip, leftClick, rightClick } from "../../utils/utils"
 import { swapToItem, calcYawPitch, chat, rotate, slingshot, leap } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
@@ -78,6 +78,9 @@ register("command", (range) => {
 }).setName("removering")
 
 register("Step", () => {
+    if (Settings().autoSave) {
+        data.save()
+    }
     if (Settings().routeP1On || Settings().routeP3On) return
     selectedRoute = parseInt(Settings().route)
 }).setFps(1)
@@ -336,7 +339,7 @@ const renderMove = register("renderWorld", () => {
 
                 case "edge":
                     chat("Edging")
-                    ChatLib.command("edgejump", true)
+                    edge()
                     break
                 case "leap":
                     if (inTerminal) {

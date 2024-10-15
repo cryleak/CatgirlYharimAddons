@@ -157,6 +157,13 @@ config
     })
     .addSwitch({
         category: "Terminals",
+        configName: "autoSave",
+        title: "Auto save",
+        description: "Automatically saves rings.",
+        subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
         configName: "silentLook",
         title: "SilentLook",
         description: "Causes you not to rotate clientside when you Bonzo Staff & Superboom.",

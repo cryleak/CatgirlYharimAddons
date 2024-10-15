@@ -28,6 +28,9 @@ export function jump() {
     Client.scheduleTask(2, () => { KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74314_A.func_151463_i(), false) })
 }
 
+export function edge() {
+    edgeJump.register()
+}
 export const edgeJump = register("renderOverlay", () => {
     if (World.getBlockAt(Player.getX(), Player.getY() - 0.5, Player.getZ()).type.getID() == 0) {
         jump()
