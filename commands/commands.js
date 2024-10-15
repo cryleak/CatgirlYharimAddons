@@ -2,41 +2,15 @@ import ServerRotations from "../utils/ServerRotations"
 import { rightClick, chat } from "../utils/utils"
 
 const S08PacketPlayerPosLook = Java.type("net.minecraft.network.play.server.S08PacketPlayerPosLook")
-const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 
-
-const keybinds = [
-    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
-];
-
-register("Command", () => {
-    let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+register("Command", (distance) => {
+    if (isNaN(distance) && !distance) {
+        chat("Invalid number.")
+        return
+    }
     let yaw = (Player.getYaw()) * Math.PI / 180;
-
-    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-    Client.scheduleTask(0, () => {
-        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
-        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
-    })
-}).setName("hclip")
-
-register("Command", () => {
-    let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
-    let yaw = (Player.getYaw()) * Math.PI / 180;
-
-    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-    Client.scheduleTask(0, () => {
-        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
-        KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
-    })
-}).setName("hclip2")
+    Player.getPlayer().func_70107_b(Player.getX() - Math.sin(yaw) * distance, Player.getY(), Player.getZ() + Math.cos(yaw) * distance)
+}).setName("clip")
 
 let distance = 0
 

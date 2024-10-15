@@ -10,10 +10,11 @@ import "./features/Serenity/StonkSwapDing"
 import "./features/Serenity/PartyFinderSound"
 import "./features/Serenity/BlockClip"
 import "./features/Serenity/Blink"
+import "./features/Serenity/AlwaysSprint"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 
 
-// I take no responsibilty for Turtle's incredibly schizo code. -Serenity
+// I take no responsibilty for Turtle's incredibly schizo code. -Serenity. Nigger -Turtle
 import "./features/Turtle/AutoP3"
 import "./features/Turtle/LeapKeybinds"
 import "./features/Turtle/WardrobeKeybinds"
@@ -24,6 +25,7 @@ import "./features/Turtle/CoreTimer"
 import "./features/Turtle/Simulation"
 import "./features/Turtle/BossESP"
 import "./features/Turtle/TerminalESP"
+import "./features/Turtle/barphase"
 
 import "./features/Shared/DragPrio"
 

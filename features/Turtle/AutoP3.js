@@ -1,46 +1,48 @@
 import { autoP3Data as data } from "../../utils/data"
 import Settings from "../../config"
-import { stop, walk, rotate, jump, noWalk, edgeJump, renderBoxes, renderRings } from "../../utils/autoP3Utils"
-import { leftClick, rightClick } from "../../utils/utils"
-import { swapToItem, block, chat } from "../../utils/utils"
+import { stop, walk, jump, noWalk, renderBoxes, renderRings } from "../../utils/AutoP3Utils"
+import { lavaclip, leftClick, rightClick } from "../../utils/utils"
+import { swapToItem, calcYawPitch, chat, rotate, slingshot, leap } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
 
 let inp3 = false;
 let cooldown = false;
 let selectedRoute = parseInt(Settings().route)
 let rings = [];
-let toggled = false;
+
+if (Settings().startOn) {
+    triggerMessage = Settings().startOnText
+} else triggerMessage = "[BOSS] Storm: I should have known that I stood no chance."
 
 rings = data.rings
-
-const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
-
-const keybinds = [
-    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
-    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
-];
 
 register("Chat", () => {
     inp3 = true;
     if (!Settings().autop3) return
-    renderBox.unregister()
-    renderRing.unregister()
-    if (!Settings().render) {
-        renderBox.register()
-    }
-    else {
-        renderRing.register()
-    }
+    renderRing.register()
     renderMove.register()
+}).setCriteria(triggerMessage)
+
+register("Command", () => {
+    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
+}).setName("render")
+
+register("Chat", () => {
+    if (Settings().routeP1On) {
+        selectedRoute = parseInt(Settings().routeP1)
+        ChatLib.command("startp3", true)
+    }
+}).setCriteria("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")
+
+register("Chat", () => {
+    if (Settings().routeP3On) {
+        selectedRoute = parseInt(Settings().routeP3)
+    }
 }).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
 
 register("Chat", () => {
     inp3 = false;
-    vclip.unregister()
     renderMove.unregister()
-    renderBox.unregister()
     renderRing.unregister()
 }).setCriteria("[BOSS] Goldor: You have done it, you destroyed the factory…")
 
@@ -75,31 +77,26 @@ register("command", (range) => {
     })
 }).setName("removering")
 
-register("Command", () => {
+register("Step", () => {
+    if (Settings().routeP1On || Settings().routeP3On) return
     selectedRoute = parseInt(Settings().route)
-}).setName("load")
+}).setFps(1)
 
 register("command", (...args) => {
-    if (!args) {
-        chat("Usage: /ring §8<§7type§8> [§7height§8] [§7width§8] [§7x§8] [§7y§8] [§7z§8] [§7time§8]")
-        return;
-    }
 
+    let mc = Client.getMinecraft().func_175598_ae()
     let type = args[0].toLowerCase();
-    let x = Math.round(Player.getX() * 2) / 2;
-    let y = Math.round(Player.getY() * 2) / 2;
-    let z = Math.round(Player.getZ() * 2) / 2;
-    let yaw = Player.getYaw();
-    let pitch = Player.getPitch();
     let active = true
     let route = parseInt(selectedRoute)
+    let [x, y, z] = [Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2]
+    let [yaw, pitch] = [mc.field_78735_i, mc.field_78732_j]
 
-    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge"].includes(type)) {
-        chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip!")
+    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge", "leap"].includes(type)) {
+        chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip, leap!")
         return;
     }
 
-    if (["vclip", "block", "block2"].includes(type)) {
+    if (["vclip", "block", "block2", "leap"].includes(type)) {
         if (type === "vclip") {
             if (args.length != 4 && args.length != 2) {
                 chat("Invalid Parameters! Use /ring vclip h w depth")
@@ -114,6 +111,20 @@ register("command", (...args) => {
                 w = 1
             }
             rings.push({ type, x, y, z, w, h, depth, active, route })
+        } else if (type === "leap") {
+            if (args.length != 4 && args.length != 2) {
+                chat("Invalid Parameters! Use /ring leap h w class/IGN")
+                return
+            }
+            h = parseFloat(args[1]);
+            w = parseFloat(args[2]);
+            target = parseInt(args[3])
+            if (!h || !w) {
+                target = parseInt(args[1])
+                h = 1
+                w = 1
+            }
+            rings.push({ type, x, y, z, w, h, target, active, route })
         } else {
             if (args.length != 4 && args.length != 6) {
                 chat("Invalid Parameters! Use /ring block/block2 h w x y z")
@@ -152,71 +163,36 @@ register("command", (...args) => {
     chat(`${type} placed!`)
 }).setName("ring")
 
-register("Command", (y) => {
-    toggled = true;
-    currDepth = parseInt(y)
-    vclip.register()
-    vclipOverlay.register()
-}).setName("clip")
-
-register("Command", () => {
-    edgeJump.register()
-}).setName("edgejump")
-
 register("Command", () => {
     inp3 = true;
-    renderBox.unregister()
-    renderRing.unregister()
     renderMove.register()
-    renderBox.unregister()
-    renderRing.unregister()
-    if (!Settings().render) {
-        renderBox.register()
-    }
-    else {
-        renderRing.register()
-    }
+    renderRing.register()
     chat(`P3 Started!`)
 }).setName("startp3")
 
 register("Command", () => {
     inp3 = false;
-    vclip.unregister()
     renderMove.unregister()
-    renderBox.unregister()
     renderRing.unregister()
+    chat(`P3 Stopped!`)
 }).setName("stopp3")
-
-register("Command", (yaw, pitch) => {
-    if (Math.abs(yaw) > 180 || Math.abs(pitch) > 90) {
-        chat(`Pitch and/or Yaw out of bounds.`)
-        return
-    }
-    chat(`Rotating.`)
-    Player.getPlayer().field_70177_z = yaw;
-    Player.getPlayer().field_70125_A = pitch;
-}).setName("rotating")
-
-const renderBox = register("renderWorld", () => {
-    if (!Settings().autop3) return;
-    if (!inp3) return;
-    rings.forEach(rings => {
-        if (rings.route !== selectedRoute) return;
-        renderBoxes(rings.x, rings.y, rings.z, rings.h, rings.w, rings.type)
-    })
-}).unregister()
 
 const renderRing = register("renderWorld", () => {
     if (!Settings().autop3) return;
     if (!inp3) return;
     rings.forEach(rings => {
         if (rings.route !== selectedRoute) return;
-        renderRings(rings.x, rings.y, rings.z, rings.w, rings.type)
+        if (Settings().render) {
+            renderRings(rings.x, rings.y, rings.z, rings.w, rings.type)
+        } else {
+            renderBoxes(rings.x, rings.y, rings.z, rings.h, rings.w, rings.type)
+        }
+
     })
 }).unregister()
 
 const renderMove = register("renderWorld", () => {
-    if (!Settings().autop3) return;
+    if (!Settings().autop3 || Settings().editMode) return;
     if (!inp3) return
     let playerX = Player.getX();
     let playerY = Player.getY();
@@ -233,8 +209,6 @@ const renderMove = register("renderWorld", () => {
         if (Settings().activeOnce && !rings.active) return
         if (distanceX < (rings.w / 2) && distanceY < (rings.h) && distanceY >= -0.5 && distanceZ < (rings.w / 2) && !cooldown) {
             rings.active = false
-            let speed
-            let yaw
             switch (rings.type) {
                 case "walk":
                     chat("Walking")
@@ -285,34 +259,18 @@ const renderMove = register("renderWorld", () => {
 
                 case "hclip":
                     chat("Hclipping")
-                    speed = (Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8);
-                    yaw = (rings.yaw) * Math.PI / 180;
-
-                    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-                    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-                    Client.scheduleTask(0, () => {
-                        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
-                    })
+                    slingshot(rings.yaw)
                     break
 
                 case "hclip2":
                     chat("Hclipping")
-                    speed = (Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8);
-                    yaw = (rings.yaw) * Math.PI / 180;
-
-                    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-                    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-                    Client.scheduleTask(0, () => {
-                        Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
-                        walk()
-                    })
+                    slingshot(rings.yaw)
+                    Client.scheduleTask(() => { walk() })
                     break
 
                 case "vclip":
                     chat("Vclipping")
-                    ChatLib.command("clip " + parseInt(rings.depth), true)
+                    lavaclip(rings.depth)
                     break
 
                 case "bonzo":
@@ -364,13 +322,15 @@ const renderMove = register("renderWorld", () => {
                     chat("Blocking")
                     Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
                     if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                    block(rings.lookX, rings.lookY, rings.lookZ)
+                    [yaw, pitch] = calcYawPitch(rings.lookX, rings.lookY, rings.lookZ)
+                    rotate(yaw, pitch)
                     break
 
                 case "block2":
                     chat("Blocking")
                     if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                    block(rings.lookX, rings.lookY, rings.lookZ)
+                    [yaw, pitch] = calcYawPitch(rings.lookX, rings.lookY, rings.lookZ)
+                    rotate(yaw, pitch)
                     walk()
                     break
 
@@ -378,7 +338,14 @@ const renderMove = register("renderWorld", () => {
                     chat("Edging")
                     ChatLib.command("edgejump", true)
                     break
-
+                case "leap":
+                    if (inTerminal) {
+                        rings.active = true
+                        return
+                    }
+                    chat("Leaping")
+                    leap(rings.target)
+                    break
             }
         }
     })
@@ -387,47 +354,22 @@ const renderMove = register("renderWorld", () => {
 register("worldLoad", () => {
     inp3 = false;
     renderMove.unregister()
-    renderBox.unregister()
     renderRing.unregister()
 });
 
-let currDepth = 20
+//inTerminal check for leap ring
 
-register("Command", (y) => {
-    if (isNaN(y)) {
-        chat("please use a number")
-        return
-    }
-    if (y > 40.1 && y < 3) {
-        currDepth = y
-        vclip.register()
+import packetOpenWindow from "../../utils/packetOpenWindow";
+import closeWindow from "../../utils/closeWindow";
 
-    } else {
-        chat("Distance has to be between 40 and 3")
-    }
-}).setName("clip")
+let inTerminal = false
 
-register("Command", () => {
-    vclip.unregister()
-}).setName("noclip")
+packetOpenWindow.addListener(() => {
+    inTerminal = true;
+    //ChatLib.chat("inGui")
+});
 
-const vclipOverlay = register("renderOverlay", () => {
-    let text = "Dirty Cheater!"
-    let scale = 1.5
-    Renderer.scale(scale)
-    Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
-}).unregister()
-
-const vclip = register("tick", () => {
-    if (!Player.getPlayer().func_180799_ab()) return
-    Player.getPlayer().func_70107_b(Player.getX(), Player.getY() - currDepth, Player.getZ())
-    const veloPacket = register("packetReceived", (packet, event) => {
-        if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
-        if (packet.func_149410_e() !== 28000) return;
-        cancel(event)
-        veloPacket.unregister();
-        vclip.unregister();
-        vclipOverlay.unregister()
-        toggled = false
-    }).setFilteredClass(S12PacketEntityVelocity);
-}).unregister();
+closeWindow.addListener(() => {
+    inTerminal = false;
+    //ChatLib.chat("notInGui")
+});

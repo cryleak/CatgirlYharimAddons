@@ -1,11 +1,13 @@
 import RenderLibV2 from "../../../RenderLibV2"
-import { block, chat } from "../../utils/utils"
+import { calcYawPitch, chat, rotate } from "../../utils/utils"
 import Settings from "../../config"
+
+const EntityWither = Java.type("net.minecraft.entity.boss.EntityWither")
 
 let toggled = false
 let toggleCooldown = false
 
-register("Tick", () => {
+register("tick", () => {
     if (Client.isInGui()) return
     if (!Keyboard.isKeyDown(Settings().witherAimbot)) return
     if (toggleCooldown) return
@@ -14,35 +16,37 @@ register("Tick", () => {
     if (!toggled) {
         aimbot.register()
         toggled = true
-        chat("Aimbot on")
+        chat("Wither Aimbot on.")
     } else {
         aimbot.unregister()
         toggled = false
-        chat("Aimbot off")
+        chat("Wither Aimbot off.")
     }
 })
 
-register("Chat", () => {
+register("chat", () => {
     if (!Settings().espWither) return
     render.register()
-}).setCriteria(/^Maxor*/)
+}).setCriteria("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")
 
-register("Chat", () => {
+register("chat", () => {
     render.unregister()
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
 
 const render = register("renderWorld", () => {
     if (!Settings().espWither) return
-    World.getAllEntitiesOfType(net.minecraft.entity.boss.EntityWither).forEach(ent => {
-        if (ent.getName() !== "Wither") return
-        RenderLibV2.drawInnerEspBox(ent.getRenderX(), ent.getRenderY(), ent.getRenderZ(), 1, 3, 0, 1, 1, 0.5, true)
-        RenderLibV2.drawEspBox(ent.getRenderX(), ent.getRenderY(), ent.getRenderZ(), 1, 3, 0, 0, 1, 0.5, true)
-    })
+    const wither = World.getAllEntitiesOfType(EntityWither).find(entity => !entity.isInvisible()) // Find a Wither entity that isn't invisible
+    if (!wither) return
+    const rgb = [Settings().witherESPColor[0], Settings().witherESPColor[1], Settings().witherESPColor[2]]
+    const alpha = Settings().witherESPColor[3] / 255
+    RenderLibV2.drawInnerEspBox(wither.getRenderX(), wither.getRenderY() + 0.3, wither.getRenderZ(), 1.5, 2.5, ...rgb, alpha, true)
+    RenderLibV2.drawEspBox(wither.getRenderX(), wither.getRenderY() + 0.3, wither.getRenderZ(), 1.5, 2.5, ...rgb, 1, true)
 }).unregister()
 
 const aimbot = register("renderWorld", () => {
-    World.getAllEntitiesOfType(net.minecraft.entity.boss.EntityWither).forEach(ent => {
-        block(ent.getRenderX(), ent.getRenderY(), ent.getRenderZ())
-    })
+    const wither = World.getAllEntitiesOfType(EntityWither).find(entity => !entity.isInvisible())
+    if (!wither) return
+    const [yaw, pitch] = calcYawPitch(wither.getRenderX(), wither.getRenderY(), wither.getRenderZ())
+    rotate(yaw, pitch)
 }).unregister()

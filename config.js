@@ -11,6 +11,12 @@ const config = new DefaultConfig("CatgirlYharimAddons", "data/settings.json")
 
 config
     .addSwitch({
+        configName: "alwaysSprint",
+        title: "Always Sprint",
+        description: "Will make you always sprint.",
+        category: "General",
+    })
+    .addSwitch({
         configName: "stormTickTimerEnabled",
         title: "Storm Tick Timer",
         description: "Tick timer for when the pad will pad, and also when storm will get crushed. Tick is every 1 second. The timer goes red 0.15s before the tick.",
@@ -59,7 +65,7 @@ config
     .addSwitch({
         configName: "blinkRelics",
         title: "Blink Relics",
-        description: "§cRequires Relic Look and Relic Triggerbot to be enabled.\n§cAlso requires a custom brush config, which can be found in the Features List.\nThis features instantly teleports you to the relic. You must stand still for at least 26 ticks for this to work, otherwise it will default to simply Relic Looking.",
+        description: "§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed. You must stand still for at least 26 ticks for this to work, otherwise it will default to simply Relic Looking.",
         category: "Wither King",
         subcategory: "Relic"
     })
@@ -151,6 +157,13 @@ config
     })
     .addSwitch({
         category: "Terminals",
+        configName: "editMode",
+        title: "Edit Mode",
+        description: "Stops rings from moving you",
+        subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
         configName: "silentLook",
         title: "SilentLook",
         description: "Causes you not to rotate clientside when you Bonzo Staff & Superboom.",
@@ -178,6 +191,48 @@ config
         title: "Render as rings",
         description: "Render AutoP3 config as rings instead of boxes.",
         subcategory: "Auto P3"
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "startOn",
+        description: "Start on a chat message of your own choice",
+        subcategory: "Auto P3",
+        title: "Start on special message."
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "startOnText",
+        description: "Chat message to start autop3 on (You need to ct reload after.).",
+        subcategory: "Auto P3",
+        title: "Trigger message."
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "routeP1On",
+        description: "Automatically select a route on Boss start.",
+        subcategory: "Auto P3",
+        title: "Select Route on Boss start."
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "routeP1",
+        description: "Route to automatically select on Boss start.",
+        subcategory: "Auto P3",
+        title: "Route on Boss start."
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "routeP3On",
+        description: "Automatically select a route on P3 start.",
+        subcategory: "Auto P3",
+        title: "Select Route on P3 start."
+    })
+    .addTextInput({
+        category: "Terminals",
+        configName: "routeP3",
+        description: "Route to automatically select on P3 start.",
+        subcategory: "Auto P3",
+        title: "Route on P3 start."
     })
     .addSwitch({
         configName: "terminalTimestamps",
@@ -264,7 +319,6 @@ config
         category: "Terminals",
         subcategory: "Auto 4"
     })
-
     .addColorPicker({
         configName: "predictionColor",
         title: "Prediction Color",
@@ -454,6 +508,13 @@ config
         title: "Wither ESP",
         description: "ESP for Withers in F7 & M7.",
     })
+    .addColorPicker({
+        configName: "witherESPColor",
+        title: "Wither ESP Color",
+        description: "",
+        category: "ESP",
+        value: [0, 255, 255, 89]
+    })
     .addSwitch({
         category: "ESP",
         configName: "espTerminals",
@@ -578,6 +639,12 @@ config
         description: "Automatically equips wardrobe",
         title: "#9 Keybind",
         configName: "wdNineKeybind"
+    })
+    .addKeybind({
+        category: "Clip",
+        description: "Barphase",
+        title: "Barphase",
+        configName: "barPhaseKeybind"
     })
 /*
 .addSwitch({

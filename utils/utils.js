@@ -28,7 +28,7 @@ export const swapToItem = (targetItemName) => {
     }
 }
 
-export function block(x, y, z) {
+export function calcYawPitch(x, y, z) {
     distanceLookX = x - Player.getX()
     distanceLookY = y - Player.getY()
     distanceLookZ = z - Player.getZ()
@@ -45,7 +45,14 @@ export function block(x, y, z) {
     pitchRad = Math.atan2(-distanceLookY, horitzontalDistance)
     pitch = pitchRad * (180 / Math.PI)
 
-    rotate(yaw, pitch)
+    return [yaw, pitch]
+}
+
+export function rotate(yaw, pitch) {
+    const player = Player.getPlayer();
+
+    player.field_70177_z = yaw;
+    player.field_70125_A = pitch;
 }
 
 const defaultColor = "§7"
@@ -53,9 +60,9 @@ export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
 }
 
-
-
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
+const S12PacketEntityVelocity = Java.type("net.minecraft.network.play.server.S12PacketEntityVelocity")
+
 const movementKeys = [
     Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
     Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
@@ -66,11 +73,12 @@ export const releaseMovementKeys = () => movementKeys.forEach(keybind => KeyBind
 export const repressMovementKeys = () => movementKeys.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind)))
 
 import Dungeons from "../../Atomx/skyblock/Dungeons"
+import { jump } from "./AutoP3Utils";
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 let awaitingLeap = false
 
 export function leap(player) {
-    swapToItem("Leap")
+    swapToItem("leap")
     Client.scheduleTask(0, () => rightClick())
     awaitingLeap = true
 
@@ -79,6 +87,7 @@ export function leap(player) {
         awaitingLeap = false
         Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
+            Client.getMinecraft().func_147108_a(null)
             let playerName
             if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class
                 const teamMembers = Dungeons.getTeamMembers()
@@ -111,9 +120,7 @@ export function equipPet(petIndex) {
     register("packetReceived", () => {
         if (!awaitingPet) return
         awaitingPet = false
-        Client.scheduleTask(() => {
-            Client.getMinecraft().func_147108_a(null)
-        })
+        Client.getMinecraft().func_147108_a(null)
         Client.scheduleTask(1, () => {
             Player.getContainer().click(petIndex)
         })
@@ -140,4 +147,108 @@ export function equipWardrobe(index) {
             Client.currentGui.close()
         })
     }).setFilteredClass(S2DPacketOpenWindow)
+}
+
+export const clipForward = (distance) => { // I have no idea how optimal this is because I literally haven't learned about this shit in school yet and have very little understanding of it but it works
+    const radians = Player.getYaw() * Math.PI / 180
+    let [newX, newZ] = [Player.getX(), Player.getZ()]
+
+    if (Math.abs(-Math.sin(radians)) > Math.abs(Math.cos(radians))) newX += distance * Math.sign(-Math.sin(radians))
+    else newZ += distance * Math.sign(Math.cos(radians))
+    //Player.asPlayerMP().setPosition(newX, Player.getY(), newZ)
+    Player.getPlayer().func_70107_b(newX, Player.getY(), newZ)
+}
+
+const keybinds = [
+    Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74366_z.func_151463_i(),
+    Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
+];
+
+export function slingshot(direction) {
+    if (Player.asPlayerMP().isOnGround()) {
+        jump()
+        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+        let yaw = (direction) * Math.PI / 180;
+
+        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+        Client.scheduleTask(3, () => {
+            Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+        })
+
+        Client.scheduleTask(4, () => {
+            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
+        })
+    } else {
+        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+        let yaw = (direction) * Math.PI / 180;
+
+        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
+        Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+
+        Client.scheduleTask(0, () => {
+            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
+        })
+    }
+
+}
+
+let toggled = false
+let currDepth = 20
+
+export function lavaclip(distance) {
+    if (toggled) {
+        toggled = false
+        vclip.unregister()
+        vclipOverlay.unregister()
+        return
+    }
+    if (isNaN(distance)) {
+        chat("please use a number")
+        return
+    }
+    if (distance < 40.1 && distance > 3) {
+        currDepth = distance
+        toggled = true
+        vclip.register()
+        vclipOverlay.register()
+
+    } else {
+        chat("Distance has to be between 40 and 3")
+    }
+}
+
+const vclipOverlay = register("renderOverlay", () => {
+    if (!toggled) return
+    let text = "Dirty Cheater!"
+    let scale = 1.5
+    Renderer.scale(scale)
+    Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
+}).unregister()
+
+const vclip = register("tick", () => {
+    if (!Player.getPlayer().func_180799_ab()) return
+    Player.getPlayer().func_70107_b(Player.getX(), Player.getY() - currDepth, Player.getZ())
+    const veloPacket = register("packetReceived", (packet, event) => {
+        if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
+        if (packet.func_149410_e() !== 28000) return;
+        cancel(event)
+        veloPacket.unregister();
+        vclip.unregister();
+        vclipOverlay.unregister()
+        toggled = false
+    }).setFilteredClass(S12PacketEntityVelocity);
+}).unregister();
+
+register("Command", () => {
+    toggled = false
+    vclip.unregister()
+    vclipOverlay.unregister()
+}).setName("noclip")
+
+export function getIdOfBlock(x, y, z) {
+    return World.getBlockAt(x, y, z).type.getID()
 }

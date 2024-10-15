@@ -124,6 +124,7 @@ const placeListener = register("playerInteract", (action, pos) => {
     chat("Relic placed &b" + ((Date.now() - p5StartTime) / 1000) + "s into P5.")
     chat("Relic took &b" + ((pickedUpTime - spawnTime) / 1000) + "s to get picked up.")
     placeListener.unregister()
+    KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), false)
 }).unregister()
 
 register("worldLoad", () => {
