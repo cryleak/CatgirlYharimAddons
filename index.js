@@ -25,7 +25,7 @@ import "./features/Turtle/CoreTimer"
 import "./features/Turtle/Simulation"
 import "./features/Turtle/BossESP"
 import "./features/Turtle/TerminalESP"
-import "./features/Turtle/barphase"
+import "./features/Turtle/BarPhase"
 
 import "./features/Shared/DragPrio"
 
