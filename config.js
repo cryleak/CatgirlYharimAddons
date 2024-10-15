@@ -13,7 +13,7 @@ config
     .addSwitch({
         configName: "alwaysSprint",
         title: "Always Sprint",
-        description: "Will make you always sprint.",
+        description: "Will make you always sprint.\nUnlike Bloom's, this one does not require your Sprint keybind to be bound.",
         category: "General",
     })
     .addSwitch({
@@ -58,7 +58,7 @@ config
     .addSwitch({
         configName: "blinkRelics",
         title: "Blink Relics",
-        description: "§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed. You must stand still for at least 26 ticks for this to work, otherwise it will default to simply Relic Looking.",
+        description: "§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed. You must stand still for at least 28 ticks for this to work, otherwise it will default to simply Relic Looking.",
         category: "Wither King",
         subcategory: "Relic"
     })
@@ -531,7 +531,7 @@ config
         category: "Clip",
         description: "Clips through 1 block thick walls. Requires 500 speed (Might work on 400 speed as well). ",
         configName: "blockClipKeybind",
-        title: "Block Clip Keybind"
+        title: "Wall Clip Keybind"
     })
     .addKeybind({
         category: "Clip",
@@ -584,7 +584,7 @@ config
         category: "Clip",
         description: "Enables/Disables Lava VClip.",
         configName: "lavaVclipKeybind",
-        title: "Lava VClip Leybind"
+        title: "Lava VClip Keybind"
     })
     .addKeybind({
         category: "Wardrobe",
@@ -642,8 +642,8 @@ config
     })
     .addKeybind({
         category: "Clip",
-        description: "Barphase",
-        title: "Barphase",
+        description: "",
+        title: "Bar Phase Keybind",
         configName: "barPhaseKeybind"
     })
 /*
