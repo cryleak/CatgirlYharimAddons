@@ -55,6 +55,7 @@ const packetCollector = register("packetSent", (packet, event) => {
     cancel(event)
 }).setFilteredClasses([C03PacketPlayer]).unregister()
 
+/*
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
 let logStartTime = Date.now()
 
@@ -121,3 +122,5 @@ function rotate(yaw, pitch) {
     player.field_70177_z = yaw
     player.field_70125_A = pitch
 }
+
+*/

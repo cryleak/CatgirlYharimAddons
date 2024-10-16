@@ -139,6 +139,44 @@ register("worldLoad", () => {
     ticksStill = 0
 })
 
+/*
+register("command", () => {
+    relicClickListener.unregister()
+    blinkRelicRegister.unregister()
+    packetCollector.unregister()
+    renderText.unregister()
+    const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
+    rotate(yaw, pitch)
+
+    if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+        orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
+        const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
+        Player.getPlayer().func_70107_b(...finalPacketPos)
+        triggerbot.register()
+        pickedColor = "Orange"
+    } else chat("no")
+}).setName("test")
+*/
+
+// Relic aura. This code is such a fucking mess.
+const Vec3 = Java.type("net.minecraft.util.Vec3")
+const relicAura = register("tick", () => {
+    const armorStands = World.getAllEntitiesOfType(ArmorStand)
+    const entity = armorStands.find(e => new EntityLivingBase(e?.getEntity()).getItemInSlot(4)?.getNBT()?.toString()?.includes("Relic") && getDistanceToEntity(e) < 4)
+    if (!entity) return
+    chat(getDistanceToEntity(entity))
+    interactWithEntity(entity.getEntity())
+    Client.scheduleTask(1, () => relicAura.unregister())
+}).unregister()
+
+const interactWithEntity = (entity) => {
+    const objectMouseOver = Client.getMinecraft().field_71476_x.field_72307_f
+    const dx = objectMouseOver.xCoord - entity.field_70165_t
+    const dy = objectMouseOver.yCoord - entity.field_70163_u
+    const dz = objectMouseOver.zCoord - entity.field_70161_v
+    const packet = new net.minecraft.network.play.client.C02PacketUseEntity(entity, new Vec3(dx, dy, dz))
+    Client.sendPacket(packet)
+}
 const blinkRelicRegister = register("tick", () => {
     if (!Player.getPlayer().field_70124_G || Player.getPlayer().field_70159_w !== 0 || Player.getPlayer().field_70179_y !== 0) ticksStill = 0
     else if (ticksStill < standStillTicks) ticksStill++

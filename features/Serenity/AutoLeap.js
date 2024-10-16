@@ -3,7 +3,6 @@
 
 import Settings from "../../config"
 import { chat, leap, classes } from "../../utils/utils"
-import Dungeons from "../../../Atomx/skyblock/Dungeons"
 import { getDistanceToCoord } from "../../../BloomCore/utils/Utils"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
