@@ -10,8 +10,8 @@ let lastToggle = Date.now()
 let toggle = false
 let startLocation
 
-const toggleBlink = () => {
-    toggle = !toggle
+function toggleBlink(state = !toggle) {
+    toggle = state
     if (toggle) {
         startLocation = [Player.getX(), Player.getY(), Player.getZ()]
         renderBlocks.register()
@@ -24,6 +24,7 @@ const toggleBlink = () => {
         while (queuedPackets.length) Client.sendPacket(queuedPackets.shift())
     }
 }
+export default toggleBlink
 
 register("tick", () => {
     if (!Keyboard.isKeyDown(Settings().blinkKey)) return
@@ -45,14 +46,14 @@ const renderBlocks = register("renderWorld", () => {
 
 const renderText = register("renderOverlay", () => {
     Renderer.scale(2)
-    const text = `§cBLINK ENABLED FOR ${Date.now() - lastToggle}MS`
+    const text = `§cBLINK ENABLED FOR ${((Date.now() - lastToggle) / 50).toFixed(0)} TICKS`
     Renderer.drawString(text, Renderer.screen.getWidth() / 4 - Renderer.getStringWidth(text) / 2, Renderer.screen.getHeight() / 3.8)
 }).unregister()
 
 const packetCollector = register("packetSent", (packet, event) => {
+    cancel(event)
     if (packet.class.getSimpleName() === "C05PacketPlayerLook" || packet.class.getSimpleName() === "C03PacketPlayer") return
     queuedPackets.push(packet)
-    cancel(event)
 }).setFilteredClasses([C03PacketPlayer]).unregister()
 
 /*

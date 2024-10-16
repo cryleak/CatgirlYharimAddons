@@ -177,6 +177,7 @@ const interactWithEntity = (entity) => {
     const packet = new net.minecraft.network.play.client.C02PacketUseEntity(entity, new Vec3(dx, dy, dz))
     Client.sendPacket(packet)
 }
+
 const blinkRelicRegister = register("tick", () => {
     if (!Player.getPlayer().field_70124_G || Player.getPlayer().field_70159_w !== 0 || Player.getPlayer().field_70179_y !== 0) ticksStill = 0
     else if (ticksStill < standStillTicks) ticksStill++
