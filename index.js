@@ -12,11 +12,6 @@ import "./features/Serenity/BlockClip"
 import "./features/Serenity/AlwaysSprint"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 
-// gatekeeepepep
-import "./SereneBlink/Blink"
-import "./SereneBlink/BlinkRelics"
-
-
 // I take no responsibilty for Turtle's incredibly schizo code. -Serenity. Nigger -Turtle
 import "./features/Turtle/AutoP3"
 import "./features/Turtle/LeapKeybinds"

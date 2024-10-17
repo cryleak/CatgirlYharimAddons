@@ -24,6 +24,15 @@ register("chat", (message) => {
 }).setCriteria("${message}")
 
 register("Command", () => {
+    selectedRoute = parseInt(Settings().route)
+}).setName("load")
+
+register("Command", (route) => {
+    if (isNaN(route)) return
+    selectedRoute = parseInt(route)
+}).setName("route")
+
+register("Command", () => {
     ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
 }).setName("render")
 
