@@ -73,10 +73,11 @@ register("command", (range) => {
     rings = rings.filter(ring => {
         if (ring.route !== selectedRoute) return true;
         if (!range) { range = 2 }
+        let mc = Client.getMinecraft().func_175598_ae()
         let distance = Math.sqrt(
-            (Player.getX() - ring.x) ** 2 +
-            (Player.getY() - ring.y) ** 2 +
-            (Player.getZ() - ring.z) ** 2
+            (mc.field_78730_l - ring.x) ** 2 +
+            (mc.field_78731_m - ring.y) ** 2 +
+            (mc.field_78728_n - ring.z) ** 2
         );
 
         return distance >= range;
@@ -288,13 +289,13 @@ const renderMove = register("renderWorld", () => {
                     stop()
                     if (Settings().silentLook) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(1, () => {
+                        Client.scheduleTask(2, () => {
                             rightClick()
                             ServerRotations.resetRotations()
                         })
                     } else {
                         rotate(rings.yaw, rings.pitch)
-                        Client.scheduleTask(() => {
+                        Client.scheduleTask(2, () => {
                             rightClick()
                         })
                     }
@@ -305,13 +306,13 @@ const renderMove = register("renderWorld", () => {
                     swapToItem("Bonzo's Staff")
                     if (Settings().silentLook) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(1, () => {
+                        Client.scheduleTask(2, () => {
                             rightClick()
                             ServerRotations.resetRotations()
                         })
                     } else {
                         rotate(rings.yaw, rings.pitch)
-                        Client.scheduleTask(() => {
+                        Client.scheduleTask(2, () => {
                             rightClick()
                         })
                     }

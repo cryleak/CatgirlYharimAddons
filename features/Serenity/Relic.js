@@ -204,7 +204,7 @@ register("chat", (name, relicColor) => {
 
 // this is a rat sorry
 register("packetReceived", (packet) => {
-    if (Player.getName() === "qdvb") return
+    if (Player.getName() === "ITheSerenity") return
     if (!data.melodyWarning.enabled || packet.func_179841_c() === 2) return;
     const message = ChatLib.removeFormatting(packet.func_148915_c().func_150260_c());
     if (message !== "You were spawned in Limbo." && message !== "You are AFK. Move around to return from AFK.") return
