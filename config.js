@@ -199,26 +199,20 @@ config
         description: "Render AutoP3 config as rings instead of boxes.",
         subcategory: "Auto P3"
     })
-    .addSwitch({
-        category: "Terminals",
-        configName: "startOn",
-        description: "Start on a chat message of your own choice",
-        subcategory: "Auto P3",
-        title: "Start on special message."
-    })
-    .addTextInput({
-        category: "Terminals",
-        configName: "startOnText",
-        description: "Chat message to start autop3 on (You need to ct reload after.).",
-        subcategory: "Auto P3",
-        title: "Trigger message."
-    })
+    
     .addSwitch({
         category: "Terminals",
         configName: "routeP1On",
         description: "Automatically select a route on Boss start.",
         subcategory: "Auto P3",
         title: "Select Route on Boss start."
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "startOnBoss",
+        description: "Start on Boss enter",
+        subcategory: "Auto P3",
+        title: "Start on Boss enter."
     })
     .addTextInput({
         category: "Terminals",
