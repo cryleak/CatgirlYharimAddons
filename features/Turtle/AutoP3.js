@@ -13,12 +13,12 @@ let rings = [];
 rings = data.rings
 
 register("chat", (message) => {
+    if (!Settings().autop3) return
     let triggerMessage
     if (Settings().startOn) triggerMessage = Settings().startOnText
     else triggerMessage = "[BOSS] Storm: I should have known that I stood no chance."
     if (message !== triggerMessage) return
     inp3 = true;
-    if (!Settings().autop3) return
     renderRing.register()
     renderMove.register()
 }).setCriteria("${message}")
