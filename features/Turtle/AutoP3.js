@@ -28,6 +28,12 @@ register("Command", () => {
 }).setName("render")
 
 register("Chat", () => {
+     if (Settings().startOnBoss) {
+        inp3 = true;
+        if (!Settings().autop3) return
+        renderRing.register()
+        renderMove.register()
+    }
     if (Settings().routeP1On) {
         selectedRoute = parseInt(Settings().routeP1)
         ChatLib.command("startp3", true)
@@ -268,7 +274,7 @@ const renderMove = register("renderWorld", () => {
                 case "hclip2":
                     chat("Hclipping")
                     slingshot(rings.yaw)
-                    Client.scheduleTask(() => { walk() })
+                    Client.scheduleTask(2, () => { walk() })
                     break
 
                 case "vclip":

@@ -32,7 +32,8 @@ export function edge() {
     edgeJump.register()
 }
 export const edgeJump = register("renderOverlay", () => {
-    if (World.getBlockAt(Player.getX(), Player.getY() - 0.5, Player.getZ()).type.getID() == 0) {
+    let ID = World.getBlockAt(Player.getX(), Player.getY() - 0.1, Player.getZ()).type.getID()
+    if (ID == 0 || ID == 109) {
         jump()
         edgeJump.unregister()
     }
