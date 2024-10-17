@@ -35,13 +35,6 @@ config
         }
     })
     .addSwitch({
-        configName: "relicAura",
-        title: "Relic Aura",
-        description: "Has higher range than Odin.",
-        category: "Wither King",
-        subcategory: "Relic"
-    })
-    .addSwitch({
         configName: "relicTimerEnabled",
         title: "Relic Timer",
         description: "Tells you when the relic is going to spawn and how long it took to spawn, place and both.",
@@ -65,7 +58,14 @@ config
     .addSwitch({
         configName: "blinkRelics",
         title: "Blink Relics",
-        description: "§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed. You must stand still for at least 28 ticks for this to work, otherwise it will default to simply Relic Looking.",
+        description: "§4NOT INCLUDED IN THE PUBLIC VERSION OF CGY, DISABLE THIS IF YOU CAN'T USE IT\n§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
+        configName: "relicAura",
+        title: "Relic Aura",
+        description: "§4NOT INCLUDED IN THE PUBLIC VERSION OF CGY, DISABLE THIS IF YOU CAN'T USE IT\nHas higher range than Odin.",
         category: "Wither King",
         subcategory: "Relic"
     })
@@ -548,7 +548,7 @@ config
     })
     .addKeybind({
         category: "Clip",
-        description: "Allows you to teleport somewhere instantly by collecting movement packets and sending them all at once.",
+        description: "§4NOT INCLUDED IN THE PUBLIC VERSION OF CGY, DISABLE THIS IF YOU CAN'T USE IT\nAllows you to teleport somewhere instantly by collecting movement packets and sending them all at once.",
         configName: "blinkKey",
         title: "Blink toggle"
     })

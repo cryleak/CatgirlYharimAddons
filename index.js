@@ -9,9 +9,12 @@ import "./features/Serenity/StonkSwap"
 import "./features/Serenity/StonkSwapDing"
 import "./features/Serenity/PartyFinderSound"
 import "./features/Serenity/BlockClip"
-import "./features/Serenity/Blink"
 import "./features/Serenity/AlwaysSprint"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
+
+// gatekeeepepep
+import "./SereneBlink/Blink"
+import "./SereneBlink/BlinkRelics"
 
 
 // I take no responsibilty for Turtle's incredibly schizo code. -Serenity. Nigger -Turtle
