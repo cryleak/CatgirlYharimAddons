@@ -35,13 +35,6 @@ config
         }
     })
     .addSwitch({
-        configName: "relicAura",
-        title: "Relic Aura",
-        description: "Has higher range than Odin.",
-        category: "Wither King",
-        subcategory: "Relic"
-    })
-    .addSwitch({
         configName: "relicTimerEnabled",
         title: "Relic Timer",
         description: "Tells you when the relic is going to spawn and how long it took to spawn, place and both.",
@@ -65,7 +58,14 @@ config
     .addSwitch({
         configName: "blinkRelics",
         title: "Blink Relics",
-        description: "§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed. You must stand still for at least 28 ticks for this to work, otherwise it will default to simply Relic Looking.",
+        description: "§4NOT INCLUDED IN THE PUBLIC VERSION OF CGY, DISABLE THIS IF YOU CAN'T USE IT\n§cRequires Relic Look and Relic Triggerbot to be enabled. Also requires a custom brush config, which you can ask me about.\nInstantly teleports you to the relic; requires 500 speed.",
+        category: "Wither King",
+        subcategory: "Relic"
+    })
+    .addSwitch({
+        configName: "relicAura",
+        title: "Relic Aura",
+        description: "§4NOT INCLUDED IN THE PUBLIC VERSION OF CGY, DISABLE THIS IF YOU CAN'T USE IT\nHas higher range than Odin.",
         category: "Wither King",
         subcategory: "Relic"
     })
@@ -199,26 +199,20 @@ config
         description: "Render AutoP3 config as rings instead of boxes.",
         subcategory: "Auto P3"
     })
-    .addSwitch({
-        category: "Terminals",
-        configName: "startOn",
-        description: "Start on a chat message of your own choice",
-        subcategory: "Auto P3",
-        title: "Start on special message."
-    })
-    .addTextInput({
-        category: "Terminals",
-        configName: "startOnText",
-        description: "Chat message to start autop3 on (You need to ct reload after.).",
-        subcategory: "Auto P3",
-        title: "Trigger message."
-    })
+    
     .addSwitch({
         category: "Terminals",
         configName: "routeP1On",
         description: "Automatically select a route on Boss start.",
         subcategory: "Auto P3",
         title: "Select Route on Boss start."
+    })
+    .addSwitch({
+        category: "Terminals",
+        configName: "startOnBoss",
+        description: "Start on Boss enter",
+        subcategory: "Auto P3",
+        title: "Start on Boss enter."
     })
     .addTextInput({
         category: "Terminals",
@@ -548,7 +542,7 @@ config
     })
     .addKeybind({
         category: "Clip",
-        description: "Allows you to teleport somewhere instantly by collecting movement packets and sending them all at once.",
+        description: "§4NOT INCLUDED IN THE PUBLIC VERSION OF CGY, DISABLE THIS IF YOU CAN'T USE IT\nAllows you to teleport somewhere instantly by collecting movement packets and sending them all at once.",
         configName: "blinkKey",
         title: "Blink toggle"
     })

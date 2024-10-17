@@ -1,7 +1,6 @@
-import Settings from "../../config"
-import { chat } from "../../utils/utils"
-import RenderLibV2 from "../../../RenderLibV2"
-import { drawLine3d } from "../../../BloomCore/utils/Utils"
+import Settings from "../config"
+import RenderLibV2 from "../../RenderLibV2"
+import { drawLine3d } from "../../BloomCore/utils/Utils"
 
 const C03PacketPlayer = Java.type("net.minecraft.network.play.client.C03PacketPlayer")
 const queuedPackets = []
@@ -56,6 +55,7 @@ const packetCollector = register("packetSent", (packet, event) => {
     queuedPackets.push(packet)
 }).setFilteredClasses([C03PacketPlayer]).unregister()
 
+/*
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
 let logStartTime = Date.now()
 
@@ -122,3 +122,5 @@ function rotate(yaw, pitch) {
     player.field_70177_z = yaw
     player.field_70125_A = pitch
 }
+
+*/

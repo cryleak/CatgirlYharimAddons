@@ -52,7 +52,6 @@ register("packetReceived", (packet) => {
 }).setFilteredClass(net.minecraft.network.play.server.S2APacketParticles)
 
 const getPrio = () => {
-    chat(spawningDrags.length)
     if (spawningDrags.length === 1) return spawningDrags[0]
 
     let split = true
@@ -63,8 +62,6 @@ const getPrio = () => {
 
     const playerClass = Dungeons.getCurrentClass()
     let playerTeam // 1 = arch team 0 = bers team
-    chat(playerClass)
-    chat(`Bers: ${dragonNames[priority[0]]} Arch: ${dragonNames[priority[1]]}`)
     if (!split) playerTeam = 0
     else if (playerClass === "Archer" || playerClass === "Tank" || playerClass === "Healer" && Settings().healerGoWithArch && !spawningDrags.includes(0)) playerTeam = 1
     else if (playerClass === "Berserk" || playerClass === "Mage" || playerClass === "Healer") playerTeam = 0

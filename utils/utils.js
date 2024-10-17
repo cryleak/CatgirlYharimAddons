@@ -22,6 +22,7 @@ export function rightClick() {
 
 export const swapToItem = (targetItemName) => {
     const itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()))
+     if (itemSlot == -1 ||itemSlot > 7) { chat(`Unable to find "${targetItemName}" in your hotbar`); return}
     if (itemSlot > 7 || itemSlot < 0 ) { 
         chat(`Unable to find "${targetItemName}" in your hotbar`)
         throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`)
@@ -91,7 +92,6 @@ export function leap(player) {
         awaitingLeap = false
         Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
-            Client.getMinecraft().func_147108_a(null)
             let playerName
             if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class
                 const teamMembers = Dungeons.getTeamMembers()

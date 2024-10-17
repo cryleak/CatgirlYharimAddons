@@ -10,10 +10,6 @@ let cooldown = false;
 let selectedRoute = parseInt(Settings().route)
 let rings = [];
 
-if (Settings().startOn) {
-    triggerMessage = Settings().startOnText
-} else triggerMessage = "[BOSS] Storm: I should have known that I stood no chance."
-
 rings = data.rings
 
 register("Chat", () => {
@@ -21,13 +17,15 @@ register("Chat", () => {
     if (!Settings().autop3) return
     renderRing.register()
     renderMove.register()
-}).setCriteria(triggerMessage)
-
-register("Command", () => {
-    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
-}).setName("render")
+}).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
 
 register("Chat", () => {
+     if (Settings().startOnBoss) {
+        inp3 = true;
+        if (!Settings().autop3) return
+        renderRing.register()
+        renderMove.register()
+    }
     if (Settings().routeP1On) {
         selectedRoute = parseInt(Settings().routeP1)
         ChatLib.command("startp3", true)
@@ -269,7 +267,7 @@ const renderMove = register("renderWorld", () => {
                 case "hclip2":
                     chat("Hclipping")
                     slingshot(rings.yaw)
-                    Client.scheduleTask(() => { walk() })
+                    Client.scheduleTask(2, () => { walk() })
                     break
 
                 case "vclip":
