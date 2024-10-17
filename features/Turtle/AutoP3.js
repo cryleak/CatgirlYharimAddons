@@ -12,12 +12,20 @@ let rings = [];
 
 rings = data.rings
 
-register("Chat", () => {
+register("chat", (message) => {
+    let triggerMessage
+    if (Settings().startOn) triggerMessage = Settings().startOnText
+    else triggerMessage = "[BOSS] Storm: I should have known that I stood no chance."
+    if (message !== triggerMessage) return
     inp3 = true;
     if (!Settings().autop3) return
     renderRing.register()
     renderMove.register()
-}).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
+}).setCriteria("${message}")
+
+register("Command", () => {
+    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
+}).setName("render")
 
 register("Chat", () => {
      if (Settings().startOnBoss) {
