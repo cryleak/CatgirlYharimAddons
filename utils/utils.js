@@ -91,7 +91,6 @@ export function leap(player) {
         awaitingLeap = false
         Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
-            Client.getMinecraft().func_147108_a(null)
             let playerName
             if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class
                 const teamMembers = Dungeons.getTeamMembers()
