@@ -283,8 +283,8 @@ const renderMove = register("renderWorld", () => {
 
                 case "hclip2":
                     chat("Hclipping")
+                    rotate(rings.yaw, Player.getPitch())
                     slingshot(rings.yaw)
-                    Client.scheduleTask(2, () => { walk() })
                     break
 
                 case "vclip":
@@ -298,7 +298,7 @@ const renderMove = register("renderWorld", () => {
                     stop()
                     if (Settings().silentLook) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(2, () => {
+                        Client.scheduleTask(1, () => {
                             rightClick()
                             ServerRotations.resetRotations()
                         })

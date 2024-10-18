@@ -174,7 +174,7 @@ const keybinds = [
 export function slingshot(direction) {
     if (Player.asPlayerMP().isOnGround()) {
         jump()
-        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.7);
         let yaw = (direction) * Math.PI / 180;
 
         keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
@@ -188,13 +188,15 @@ export function slingshot(direction) {
         })
     } else {
         let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
-        let yaw = (direction) * Math.PI / 180;
+        //const yaw = (direction) * Math.PI / 180;
 
         keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
         Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
 
         Client.scheduleTask(0, () => {
-            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
+            Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
+            //Player.getPlayer().func_70016_h(-Math.sin((direction) * Math.PI / 180) * speed, Player.getPlayer().field_70181_x, Math.cos((direction) * Math.PI / 180) * speed);
             keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
         })
     }
