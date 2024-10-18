@@ -22,8 +22,8 @@ export function rightClick() {
 
 export const swapToItem = (targetItemName) => {
     const itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()))
-     if (itemSlot == -1 ||itemSlot > 7) { chat(`Unable to find "${targetItemName}" in your hotbar`); return}
-    if (itemSlot > 7 || itemSlot < 0 ) { 
+    if (itemSlot == -1 || itemSlot > 7) { chat(`Unable to find "${targetItemName}" in your hotbar`); return }
+    if (itemSlot > 7 || itemSlot < 0) {
         chat(`Unable to find "${targetItemName}" in your hotbar`)
         throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`)
         return
@@ -115,6 +115,7 @@ export function leap(player) {
 let awaitingPet = false
 
 export function equipPet(petIndex) {
+    //Client.getMinecraft().func_147108_a(null)
     if (!petIndex) {
         chat("Index not defined")
         return
@@ -124,8 +125,8 @@ export function equipPet(petIndex) {
     register("packetReceived", () => {
         if (!awaitingPet) return
         awaitingPet = false
-        Client.getMinecraft().func_147108_a(null)
         Client.scheduleTask(1, () => {
+            Client.getMinecraft().func_147108_a(null)
             Player.getContainer().click(petIndex)
         })
     }).setFilteredClass(S2DPacketOpenWindow)
@@ -214,7 +215,7 @@ export function lavaclip(distance) {
         chat("please use a number")
         return
     }
-    if (distance < 40.1 && distance > 3) {
+    if (distance < 80.1 && distance > 3) {
         currDepth = distance
         toggled = true
         vclip.register()

@@ -14,7 +14,7 @@ register("Tick", () => {
     if (!active) return
     active = false
     Client.scheduleTask(5, () => { active = true })
-    lavaclip(20)
+    lavaclip(30)
 })
 
 register("packetReceived", (packet) => {

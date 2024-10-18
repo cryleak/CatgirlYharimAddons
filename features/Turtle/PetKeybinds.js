@@ -1,21 +1,7 @@
 import Settings from "../../config"
 import { equipPet } from "../../utils/utils"
 
-const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
-
 let petCooldown = false
-awaitingPet = false;
-
-register("packetReceived", () => {
-    if (!awaitingPet) return
-    awaitingPet = false
-    Client.scheduleTask(() => {
-        Client.getMinecraft().func_147108_a(null)
-    })
-    Client.scheduleTask(1, () => {
-        Player.getContainer().click(itemIndex)
-    })
-}).setFilteredClass(S2DPacketOpenWindow)
 
 function pet() {
     petCooldown = true
