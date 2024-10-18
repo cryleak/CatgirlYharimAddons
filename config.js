@@ -81,7 +81,10 @@ config
         title: "Go with Archer as Healer",
         description: "Tells you to go to the Archer's dragon on split if you are Healer.",
         category: "Wither King",
-        subcategory: "Drag Prio"
+        subcategory: "Drag Prio",
+        shouldShow(data) {
+            return data.dragPrio
+        }
     })
     .addSlider({
         configName: "minSplitPower",
@@ -89,7 +92,10 @@ config
         description: "Minumum power to split on.",
         category: "Wither King",
         subcategory: "Drag Prio",
-        options: [5, 31]
+        options: [5, 31],
+        shouldShow(data) {
+            return data.dragPrio
+        }
     })
     .addSwitch({
         configName: "partyFinderNotification",
@@ -105,7 +111,10 @@ config
         category: "Dungeons",
         subcategory: "Party Finder",
         options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
-        value: 4
+        value: 4,
+        shouldShow(data) {
+            return data.partyFinderNotification
+        }
     })
     .addSlider({
         configName: "partyFinderPitch",
@@ -114,7 +123,10 @@ config
         category: "Dungeons",
         subcategory: "Party Finder",
         options: [0.5, 2],
-        value: 1
+        value: 1,
+        shouldShow(data) {
+            return data.partyFinderNotification
+        }
     })
     .addKeybind({
         category: "Dungeons",
@@ -137,7 +149,10 @@ config
         category: "Dungeons",
         subcategory: "Stonk Swap",
         options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
-        value: 4
+        value: 4,
+        shouldShow(data) {
+            return data.stonkSwapDing
+        }
     })
     .addSlider({
         configName: "stonkSwapPitch",
@@ -146,7 +161,10 @@ config
         category: "Dungeons",
         subcategory: "Stonk Swap",
         options: [0.5, 2],
-        value: 1
+        value: 1,
+        shouldShow(data) {
+            return data.stonkSwapDing
+        }
     })
     .addSwitch({
         category: "Terminals",
@@ -187,7 +205,7 @@ config
         category: "Terminals",
         configName: "route",
         title: "Route",
-        description: "Which route to load. Do /load to reload routes.",
+        description: "Which route to load.",
         value: "",
         placeHolder: "",
         subcategory: "Auto P3"
@@ -218,7 +236,10 @@ config
         configName: "startOnText",
         description: "Chat message to start autop3 on.",
         subcategory: "Auto P3",
-        title: "Trigger message."
+        title: "Trigger message.",
+        shouldShow(data) {
+            return data.startOn
+        }
     })
     .addSwitch({
         category: "Terminals",
@@ -232,7 +253,10 @@ config
         configName: "routeP1",
         description: "Route to automatically select on Boss start.",
         subcategory: "Auto P3",
-        title: "Route on Boss start."
+        title: "Route on Boss start.",
+        shouldShow(data) {
+            return data.routeP1On
+        }
     })
     .addSwitch({
         category: "Terminals",
@@ -246,7 +270,10 @@ config
         configName: "routeP3",
         description: "Route to automatically select on P3 start.",
         subcategory: "Auto P3",
-        title: "Route on P3 start."
+        title: "Route on P3 start.",
+        shouldShow(data) {
+            return data.routeP3On
+        }
     })
     .addSwitch({
         configName: "terminalTimestamps",
@@ -270,7 +297,10 @@ config
         category: "Terminals",
         subcategory: "Melody Warning",
         options: ["Dark Red", "Red", "Gold", "Yellow", "Dark Green", "Green", "Aqua", "Dark Aura", "Dark Blue", "Blue", "Light Purple", "Dark Purple", "White", "Gray", "Dark Gray", "Black"],
-        value: 3
+        value: 3,
+        shouldShow(data) {
+            return data.melodyWarningEnabled
+        }
     })
     .addDropDown({
         configName: "melodyWarningSound",
@@ -279,7 +309,10 @@ config
         category: "Terminals",
         subcategory: "Melody Warning",
         options: ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"],
-        value: 4
+        value: 4,
+        shouldShow(data) {
+            return data.melodyWarningEnabled
+        }
     })
     .addSlider({
         configName: "melodyWarningPitch",
@@ -288,7 +321,10 @@ config
         category: "Terminals",
         subcategory: "Melody Warning",
         options: [0.5, 2],
-        value: 1
+        value: 1,
+        shouldShow(data) {
+            return data.melodyWarningEnabled
+        }
     })
     .addButton({
         configName: "moveMelodyWarning",
@@ -316,14 +352,20 @@ config
         category: "Terminals",
         subcategory: "Auto 4",
         options: [2, 4],
-        value: 2
+        value: 2,
+        shouldShow(data) {
+            return data.auto4
+        }
     })
     .addSwitch({
         configName: "auto4Stats",
         title: "Statistics",
         description: "Tells you how many shots it took to finish i4 and how long it took (may not be accurate with lag).",
         category: "Terminals",
-        subcategory: "Auto 4"
+        subcategory: "Auto 4",
+        shouldShow(data) {
+            return data.auto4
+        }
     })
 
     .addSwitch({
@@ -331,7 +373,10 @@ config
         title: "Solver",
         description: "Simple solver that shows what was recently predicted and what it thinks has already been shot.",
         category: "Terminals",
-        subcategory: "Auto 4"
+        subcategory: "Auto 4",
+        shouldShow(data) {
+            return data.auto4
+        }
     })
     .addColorPicker({
         configName: "predictionColor",
@@ -339,7 +384,10 @@ config
         description: "Color of blocks that were recently predicted.",
         category: "Terminals",
         subcategory: "Auto 4",
-        value: [0, 255, 255, 89]
+        value: [0, 255, 255, 89],
+        shouldShow(data) {
+            return data.auto4
+        }
     })
     .addColorPicker({
         configName: "alreadyShotColor",
@@ -347,14 +395,17 @@ config
         description: "Color of blocks that have already been shot.",
         category: "Terminals",
         subcategory: "Auto 4",
-        value: [255, 0, 0, 89]
+        value: [255, 0, 0, 89],
+        shouldShow(data) {
+            return data.auto4
+        }
     })
     .addSwitch({
         configName: "autoRod",
         title: "Auto Rod",
         description: "Automatically rod swaps.",
         category: "Terminals",
-        subcategory: "Auto 4"
+        subcategory: "Auto 4",
     })
     .addTextInput({
         category: "Pet Keybinds",
@@ -433,7 +484,10 @@ config
         title: "Leap to class",
         description: "Leaps to a chosen class instead of a chosen name.",
         category: "Leap",
-        subcategory: "4th Device Auto Leap"
+        subcategory: "4th Device Auto Leap",
+        shouldShow(data) {
+            return data.i4AutoLeap
+        }
     })
     .addDropDown({
         configName: "leapClass",
@@ -442,7 +496,10 @@ config
         category: "Leap",
         subcategory: "4th Device Auto Leap",
         options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
-        value: 4
+        value: 4,
+        shouldShow(data) {
+            return data.i4AutoLeap
+        }
     })
     .addTextInput({
         configName: "leapPlayer",
@@ -450,7 +507,10 @@ config
         description: "Person to leap to after i4.",
         category: "Leap",
         subcategory: "4th Device Auto Leap",
-        value: "ITheSerenity"
+        value: "ITheSerenity",
+        shouldShow(data) {
+            return data.i4AutoLeap
+        }
     })
     .addSwitch({
         category: "Leap",
@@ -459,12 +519,34 @@ config
         description: "Leap to selected class for EE2.",
         subcategory: "Autoleap"
     })
+    .addSelection({
+        category: "Leap",
+        configName: "ee2Class",
+        title: "Class for EE2",
+        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
+        description: "",
+        subcategory: "Autoleap",
+        shouldShow(data) {
+            return data.ee2
+        }
+    })
     .addSwitch({
         category: "Leap",
         configName: "ee3",
         title: "Leap to EE3",
         description: "Leap to selected class for EE3.",
         subcategory: "Autoleap"
+    })
+    .addSelection({
+        category: "Leap",
+        configName: "ee3Class",
+        title: "Class for EE3",
+        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
+        description: "",
+        subcategory: "Autoleap",
+        shouldShow(data) {
+            return data.ee3
+        }
     })
     .addSwitch({
         category: "Leap",
@@ -475,27 +557,14 @@ config
     })
     .addSelection({
         category: "Leap",
-        configName: "ee2Class",
-        title: "Class for EE2",
-        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
-        description: "",
-        subcategory: "Autoleap"
-    })
-    .addSelection({
-        category: "Leap",
-        configName: "ee3Class",
-        title: "Class for EE3",
-        options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
-        description: "",
-        subcategory: "Autoleap"
-    })
-    .addSelection({
-        category: "Leap",
         configName: "coreClass",
         title: "Class for Core",
         options: ["Archer", "Berserk", "Mage", "Healer", "Tank"],
         description: "",
-        subcategory: "Autoleap"
+        subcategory: "Autoleap",
+        shouldShow(data) {
+            return data.core
+        }
     })
     .addSwitch({
         category: "Terminals",
@@ -527,7 +596,10 @@ config
         title: "Wither ESP Color",
         description: "",
         category: "ESP",
-        value: [0, 255, 255, 89]
+        value: [0, 255, 255, 89],
+        shouldShow(data) {
+            return data.espWither
+        }
     })
     .addSwitch({
         category: "ESP",
