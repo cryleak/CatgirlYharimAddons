@@ -92,15 +92,15 @@ export function leap(player) {
         awaitingLeap = false
         Client.scheduleTask(0, () => {
             if (Player.getContainer().getName() !== "Spirit Leap") return
+            const teamMembers = Dungeons.getTeamMembers()
             let playerName
-            if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class
-                const teamMembers = Dungeons.getTeamMembers()
+            if (classes.includes(player)) { // (Hopefully) detect if you are trying to leap to a class  
                 playerName = Object.getOwnPropertyNames(teamMembers).find(playerName => teamMembers[playerName].class === player)
                 if (!playerName) { chat("Class not found!"); return }
             } else playerName = player
 
-
             const item = Player.getContainer()?.getItems().findIndex(x => x?.getName()?.substring(2)?.toLowerCase() === playerName.toLowerCase())
+
             if (item === -1) {
                 chat("Could not find " + player)
                 return
