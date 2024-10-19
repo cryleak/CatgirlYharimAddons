@@ -24,6 +24,15 @@ register("chat", (message) => {
 }).setCriteria("${message}")
 
 register("Command", () => {
+    selectedRoute = parseInt(Settings().route)
+}).setName("load")
+
+register("Command", (route) => {
+    if (isNaN(route)) return
+    selectedRoute = parseInt(route)
+}).setName("route")
+
+register("Command", () => {
     ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
 }).setName("render")
 
@@ -256,11 +265,12 @@ const renderMove = register("renderWorld", () => {
                     swapToItem("Infinityboom TNT")
                     if (Settings().silentLook) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(() => {
-                            leftClick()
+                        Client.scheduleTask(1, () => {
+                            rightClick()
                             ServerRotations.resetRotations()
                         })
                     } else {
+                        rotate(rings.yaw, rings.pitch)
                         Client.scheduleTask(() => {
                             leftClick()
                         })
@@ -274,8 +284,8 @@ const renderMove = register("renderWorld", () => {
 
                 case "hclip2":
                     chat("Hclipping")
+                    rotate(rings.yaw, Player.getPitch())
                     slingshot(rings.yaw)
-                    Client.scheduleTask(2, () => { walk() })
                     break
 
                 case "vclip":
@@ -289,7 +299,7 @@ const renderMove = register("renderWorld", () => {
                     stop()
                     if (Settings().silentLook) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(2, () => {
+                        Client.scheduleTask(1, () => {
                             rightClick()
                             ServerRotations.resetRotations()
                         })

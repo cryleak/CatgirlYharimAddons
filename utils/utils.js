@@ -22,8 +22,8 @@ export function rightClick() {
 
 export const swapToItem = (targetItemName) => {
     const itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()))
-     if (itemSlot == -1 ||itemSlot > 7) { chat(`Unable to find "${targetItemName}" in your hotbar`); return}
-    if (itemSlot > 7 || itemSlot < 0 ) { 
+    if (itemSlot == -1 || itemSlot > 7) { chat(`Unable to find "${targetItemName}" in your hotbar`); return }
+    if (itemSlot > 7 || itemSlot < 0) {
         chat(`Unable to find "${targetItemName}" in your hotbar`)
         throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`)
         return
@@ -115,6 +115,7 @@ export function leap(player) {
 let awaitingPet = false
 
 export function equipPet(petIndex) {
+    //Client.getMinecraft().func_147108_a(null)
     if (!petIndex) {
         chat("Index not defined")
         return
@@ -124,8 +125,8 @@ export function equipPet(petIndex) {
     register("packetReceived", () => {
         if (!awaitingPet) return
         awaitingPet = false
-        Client.getMinecraft().func_147108_a(null)
         Client.scheduleTask(1, () => {
+            Client.getMinecraft().func_147108_a(null)
             Player.getContainer().click(petIndex)
         })
     }).setFilteredClass(S2DPacketOpenWindow)
@@ -173,7 +174,7 @@ const keybinds = [
 export function slingshot(direction) {
     if (Player.asPlayerMP().isOnGround()) {
         jump()
-        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.7);
         let yaw = (direction) * Math.PI / 180;
 
         keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
@@ -187,13 +188,15 @@ export function slingshot(direction) {
         })
     } else {
         let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
-        let yaw = (direction) * Math.PI / 180;
+        //const yaw = (direction) * Math.PI / 180;
 
         keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
         Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
 
         Client.scheduleTask(0, () => {
-            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
+            Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
+            //Player.getPlayer().func_70016_h(-Math.sin((direction) * Math.PI / 180) * speed, Player.getPlayer().field_70181_x, Math.cos((direction) * Math.PI / 180) * speed);
             keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
         })
     }
@@ -214,7 +217,7 @@ export function lavaclip(distance) {
         chat("please use a number")
         return
     }
-    if (distance < 40.1 && distance > 3) {
+    if (distance < 80.1 && distance > 3) {
         currDepth = distance
         toggled = true
         vclip.register()
