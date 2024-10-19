@@ -120,7 +120,7 @@ const interactWithEntity = (entity) => {
     const packet = new net.minecraft.network.play.client.C02PacketUseEntity(entity, new Vec3(dx, dy, dz))
     Client.sendPacket(packet)
     const helmetName = ChatLib.removeFormatting(new Item(entity.func_82169_q(3)).getName())
-    performTeleport(helmetName)
+    if (Settings().blinkRelics) performTeleport(helmetName)
 }
 
 const blinkRelicRegister = register("tick", () => {
