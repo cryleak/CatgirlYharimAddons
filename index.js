@@ -14,7 +14,7 @@ import "./features/Serenity/AlwaysSprint"
 
 // gatekeep for now maybe
 import "./SereneBlink/Blink"
-import "./SereneBlink/BlinkRelics" 
+import "./SereneBlink/BlinkRelics"
 
 // I take no responsibilty for Turtle's incredibly schizo code. -Serenity. Nigger -Turtle
 import "./features/Turtle/AutoP3"
