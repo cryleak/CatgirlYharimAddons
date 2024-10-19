@@ -21,14 +21,12 @@ export function rightClick() {
 }
 
 export const swapToItem = (targetItemName) => {
-    const itemSlot = Player.getInventory().getItems().findIndex(a => a?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()))
-    if (itemSlot == -1 || itemSlot > 7) { chat(`Unable to find "${targetItemName}" in your hotbar`); return }
-    if (itemSlot > 7 || itemSlot < 0) {
+    const itemSlot = Player.getInventory().getItems().findIndex(item => item?.getName().toLowerCase().includes(targetItemName.toLowerCase()))
+    if (itemSlot === -1 || itemSlot > 7) {
         chat(`Unable to find "${targetItemName}" in your hotbar`)
-        throw new ReferenceError(`Unable to find "${targetItemName}" in your hotbar`)
-        return
+        throw new Error(`Unable to find "${targetItemName}" in your hotbar`)
     } else {
-        heldItem = Player.getHeldItemIndex()
+        heldItem = Player.getHeldItemIndex() // Does this do anything????????????????????
         Player.setHeldItemIndex(itemSlot)
     }
 }
