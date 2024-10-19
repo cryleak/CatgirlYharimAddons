@@ -265,11 +265,12 @@ const renderMove = register("renderWorld", () => {
                     swapToItem("Infinityboom TNT")
                     if (Settings().silentLook) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(() => {
-                            leftClick()
+                        Client.scheduleTask(1, () => {
+                            rightClick()
                             ServerRotations.resetRotations()
                         })
                     } else {
+                        rotate(rings.yaw, rings.pitch)
                         Client.scheduleTask(() => {
                             leftClick()
                         })
