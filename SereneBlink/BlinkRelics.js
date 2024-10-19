@@ -8,6 +8,7 @@ let ticksStill = 0
 const standStillTicks = 28
 const ArmorStand = Java.type("net.minecraft.entity.item.EntityArmorStand")
 const C04PacketPlayerPosition = Java.type("net.minecraft.network.play.client.C03PacketPlayer$C04PacketPlayerPosition")
+const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
 const orangePackets = [
     [89.48818552494049, 6, 55.45217406749725, true],
     [88.58097032771286, 6.0625, 55.06903517856081, true],
@@ -67,29 +68,31 @@ register("chat", () => {
         blinkRelicRegister.register()
         renderText.register()
         packetCollector.register()
-        relicClickListener.register()
     }
+    if (Settings().relicAura) relicAura.register()
 
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
-register("worldLoad", () => {
-    relicClickListener.unregister()
+register("chat", resetVariables).setCriteria("[BOSS] Wither King: You... again?")
+register("worldUnload", resetVariables)
+
+function resetVariables() {
     blinkRelicRegister.unregister()
     renderText.unregister()
     packetCollector.unregister()
+    relicAura.unregister()
     ticksStill = 0
-})
+}
 
 /*
 register("command", () => {
-    relicClickListener.unregister()
     blinkRelicRegister.unregister()
     packetCollector.unregister()
     renderText.unregister()
     const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
     rotate(yaw, pitch)
 
-    if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+    if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
         orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
         const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
         Player.getPlayer().func_70107_b(...finalPacketPos)
@@ -101,13 +104,12 @@ register("command", () => {
 
 // Relic aura. This code is such a fucking mess.
 const Vec3 = Java.type("net.minecraft.util.Vec3")
-const relicAura = register("tick", () => {
+const relicAura = register("renderWorld", () => {
     const armorStands = World.getAllEntitiesOfType(ArmorStand)
     const entity = armorStands.find(e => new EntityLivingBase(e?.getEntity()).getItemInSlot(4)?.getNBT()?.toString()?.includes("Relic") && getDistanceToEntity(e) < 4)
     if (!entity) return
-    chat(getDistanceToEntity(entity))
     interactWithEntity(entity.getEntity())
-    Client.scheduleTask(1, () => relicAura.unregister())
+    relicAura.unregister()
 }).unregister()
 
 const interactWithEntity = (entity) => {
@@ -117,6 +119,8 @@ const interactWithEntity = (entity) => {
     const dz = objectMouseOver.zCoord - entity.field_70161_v
     const packet = new net.minecraft.network.play.client.C02PacketUseEntity(entity, new Vec3(dx, dy, dz))
     Client.sendPacket(packet)
+    const helmetName = ChatLib.removeFormatting(new Item(entity.func_82169_q(3)).getName())
+    performTeleport(helmetName)
 }
 
 const blinkRelicRegister = register("tick", () => {
@@ -134,42 +138,34 @@ const renderText = register("renderOverlay", () => {
     Renderer.drawString(text, Renderer.screen.getWidth() / 4 - Renderer.getStringWidth(text) / 2, Renderer.screen.getHeight() / 3.8)
 }).unregister()
 
-const relicClickListener = register("packetSent", (packet) => {
-    const entity = packet.func_149564_a(World.getWorld())
-    if (!entity instanceof ArmorStand) return
-    const entityWornHelmet = entity.func_82169_q(3)
-    if (!entityWornHelmet) return
-    const helmetName = ChatLib.removeFormatting(new Item(entityWornHelmet).getName())
-    if (!helmetName.includes("Relic")) return
 
-
-    relicClickListener.unregister()
+// This is the peak of lazy coding. It features reused code from my old RelicLook feature that has awful code. I will clean this up if I feel like it.
+const performTeleport = (helmetName) => {
     blinkRelicRegister.unregister()
     packetCollector.unregister()
     renderText.unregister()
 
-
     if (Settings().relicLook) {
         if (helmetName === "Corrupted Orange Relic") {
-            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
                 Client.scheduleTask(0, () => {
                     orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                     const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
                     Player.getPlayer().func_70107_b(...finalPacketPos)
                     registerTriggerbot("Orange")
                 })
-            }
+            } else KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
 
         } else if (helmetName === "Corrupted Red Relic") {
-            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.1 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
                 Client.scheduleTask(0, () => {
                     redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                     const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]
                     Player.getPlayer().func_70107_b(...finalPacketPos)
                     registerTriggerbot("Red")
                 })
-            }
+            } else KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
         }
     }
     ticksStill = 0
-}).setFilteredClass(net.minecraft.network.play.client.C02PacketUseEntity).unregister()
+}
