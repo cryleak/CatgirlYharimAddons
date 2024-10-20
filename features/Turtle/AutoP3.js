@@ -37,7 +37,7 @@ register("Command", () => {
 }).setName("render")
 
 register("Chat", () => {
-     if (Settings().startOnBoss) {
+    if (Settings().startOnBoss) {
         inp3 = true;
         if (!Settings().autop3) return
         renderRing.register()
@@ -286,6 +286,7 @@ const renderMove = register("renderWorld", () => {
                     chat("Hclipping")
                     rotate(rings.yaw, Player.getPitch())
                     slingshot(rings.yaw)
+                    Client.scheduleTask(2, () => { walk() })
                     break
 
                 case "vclip":

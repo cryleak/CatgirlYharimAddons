@@ -110,48 +110,6 @@ export function leap(player) {
 
 }
 
-let awaitingPet = false
-
-export function equipPet(petIndex) {
-    //Client.getMinecraft().func_147108_a(null)
-    if (!petIndex) {
-        chat("Index not defined")
-        return
-    }
-    ChatLib.command("pets")
-    awaitingPet = true
-    register("packetReceived", () => {
-        if (!awaitingPet) return
-        awaitingPet = false
-        Client.scheduleTask(1, () => {
-            Client.getMinecraft().func_147108_a(null)
-            Player.getContainer().click(petIndex)
-        })
-    }).setFilteredClass(S2DPacketOpenWindow)
-}
-
-let awaitingWardrobe = false
-
-export function equipWardrobe(index) {
-    ChatLib.command("wardrobe")
-    awaitingWardrobe = true
-    register("packetReceived", () => {
-        if (!awaitingWardrobe) return
-        awaitingWardrobe = false
-        Client.scheduleTask(() => {
-            if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
-            Client.getMinecraft().func_147108_a(null)
-        })
-        Client.scheduleTask(1, () => {
-            if (Player.getContainer().getName() !== "Wardrobe (1/2)") return
-            Player.getContainer().click(index)
-        })
-        Client.scheduleTask(3, () => {
-            Client.currentGui.close()
-        })
-    }).setFilteredClass(S2DPacketOpenWindow)
-}
-
 export const clipForward = (distance) => { // I have no idea how optimal this is because I literally haven't learned about this shit in school yet and have very little understanding of it but it works
     const radians = Player.getYaw() * Math.PI / 180
     let [newX, newZ] = [Player.getX(), Player.getZ()]
@@ -236,17 +194,20 @@ const vclipOverlay = register("renderOverlay", () => {
 
 const vclip = register("tick", () => {
     if (!Player.getPlayer().func_180799_ab()) return
+    veloPacket.register()
     Player.getPlayer().func_70107_b(Player.getX(), Player.getY() - currDepth, Player.getZ())
-    const veloPacket = register("packetReceived", (packet, event) => {
-        if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
-        if (packet.func_149410_e() !== 28000) return;
-        cancel(event)
-        veloPacket.unregister();
-        vclip.unregister();
-        vclipOverlay.unregister()
-        toggled = false
-    }).setFilteredClass(S12PacketEntityVelocity);
 }).unregister();
+
+const veloPacket = register("packetReceived", (packet, event) => {
+    if (!toggled) return
+    if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
+    if (packet.func_149410_e() !== 28000) return;
+    cancel(event)
+    veloPacket.unregister()
+    vclip.unregister();
+    vclipOverlay.unregister()
+    toggled = false
+}).setFilteredClass(S12PacketEntityVelocity).unregister()
 
 register("Command", () => {
     toggled = false
