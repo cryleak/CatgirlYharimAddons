@@ -53,7 +53,7 @@ const relicDetect = register("RenderWorld", () => {
 const placeListener = register("playerInteract", (action, pos) => {
     if (action.toString() != "RIGHT_CLICK_BLOCK") return
     const blockClicked = World.getBlockAt(pos.getX(), pos.getY(), pos.getZ()).type.getRegistryName()
-    if (blockClicked !== "minecraft:cauldron" && blockClicked !== "minecraft:anvil" && blockClicked !== "minecraft:chest" || !Player.getHeldItem()?.getName()?.includes("Relic")) return
+    if (blockClicked !== "minecraft:cauldron" && blockClicked !== "minecraft:anvil" && blockClicked !== "minecraft:chest" || Player.getHeldItemIndex() !== 8) return
 
     chat("Relic spawned in &b" + ((spawnTime - p5StartTime) / 1000) + "s.")
     chat("Relic placed in &b" + ((Date.now() - pickedUpTime) / 1000) + "s.")

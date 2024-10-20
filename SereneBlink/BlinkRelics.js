@@ -89,18 +89,18 @@ register("command", () => {
     blinkRelicRegister.unregister()
     packetCollector.unregister()
     renderText.unregister()
-    const [yaw, pitch] = calcYawPitch({ x: 58, y: 7.5, z: 43 })
-    rotate(yaw, pitch)
-
-    if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
-        orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
-        const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
-        Player.getPlayer().func_70107_b(...finalPacketPos)
-        triggerbot.register()
-        pickedColor = "Orange"
+    if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+        Player.setHeldItemIndex(8)
+        Client.scheduleTask(0, () => {
+            redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
+            const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]
+            Player.getPlayer().func_70107_b(...finalPacketPos)
+            registerTriggerbot("Red")
+        })
     } else chat("no")
 }).setName("test")
 */
+
 
 // Relic aura. This code is such a fucking mess.
 const Vec3 = Java.type("net.minecraft.util.Vec3")
@@ -148,6 +148,7 @@ const performTeleport = (helmetName) => {
     if (Settings().relicLook) {
         if (helmetName === "Corrupted Orange Relic") {
             if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+                Player.setHeldItemIndex(8)
                 Client.scheduleTask(0, () => {
                     orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                     const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
@@ -158,6 +159,7 @@ const performTeleport = (helmetName) => {
 
         } else if (helmetName === "Corrupted Red Relic") {
             if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+                Player.setHeldItemIndex(8)
                 Client.scheduleTask(0, () => {
                     redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                     const finalPacketPos = [redPackets[redPackets.length - 1][0], redPackets[redPackets.length - 1][1], redPackets[redPackets.length - 1][2],]

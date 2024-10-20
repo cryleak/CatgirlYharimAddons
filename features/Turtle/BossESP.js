@@ -33,6 +33,10 @@ register("chat", () => {
     render.unregister()
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
+register("worldUnload", () => {
+    render.unregister()
+})
+
 
 const render = register("renderWorld", () => {
     if (!Settings().espWither) return
@@ -40,8 +44,8 @@ const render = register("renderWorld", () => {
     if (!wither) return
     const rgb = [Settings().witherESPColor[0], Settings().witherESPColor[1], Settings().witherESPColor[2]]
     const alpha = Settings().witherESPColor[3] / 255
-    RenderLibV2.drawInnerEspBox(wither.getRenderX(), wither.getRenderY() + 0.3, wither.getRenderZ(), 1.5, 2.5, ...rgb, alpha, true)
-    RenderLibV2.drawEspBox(wither.getRenderX(), wither.getRenderY() + 0.3, wither.getRenderZ(), 1.5, 2.5, ...rgb, 1, true)
+    RenderLibV2.drawInnerEspBox(wither.getRenderX(), wither.getRenderY() + 0.3, wither.getRenderZ(), 1, 2.5, ...rgb, alpha, true)
+    RenderLibV2.drawEspBox(wither.getRenderX(), wither.getRenderY() + 0.3, wither.getRenderZ(), 1, 2.5, ...rgb, 1, true)
 }).unregister()
 
 const aimbot = register("renderWorld", () => {
