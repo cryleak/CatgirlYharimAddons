@@ -7,11 +7,11 @@ const dragonNames = ["Purple", "Blue", "Red", "Green", "Orange"] // I am not usi
 const dragonColors = ["§5", "§b", "§4", "§2", "§6"]
 
 const particleCoords = [
-    { x: 56, y: 20, z: 125 }, // p
-    { x: 83, y: 20, z: 94 }, // b
-    { x: 27, y: 20, z: 59 }, // r
-    { x: 27, y: 20, z: 94 }, // g
-    { x: 83, y: 20, z: 56 } // o
+    { x: 56, y: 19, z: 125 }, // p
+    { x: 84, y: 19, z: 94 }, // b
+    { x: 27, y: 19, z: 59 }, // r
+    { x: 27, y: 19, z: 94 }, // g
+    { x: 85, y: 19, z: 56 } // o
 ]
 
 const spawningDrags = []
@@ -38,7 +38,7 @@ register("packetReceived", (packet) => {
     const particleZ = packet.func_149225_f()
 
     // Index 0 is purple, 4 is orange, ordered based on PBRGO
-    const dragon = particleCoords.findIndex(({ x, y, z }) => getDistance3D(x, y, z, particleX, particleY, particleZ) < 10) // Gets which dragon the particles are near
+    const dragon = particleCoords.findIndex(({ x, y, z }) => getDistance3D(x, y, z, particleX, particleY, particleZ) < 1) // Gets which dragon the particles are near
     if (dragon === -1 || spawningDrags.includes(dragon)) return
     spawningDrags.push(dragon)
     Client.scheduleTask(0, () => {
