@@ -52,6 +52,7 @@ const ringColors = new Map([
     ["bonzo2", [1, 1, 1]],
     ["look", [1, 0, 1]],
     ["aura", [1, 1, 0]],
+    ["cmd", [1, 1, 0]],
     ["vclip", [1, 1, 0]],
     ["block", [0, 0, 1]],
     ["block2", [0, 0, 1]],

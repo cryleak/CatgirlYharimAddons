@@ -5,6 +5,8 @@ import { lavaclip, leftClick, rightClick } from "../../utils/utils"
 import { swapToItem, calcYawPitch, chat, rotate, slingshot, leap } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
 
+const mc = Client.getMinecraft().func_175598_ae()
+
 let inp3 = false;
 let cooldown = false;
 let selectedRoute = parseInt(Settings().route)
@@ -103,19 +105,18 @@ register("Step", () => {
 
 register("command", (...args) => {
 
-    let mc = Client.getMinecraft().func_175598_ae()
     let type = args[0].toLowerCase();
     let active = true
     let route = parseInt(selectedRoute)
     let [x, y, z] = [Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2]
     let [yaw, pitch] = [mc.field_78735_i, mc.field_78732_j]
 
-    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge", "leap"].includes(type)) {
+    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge", "leap", "cmd"].includes(type)) {
         chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip, leap!")
         return;
     }
 
-    if (["vclip", "block", "block2", "leap"].includes(type)) {
+    if (["vclip", "block", "block2", "leap", "cmd"].includes(type)) {
         if (type === "vclip") {
             if (args.length != 4 && args.length != 2) {
                 chat("Invalid Parameters! Use /ring vclip h w depth")
@@ -128,6 +129,10 @@ register("command", (...args) => {
                 depth = parseInt(args[1])
                 h = 1
                 w = 1
+            }
+            if (!depth) {
+                chat("No distance!")
+                return
             }
             rings.push({ type, x, y, z, w, h, depth, active, route })
         } else if (type === "leap") {
@@ -143,7 +148,35 @@ register("command", (...args) => {
                 h = 1
                 w = 1
             }
+            if (!target) {
+                chat("No target!")
+                return
+            }
             rings.push({ type, x, y, z, w, h, target, active, route })
+        } else if (type === "cmd") {
+            if (args.length < 2) {
+                chat("Invalid Parameters! Use /ring cmd h w clientside command")
+                return
+            }
+            h = parseFloat(args[1]);
+            w = parseFloat(args[2]);
+            clientSide = parseFloat(args[3])
+            if (!h || !w || isNaN(h) || isNaN(w)) {
+                h = 1
+                w = 1
+                clientSide = parseFloat(args[1])
+                cmd = args.slice(2).join(" ");
+            } else if (isNaN(clientSide)) {
+                chat("Define if the command should be Client Side or not.")
+                return
+            } else {
+                cmd = args.slice(4).join(" ");
+            }
+            if (!cmd) {
+                chat("No command!")
+                return
+            }
+            rings.push({ type, x, y, z, w, h, cmd, clientSide, active, route })
         } else {
             if (args.length != 4 && args.length != 6) {
                 chat("Invalid Parameters! Use /ring block/block2 h w x y z")
@@ -213,16 +246,14 @@ const renderRing = register("renderWorld", () => {
 const renderMove = register("renderWorld", () => {
     if (!Settings().autop3 || Settings().editMode) return;
     if (!inp3) return
-    let playerX = Player.getX();
-    let playerY = Player.getY();
-    let playerZ = Player.getZ();
+    let [playerX, playerY, playerZ] = [Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2]
 
     rings.forEach(rings => {
         let distanceX = Math.abs(playerX - rings.x)
         let distanceY = (playerY - rings.y)
         let distanceZ = Math.abs(playerZ - rings.z)
         if (rings.route != selectedRoute) return;
-        if (((distanceX > (rings.w / 2) || (distanceY > (rings.h) && distanceY >= -0.5) || distanceZ > (rings.w / 2)) && !rings.active)) {
+        if (((distanceX > (rings.w / 2) || (distanceY > (rings.h - 0.1) && distanceY >= -0.5) || distanceZ > (rings.w / 2)) && !rings.active)) {
             rings.active = true;
         }
         if (Settings().activeOnce && !rings.active) return
@@ -359,6 +390,7 @@ const renderMove = register("renderWorld", () => {
                     chat("Edging")
                     edge()
                     break
+
                 case "leap":
                     if (inTerminal) {
                         rings.active = true
@@ -366,6 +398,12 @@ const renderMove = register("renderWorld", () => {
                     }
                     chat("Leaping")
                     leap(rings.target)
+                    break
+
+                case "cmd":
+                    if (rings.clientSide) { ChatLib.command(rings.cmd, true) }
+                    else { ChatLib.command(rings.cmd) }
+                    chat("Commanding")
                     break
             }
         }
