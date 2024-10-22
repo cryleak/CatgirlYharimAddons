@@ -37,7 +37,6 @@ register("worldUnload", () => {
     render.unregister()
 })
 
-
 const render = register("renderWorld", () => {
     if (!Settings().espWither) return
     const wither = World.getAllEntitiesOfType(EntityWither).find(entity => !entity.isInvisible()) // Find a Wither entity that isn't invisible
@@ -54,3 +53,15 @@ const aimbot = register("renderWorld", () => {
     const [yaw, pitch] = calcYawPitch(wither.getRenderX(), wither.getRenderY(), wither.getRenderZ())
     rotate(yaw, pitch)
 }).unregister()
+
+register("command", () => {
+    if (!toggled) {
+        aimbot.register()
+        toggled = true
+        chat("Wither Aimbot on.")
+    } else {
+        aimbot.unregister()
+        toggled = false
+        chat("Wither Aimbot off.")
+    }
+}).setName("aimbot")

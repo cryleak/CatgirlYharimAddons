@@ -103,6 +103,11 @@ register("Step", () => {
     selectedRoute = parseInt(Settings().route)
 }).setFps(1)
 
+register("command", () => {
+    if (!editMode) {editMode = true; chat("Editmode on!")}
+    else {editMode = false; chat("Editmode off")}
+}).setName("editmode")
+
 register("command", (...args) => {
 
     let type = args[0].toLowerCase();
