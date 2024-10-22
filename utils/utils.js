@@ -63,6 +63,14 @@ export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
 }
 
+export function float(value) {
+    return parseFloat(value)
+}
+
+export function int(value) {
+    return parseInt(value)
+}
+
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
 const S12PacketEntityVelocity = Java.type("net.minecraft.network.play.server.S12PacketEntityVelocity")
 

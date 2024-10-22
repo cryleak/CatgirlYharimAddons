@@ -1,7 +1,7 @@
 import { autoP3Data as data } from "../../utils/data"
 import Settings from "../../config"
 import { stop, walk, jump, noWalk, renderBoxes, renderRings, edge } from "../../utils/AutoP3Utils"
-import { lavaclip, leftClick, rightClick } from "../../utils/utils"
+import { float, int, lavaclip, leftClick, rightClick } from "../../utils/utils"
 import { swapToItem, calcYawPitch, chat, rotate, slingshot, leap } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
 
@@ -104,120 +104,36 @@ register("Step", () => {
 }).setFps(1)
 
 register("command", () => {
-    if (!editMode) {editMode = true; chat("Editmode on!")}
-    else {editMode = false; chat("Editmode off")}
+    if (!editMode) { editMode = true; chat("Editmode on!") }
+    else { editMode = false; chat("Editmode off") }
 }).setName("editmode")
 
 register("command", (...args) => {
+    let [type, active, route, x, y, z, yaw, pitch] = [args[0].toLowerCase(), true, parseInt(selectedRoute), Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2, mc.field_78735_i, mc.field_78732_j]
+    if (!["look", "jump", "stop", "boom", "hclip", "bonzo", "block", "vclip", "edge", "leap", "cmd"].includes(type)) { chat("invalid ring type!"); return }
+    let [looking, walking, stopping, delaying, commanding, silent, cmd] = [false, false, false, false, false, false, ""]
+    let [h, w] = [float(args[1]), float(args[2])]
+    let [lookX, lookY, lookZ] = [float(args[3]), float(args[4]), float(args[5])]
+    let action = args[3]
+    let delay = 0
 
-    let type = args[0].toLowerCase();
-    let active = true
-    let route = parseInt(selectedRoute)
-    let [x, y, z] = [Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2]
-    let [yaw, pitch] = [mc.field_78735_i, mc.field_78732_j]
-
-    if (!["walk", "walk2", "jump", "jump2", "stop", "boom", "hclip", "hclip2", "bonzo", "look", "aura", "block", "block2", "bonzo2", "vclip", "edge", "leap", "cmd"].includes(type)) {
-        chat("Invalid ring type! Use: walk, jump, stop, boom, hclip, bonzo, look, aura, block, vclip, leap!")
-        return;
+    if (isNaN(h) || isNaN(w)) {
+        [h, w] = [1, 1]
+        [lookX, lookY, lookZ] = [float(args[1]), float(args[2]), float(args[3])]
+        action = args[1]
     }
 
-    if (["vclip", "block", "block2", "leap", "cmd"].includes(type)) {
-        if (type === "vclip") {
-            if (args.length != 4 && args.length != 2) {
-                chat("Invalid Parameters! Use /ring vclip h w depth")
-                return
-            }
-            h = parseFloat(args[1]);
-            w = parseFloat(args[2]);
-            depth = parseInt(args[3])
-            if (!h || !w) {
-                depth = parseInt(args[1])
-                h = 1
-                w = 1
-            }
-            if (!depth) {
-                chat("No distance!")
-                return
-            }
-            rings.push({ type, x, y, z, w, h, depth, active, route })
-        } else if (type === "leap") {
-            if (args.length != 4 && args.length != 2) {
-                chat("Invalid Parameters! Use /ring leap h w class/IGN")
-                return
-            }
-            h = parseFloat(args[1]);
-            w = parseFloat(args[2]);
-            target = parseInt(args[3])
-            if (!h || !w) {
-                target = parseInt(args[1])
-                h = 1
-                w = 1
-            }
-            if (!target) {
-                chat("No target!")
-                return
-            }
-            rings.push({ type, x, y, z, w, h, target, active, route })
-        } else if (type === "cmd") {
-            if (args.length < 2) {
-                chat("Invalid Parameters! Use /ring cmd h w clientside command")
-                return
-            }
-            h = parseFloat(args[1]);
-            w = parseFloat(args[2]);
-            clientSide = parseFloat(args[3])
-            if (!h || !w || isNaN(h) || isNaN(w)) {
-                h = 1
-                w = 1
-                clientSide = parseFloat(args[1])
-                cmd = args.slice(2).join(" ");
-            } else if (isNaN(clientSide)) {
-                chat("Define if the command should be Client Side or not.")
-                return
-            } else {
-                cmd = args.slice(4).join(" ");
-            }
-            if (!cmd) {
-                chat("No command!")
-                return
-            }
-            rings.push({ type, x, y, z, w, h, cmd, clientSide, active, route })
-        } else {
-            if (args.length != 4 && args.length != 6) {
-                chat("Invalid Parameters! Use /ring block/block2 h w x y z")
-                return
-            }
-            h = parseFloat(args[1]);
-            w = parseFloat(args[2]);
-            lookX = parseFloat(args[3]);
-            lookY = parseFloat(args[4]);
-            lookZ = parseFloat(args[5]);
-            if (!lookY || !lookZ) {
-                h = 1
-                w = 1
-                lookX = parseFloat(args[1]);
-                lookY = parseFloat(args[2]);
-                lookZ = parseFloat(args[3]);
-            }
-            rings.push({ type, x, y, z, w, h, lookX, lookY, lookZ, active, route })
-        }
-    } else {
-        h = parseFloat(args[1]);
-        w = parseFloat(args[2]);
-        if (!h || !w) {
-            h = 1
-            w = 1
-        }
-        rings.push({ type, x, y, z, w, h, yaw, pitch, active, route })
-    }
-
-    cooldown = true
-
-    Client.scheduleTask(19, () => {
-        cooldown = false
+    args.slice(2).forEach((arg, index) => {
+        if (arg === "stop") { stopping = true }
+        if (arg === "look") { looking = true }
+        if (arg === "walk") { walking = true }
+        if (arg === "silent") { silent = true }
+        if (arg.startsWith("delay:")) { delaying = true; delay = arg.slice(index + 4) }
+        if (arg.startsWith("cmd:")) { commanding = true; cmd = args.slice(index + 2).join(' ').slice(4) }
     })
-
-    chat(`${type} placed!`)
+    cooldown = true
+    Client.scheduleTask(19, () => { cooldown = false })
+    rings.push({ type, active, route, x, y, z, yaw, pitch, h, w, lookX, lookY, lookZ, action, silent, delay, stopping, looking, walking, delaying, commanding, cmd })
 }).setName("ring")
 
 register("Command", () => {
@@ -251,164 +167,80 @@ const renderRing = register("renderWorld", () => {
 const renderMove = register("renderWorld", () => {
     if (!Settings().autop3 || Settings().editMode) return;
     if (!inp3) return
-    let [playerX, playerY, playerZ] = [Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2]
+    let [playerX, playerY, playerZ] = [mc.field_78730_l, mc.field_78731_m, mc.field_78728_n]
 
     rings.forEach(rings => {
         let distanceX = Math.abs(playerX - rings.x)
         let distanceY = (playerY - rings.y)
         let distanceZ = Math.abs(playerZ - rings.z)
         if (rings.route != selectedRoute) return;
-        if (((distanceX > (rings.w / 2) || (distanceY > (rings.h - 0.1) && distanceY >= -0.5) || distanceZ > (rings.w / 2)) && !rings.active)) {
+        if (((distanceX > (rings.w / 2) || (distanceY > (rings.h) && distanceY >= -0.5) || distanceZ > (rings.w / 2)) && !rings.active)) {
             rings.active = true;
         }
         if (Settings().activeOnce && !rings.active) return
         if (distanceX < (rings.w / 2) && distanceY < (rings.h) && distanceY >= -0.5 && distanceZ < (rings.w / 2) && !cooldown) {
             rings.active = false
+            if (rings.looking) { rotate(rings.yaw, rings.pitch) }
+            if (rings.walking) { walk() }
+            if (rings.stopping) { Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0) }
+            if (rings.commanding) { ChatLib.command(rings.cmd, false); ChatLib.command(rings.cmd, true) }
             switch (rings.type) {
-                case "walk":
-                    chat("Walking")
-                    rotate(rings.yaw, rings.pitch)
-                    walk()
-                    break
-
-                case "walk2":
-                    chat("Walking")
-                    stop()
-                    rotate(rings.yaw, rings.pitch)
-                    walk()
-                    break
-
                 case "jump":
                     chat("Jumping")
-                    stop()
-                    rotate(rings.yaw, rings.pitch)
                     jump()
                     break
-
-                case "jump2":
-                    chat("Jumping")
-                    jump()
-                    break
-
                 case "stop":
                     chat("Stopping")
                     stop()
                     noWalk()
                     break
-
                 case "boom":
                     chat("Exploding")
                     swapToItem("Infinityboom TNT")
-                    if (Settings().silentLook) {
-                        ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(1, () => {
-                            rightClick()
-                            ServerRotations.resetRotations()
-                        })
-                    } else {
-                        rotate(rings.yaw, rings.pitch)
-                        Client.scheduleTask(() => {
-                            leftClick()
-                        })
-                    }
+                    if (rings.delaying) { Client.scheduleTask(int(rings.delay), () => { leftClick() }) }
+                    else { Client.scheduleTask(0, () => { leftClick() }) }
                     break
-
                 case "hclip":
                     chat("Hclipping")
                     slingshot(rings.yaw)
                     break
-
-                case "hclip2":
-                    chat("Hclipping")
-                    rotate(rings.yaw, Player.getPitch())
-                    slingshot(rings.yaw)
-                    Client.scheduleTask(2, () => { walk() })
-                    break
-
                 case "vclip":
                     chat("Vclipping")
-                    lavaclip(rings.depth)
+                    lavaclip(rings.action)
                     break
-
                 case "bonzo":
                     chat("Bonzoing")
                     swapToItem("Bonzo's Staff")
-                    stop()
-                    if (Settings().silentLook) {
+                    if (rings.silent) {
                         ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(1, () => {
-                            rightClick()
-                            ServerRotations.resetRotations()
-                        })
+                        if (rings.delaying) { Client.scheduleTask(int(rings.delay), () => { rightClick(); ServerRotations.resetRotations() }) }
+                        else { Client.scheduleTask(1, () => { rightClick(); ServerRotations.resetRotations() }) }
                     } else {
                         rotate(rings.yaw, rings.pitch)
-                        Client.scheduleTask(2, () => {
-                            rightClick()
-                        })
+                        if (rings.delaying) { Client.scheduleTask(int(rings.delay), () => { rightClick() }) }
+                        else { Client.scheduleTask(1, () => { rightClick() }) }
                     }
                     break
-
-                case "bonzo2":
-                    chat("Bonzoing")
-                    swapToItem("Bonzo's Staff")
-                    if (Settings().silentLook) {
-                        ServerRotations.set(rings.yaw, rings.pitch)
-                        Client.scheduleTask(2, () => {
-                            rightClick()
-                            ServerRotations.resetRotations()
-                        })
-                    } else {
-                        rotate(rings.yaw, rings.pitch)
-                        Client.scheduleTask(2, () => {
-                            rightClick()
-                        })
-                    }
-                    break
-
                 case "look":
                     chat("Looking")
                     rotate(rings.yaw, rings.pitch)
                     break
-
-                case "aura":
-                    chat("Auraing")
-                    ChatLib.command("sg toggle", true)
-                    break
-
                 case "block":
                     chat("Blocking")
-                    Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
                     if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                    [yaw, pitch] = calcYawPitch(rings.lookX, rings.lookY, rings.lookZ)
-                    rotate(yaw, pitch)
+                    rotate(...calcYawPitch(rings.lookX, rings.lookY, rings.lookZ))
                     break
-
-                case "block2":
-                    chat("Blocking")
-                    if (!rings.lookZ || !rings.lookY || !rings.lookX) return;
-                    [yaw, pitch] = calcYawPitch(rings.lookX, rings.lookY, rings.lookZ)
-                    rotate(yaw, pitch)
-                    walk()
-                    break
-
                 case "edge":
                     chat("Edging")
                     edge()
                     break
-
                 case "leap":
                     if (inTerminal) {
                         rings.active = true
                         return
                     }
                     chat("Leaping")
-                    leap(rings.target)
-                    break
-
-                case "cmd":
-                    if (rings.clientSide) { ChatLib.command(rings.cmd, true) }
-                    else { ChatLib.command(rings.cmd) }
-                    chat("Commanding")
+                    leap(rings.action)
                     break
             }
         }
