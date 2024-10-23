@@ -106,7 +106,7 @@ register("command", () => {
 const Vec3 = Java.type("net.minecraft.util.Vec3")
 const relicAura = register("renderWorld", () => {
     const armorStands = World.getAllEntitiesOfType(ArmorStand)
-    const entity = armorStands.find(e => new EntityLivingBase(e?.getEntity()).getItemInSlot(4)?.getNBT()?.toString()?.includes("Relic") && getDistanceToEntity(e) < 4)
+    const entity = armorStands.find(e => new EntityLivingBase(e?.getEntity()).getItemInSlot(4)?.getNBT()?.toString()?.includes("Relic") && getDistanceToEntity(e) < 4.5)
     if (!entity) return
     interactWithEntity(entity.getEntity())
     relicAura.unregister()
