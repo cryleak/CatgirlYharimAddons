@@ -575,9 +575,15 @@ config
     })
     .addSwitch({
         category: "Simulation",
-        configName: "simulation",
-        title: "Simulation",
-        description: "Simulates 500 speed and lava bounce in singleplayer.",
+        configName: "simulateSpeed",
+        title: "Simulate 500 Speed",
+        description: "Simulates 500 speed",
+    })
+    .addSwitch({
+        category: "Simulation",
+        configName: "simulateLavaBounce",
+        title: "Simulate Lava Bounce",
+        description: "Simulates lava bounce in singleplayer.",
     })
     .addKeybind({
         category: "ESP",
