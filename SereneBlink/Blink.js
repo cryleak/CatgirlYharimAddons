@@ -57,7 +57,9 @@ const packetCollector = register("packetSent", (packet, event) => {
     queuedPackets.push(packet)
 }).setFilteredClasses([C03PacketPlayer]).unregister()
 
+
 /*
+import { chat } from "../utils/utils"
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
 let logStartTime = Date.now()
 
@@ -68,14 +70,14 @@ register("command", () => {
         logStartTime = Date.now()
         chat("Starting packet log...")
         // let [yaw, pitch] = calcYawPitch({ x: 52, y: 7.5, z: 42 })
-        // let [yaw, pitch] = calcYawPitch({ x: 60, y: 7.5, z: 43 })
-        let [yaw, pitch] = [50, 0]
+        let [yaw, pitch] = calcYawPitch({ x: 60, y: 7.5, z: 42 })
+        // let [yaw, pitch] = [50, 0]
         // yaw += 45
         KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
         // KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(), true)
         rotate(yaw, pitch)
     })
-    Client.scheduleTask(26, () => {
+    Client.scheduleTask(27, () => {
         KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), false)
         KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74370_x.func_151463_i(), false)
         packetLogger.unregister()
@@ -124,5 +126,4 @@ function rotate(yaw, pitch) {
     player.field_70177_z = yaw
     player.field_70125_A = pitch
 }
-
 */
