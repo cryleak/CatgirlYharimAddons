@@ -41,3 +41,8 @@ register("Tick", () => {
     if (Keyboard.isKeyDown(Settings().wdEightKeybind)) { wardrobe(); index = 43 }
     if (Keyboard.isKeyDown(Settings().wdNineKeybind)) { wardrobe(); index = 44 }
 })
+
+register("command", (petIndex) => {
+    ChatLib.command("wardrobe")
+    index = petIndex
+})

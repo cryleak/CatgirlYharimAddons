@@ -30,3 +30,8 @@ register("Tick", () => {
     if (Keyboard.isKeyDown(Settings().petFourKeybind)) { toClick = (Settings().petFour); pet() }
     if (Keyboard.isKeyDown(Settings().petFiveKeybind)) { toClick = (Settings().petFive); pet() }
 })
+
+register("command", (petIndex) => {
+    ChatLib.command("pets")
+    toClick = petIndex
+}).setName("equippet")

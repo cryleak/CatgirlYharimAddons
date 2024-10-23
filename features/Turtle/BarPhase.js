@@ -1,22 +1,58 @@
-import { chat, releaseMovementKeys, repressMovementKeys, clipForward } from "../../utils/utils"
+import { chat, releaseMovementKeys, repressMovementKeys, getIdOfBlock } from "../../utils/utils"
 import Settings from "../../config"
 
 let lastUse = Date.now()
+let lastPress = Date.now()
+let toggled = false
 
 register("tick", () => {
     if (!Keyboard.isKeyDown(Settings().barPhaseKeybind)) return
-    if (Date.now() - lastUse < 200) return
+    if (Date.now() - lastPress < 200) return
+    lastPress = Date.now()
     if (Client.isInGui()) return
-    if (!Player.getPlayer().field_70123_F) return
-    if (World.getBlockAt(Math.floor(Player.getX()), Math.floor(Player.getY()), Math.floor(Player.getZ())).type.getID() !== 101) return
-    if (Player.lookingAt()?.getType()?.getID() !== 101) return
-
+    if (toggled) {
+        chat("Barphase off")
+        toggled = false
+        barphase.unregister()
+    } else {
+        chat("Barphase on")
+        toggled = true
+        barphase.register()
+    }
+})
+const barphase = register("renderWorld", () => {
+    if (!toggled) return
+    if (Date.now() - lastUse < 50) return
     lastUse = Date.now()
+    if (!Player.getPlayer().field_70124_G || !Player.getPlayer().field_70123_F) return
+    let ID = getIdOfBlock(Player.getX(), Player.getY(), Player.getZ())
+    let ID1 = getIdOfBlock(Player.getX(), Player.getY() + 1, Player.getZ())
+    if (ID != 0 && ID != 101) return
+    if (ID1 != 0 && ID1 != 101) return
+    let distanceX = 0
+    let distanceZ = 0
+    if (Player.getZ() - Math.floor(Player.getZ()) == 0.13749998807907104) { distanceZ = + 0.06 }
+    if (Player.getX() - Math.floor(Player.getX()) == 0.13749998807907104) { distanceX = + 0.06 }
+    if (Player.getZ() - Math.floor(Player.getZ()) == 0.862500011920929) { distanceZ = - 0.06 }
+    if (Player.getX() - Math.floor(Player.getX()) == 0.862500011920929) { distanceX = - 0.06 }
+
     releaseMovementKeys()
-    clipForward(0.062)
+    Player.getPlayer().func_70107_b(Player.getX() + distanceX, Player.getY(), Player.getZ() + distanceZ)
     Client.scheduleTask(0, () => {
-        clipForward(0.5)
+        Player.getPlayer().func_70107_b(Player.getX() + distanceX * 5, Player.getY(), Player.getZ() + distanceZ * 5)
         repressMovementKeys()
     })
     chat("Phasing")
-})
+}).unregister()
+
+register("command", () => {
+    if (toggled) {
+        chat("Barphase off")
+        toggled = false
+        barphase.unregister()
+    } else {
+        chat("Barphase on")
+        toggled = true
+        barphase.register()
+    }
+}).setName("barphase")

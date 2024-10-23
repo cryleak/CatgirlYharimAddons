@@ -37,7 +37,6 @@ register("worldUnload", () => {
     render.unregister()
 })
 
-
 const render = register("renderWorld", () => {
     if (!Settings().espWither) return
     const wither = World.getAllEntitiesOfType(EntityWither).find(entity => !entity.isInvisible()) // Find a Wither entity that isn't invisible

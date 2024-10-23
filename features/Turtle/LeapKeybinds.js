@@ -51,3 +51,7 @@ register("Chat", () => {
     }
     phase += 1
 }).setCriteria(/^(\w{3,16}) \w{9,9} a \w{6,11}! \(?(?:7\/7|8\/8)\)$/)
+
+register("command", (target) => {
+    leap(target)
+}).setName("leap")

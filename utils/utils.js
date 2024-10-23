@@ -21,10 +21,10 @@ export function rightClick() {
 }
 
 export const swapToItem = (targetItemName) => {
-    const itemSlot = Player.getInventory().getItems().findIndex(item => item?.getName().toLowerCase().includes(targetItemName.toLowerCase()))
+    const itemSlot = Player?.getInventory()?.getItems()?.findIndex(item => { return item?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()) })
     if (itemSlot === -1 || itemSlot > 7) {
         chat(`Unable to find "${targetItemName}" in your hotbar`)
-        throw new Error(`Unable to find "${targetItemName}" in your hotbar`)
+        return
     } else {
         heldItem = Player.getHeldItemIndex() // Does this do anything????????????????????
         Player.setHeldItemIndex(itemSlot)
@@ -61,6 +61,14 @@ export function rotate(yaw, pitch) {
 const defaultColor = "§7"
 export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
+}
+
+export function float(value) {
+    return parseFloat(value)
+}
+
+export function int(value) {
+    return parseInt(value)
 }
 
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding");
@@ -131,20 +139,19 @@ export function slingshot(direction) {
     if (Player.asPlayerMP().isOnGround()) {
         jump()
         let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.7);
-        let yaw = (direction) * Math.PI / 180;
 
-        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
         Client.scheduleTask(3, () => {
             Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
+            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
         })
 
         Client.scheduleTask(4, () => {
-            Player.getPlayer().func_70016_h(-Math.sin(yaw) * speed, Player.getPlayer().field_70181_x, Math.cos(yaw) * speed);
+            Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
+            Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
             keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
         })
     } else {
         let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
-        //const yaw = (direction) * Math.PI / 180;
 
         keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
         Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
@@ -218,3 +225,31 @@ register("Command", () => {
 export function getIdOfBlock(x, y, z) {
     return World.getBlockAt(x, y, z).type.getID()
 }
+
+let yawPitchRender = false
+
+const mc = Client.getMinecraft().func_175598_ae()
+
+const yawPitchOverlay = register("renderOverlay", () => {
+    if (!yawPitchRender) return
+    let freeCamYaw = (mc.field_78735_i % 360)
+
+    if (freeCamYaw < -180) {
+        freeCamYaw += 360
+    }
+    
+    let text = freeCamYaw.toFixed(4) + ", " + mc.field_78732_j.toFixed(4)
+    let scale = 1.5
+    Renderer.scale(scale)
+    Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
+}).unregister()
+
+register("command", () => {
+    if (!yawPitchRender) {
+        yawPitchRender = true
+        yawPitchOverlay.register()
+    } else {
+        yawPitchRender = false
+        yawPitchOverlay.unregister()
+    }
+}).setName("showyaw")

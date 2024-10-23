@@ -13,3 +13,7 @@ register("Tick", () => {
         hclipCooldown = false
     })
 })
+
+register("command", (direction) => {
+    slingshot(direction)
+}).setName("hclip")
