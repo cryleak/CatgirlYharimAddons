@@ -53,15 +53,3 @@ const aimbot = register("renderWorld", () => {
     const [yaw, pitch] = calcYawPitch(wither.getRenderX(), wither.getRenderY(), wither.getRenderZ())
     rotate(yaw, pitch)
 }).unregister()
-
-register("command", () => {
-    if (!toggled) {
-        aimbot.register()
-        toggled = true
-        chat("Wither Aimbot on.")
-    } else {
-        aimbot.unregister()
-        toggled = false
-        chat("Wither Aimbot off.")
-    }
-}).setName("aimbot")

@@ -31,7 +31,11 @@ export function jump() {
 export function edge() {
     edgeJump.register()
 }
+
+const mc = Client.getMinecraft().func_175598_ae()
+
 export const edgeJump = register("renderOverlay", () => {
+    let [x, y, z] = [mc.field_78730_l, mc.field_78731_m, mc.field_78728_n]
     let ID = World.getBlockAt(Player.getX(), Player.getY() - 0.1, Player.getZ()).type.getID()
     if (ID == 0) {
         jump()
