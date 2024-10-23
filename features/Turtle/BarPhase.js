@@ -13,22 +13,23 @@ register("tick", () => {
     if (toggled) {
         chat("Barphase off")
         toggled = false
-        barphase.unregister()
+        barPhase.unregister()
     } else {
         chat("Barphase on")
         toggled = true
-        barphase.register()
+        barPhase.register()
     }
 })
-const barphase = register("renderWorld", () => {
+const barPhase = register("renderWorld", () => {
     if (!toggled) return
     if (Date.now() - lastUse < 50) return
     lastUse = Date.now()
     if (!Player.getPlayer().field_70124_G || !Player.getPlayer().field_70123_F) return
-    let ID = getIdOfBlock(Player.getX(), Player.getY(), Player.getZ())
-    let ID1 = getIdOfBlock(Player.getX(), Player.getY() + 1, Player.getZ())
-    if (ID != 0 && ID != 101) return
-    if (ID1 != 0 && ID1 != 101) return
+    let ID = getIdOfBlock(Math.floor(Player.getX()), Math.floor(Player.getY()), Math.floor(Player.getZ()))
+    let ID1 = getIdOfBlock(Math.floor(Player.getX()), Math.floor(Player.getY()) + 1, Math.floor(Player.getZ()))
+    if (ID === 0 && ID1 === 0) return // Don't bar phase through fucking air
+    if (ID !== 0 && ID !== 101) return
+    if (ID1 !== 0 && ID1 !== 101) return
     let distanceX = 0
     let distanceZ = 0
     if (Player.getZ() - Math.floor(Player.getZ()) == 0.13749998807907104) { distanceZ = + 0.06 }
@@ -42,17 +43,16 @@ const barphase = register("renderWorld", () => {
         Player.getPlayer().func_70107_b(Player.getX() + distanceX * 5, Player.getY(), Player.getZ() + distanceZ * 5)
         repressMovementKeys()
     })
-    chat("Phasing")
 }).unregister()
 
 register("command", () => {
     if (toggled) {
         chat("Barphase off")
         toggled = false
-        barphase.unregister()
+        barPhase.unregister()
     } else {
         chat("Barphase on")
         toggled = true
-        barphase.register()
+        barPhase.register()
     }
 }).setName("barphase")
