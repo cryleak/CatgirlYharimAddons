@@ -27,17 +27,14 @@ register("tick", () => {
 register("chat", () => {
     if (!Settings().espWither) return
     render.register()
-    packets.register()
 }).setCriteria("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")
 
 register("chat", () => {
     render.unregister()
-    packets.unregister()
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
 register("worldUnload", () => {
     render.unregister()
-    packets.unregister()
 })
 
 const render = register("renderWorld", () => {
