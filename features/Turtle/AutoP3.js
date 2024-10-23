@@ -14,6 +14,7 @@ let rings = [];
 
 rings = data.rings
 
+//chat registers
 register("chat", (message) => {
     if (!Settings().autop3) return
     let triggerMessage
@@ -25,18 +26,17 @@ register("chat", (message) => {
     renderMove.register()
 }).setCriteria("${message}")
 
-register("Command", () => {
-    selectedRoute = parseInt(Settings().route)
-}).setName("load")
+register("Chat", () => {
+    if (Settings().routeP3On) {
+        selectedRoute = parseInt(Settings().routeP3)
+    }
+}).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
 
-register("Command", (route) => {
-    if (isNaN(route)) return
-    selectedRoute = parseInt(route)
-}).setName("route")
-
-register("Command", () => {
-    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
-}).setName("render")
+register("Chat", () => {
+    inp3 = false;
+    renderMove.unregister()
+    renderRing.unregister()
+}).setCriteria("[BOSS] Goldor: You have done it, you destroyed the factory…")
 
 register("Chat", () => {
     if (Settings().startOnBoss) {
@@ -51,17 +51,20 @@ register("Chat", () => {
     }
 }).setCriteria("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")
 
-register("Chat", () => {
-    if (Settings().routeP3On) {
-        selectedRoute = parseInt(Settings().routeP3)
-    }
-}).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
+//command registers
 
-register("Chat", () => {
-    inp3 = false;
-    renderMove.unregister()
-    renderRing.unregister()
-}).setCriteria("[BOSS] Goldor: You have done it, you destroyed the factory…")
+register("Command", () => {
+    selectedRoute = parseInt(Settings().route)
+}).setName("load")
+
+register("Command", (route) => {
+    if (isNaN(route)) return
+    selectedRoute = parseInt(route)
+}).setName("route")
+
+register("Command", () => {
+    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
+}).setName("render")
 
 register("command", () => {
     data.rings = rings
@@ -90,51 +93,14 @@ register("command", (range) => {
             (mc.field_78731_m - ring.y) ** 2 +
             (mc.field_78728_n - ring.z) ** 2
         );
-
         return distance >= range;
     })
 }).setName("removering")
-
-register("Step", () => {
-    if (Settings().autoSave) {
-        data.save()
-    }
-    if (Settings().routeP1On || Settings().routeP3On) return
-    selectedRoute = parseInt(Settings().route)
-}).setFps(1)
 
 register("command", () => {
     if (!editMode) { editMode = true; chat("Editmode on!") }
     else { editMode = false; chat("Editmode off") }
 }).setName("editmode")
-
-register("command", (...args) => {
-    let [type, active, route, x, y, z, yaw, pitch] = [args[0].toLowerCase(), true, parseInt(selectedRoute), Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2, mc.field_78735_i, mc.field_78732_j]
-    if (!["look", "jump", "stop", "boom", "hclip", "bonzo", "block", "vclip", "edge", "leap", "cmd"].includes(type)) { chat("invalid ring type!"); return }
-    let [looking, walking, stopping, delaying, commanding, silent, cmd] = [false, false, false, false, false, false, ""]
-    let [h, w] = [float(args[1]), float(args[2])]
-    let [lookX, lookY, lookZ] = [float(args[3]), float(args[4]), float(args[5])]
-    let action = args[3]
-    let delay = 0
-
-    if (isNaN(h) || isNaN(w)) {
-        [h, w] = [1, 1]
-        [lookX, lookY, lookZ] = [float(args[1]), float(args[2]), float(args[3])]
-        action = args[1]
-    }
-
-    args.slice(2).forEach((arg, index) => {
-        if (arg === "stop") { stopping = true }
-        if (arg === "look") { looking = true }
-        if (arg === "walk") { walking = true }
-        if (arg === "silent") { silent = true }
-        if (arg.startsWith("delay:")) { delaying = true; delay = arg.slice(index + 4) }
-        if (arg.startsWith("cmd:")) { commanding = true; cmd = args.slice(index + 2).join(' ').slice(4) }
-    })
-    cooldown = true
-    Client.scheduleTask(19, () => { cooldown = false })
-    rings.push({ type, active, route, x, y, z, yaw, pitch, h, w, lookX, lookY, lookZ, action, silent, delay, stopping, looking, walking, delaying, commanding, cmd })
-}).setName("ring")
 
 register("Command", () => {
     inp3 = true;
@@ -149,6 +115,43 @@ register("Command", () => {
     renderRing.unregister()
     chat(`P3 Stopped!`)
 }).setName("stopp3")
+
+register("command", (...args) => {
+    let [type, active, route, x, y, z, yaw, pitch] = [args[0].toLowerCase(), true, parseInt(selectedRoute), Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2, mc.field_78735_i, mc.field_78732_j]
+    if (!["look", "jump", "stop", "boom", "hclip", "bonzo", "block", "vclip", "edge", "leap", "cmd"].includes(type)) { chat("invalid ring type!"); return }
+    let [looking, walking, stopping, clientSide, delaying, commanding, silent, cmd] = [false, false, false, false, false, false, false, ""]
+    let [h, w] = [float(args[1]), float(args[2])]
+    let [lookX, lookY, lookZ] = [float(args[3]), float(args[4]), float(args[5])]
+    let action = args[3]
+    let delay = 0
+
+    args.slice(2).forEach((arg, index) => {
+        if (arg === "stop") { stopping = true }
+        if (arg === "look") { looking = true }
+        if (arg === "walk") { walking = true }
+        if (arg === "silent") { silent = true }
+        if (arg === "client") { clientSide = true }
+        if (arg.startsWith("delay:")) { delaying = true; delay = int(arg.slice(6)) }
+        if (arg.startsWith("cmd:")) { commanding = true; cmd = args.slice(index + 2).join(' ').slice(4) }
+    })
+
+    let toPush = { type, active, route, x, y, z, w, h, yaw, pitch }
+
+    if (delaying) { toPush.delaying = delaying; toPush.delay = delay }
+    if (commanding) { toPush.commanding = commanding; toPush.cmd = cmd }
+    if (silent) { toPush.silent = silent }
+    if (walking) { toPush.walking = walking }
+    if (stopping) { toPush.stopping = stopping }
+    if (looking) { toPush.looking = looking }
+    if (clientSide) { toPush.clientSide = clientSide }
+    if (type === "block") { toPush.lookX = lookX; toPush.lookY = lookY; toPush.lookZ = lookZ; }
+    if (["vclip", "leap"].includes(type)) { toPush.action = action }
+
+    cooldown = true
+    Client.scheduleTask(19, () => { cooldown = false })
+    rings.push(toPush)
+    chat(`${type} placed!`)
+}).setName("ring")
 
 const renderRing = register("renderWorld", () => {
     if (!Settings().autop3) return;
@@ -181,9 +184,9 @@ const renderMove = register("renderWorld", () => {
         if (distanceX < (rings.w / 2) && distanceY < (rings.h) && distanceY >= -0.5 && distanceZ < (rings.w / 2) && !cooldown) {
             rings.active = false
             if (rings.looking) { rotate(rings.yaw, rings.pitch) }
-            if (rings.walking) { walk() }
             if (rings.stopping) { Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0) }
-            if (rings.commanding) { ChatLib.command(rings.cmd, false); ChatLib.command(rings.cmd, true) }
+            if (rings.walking) { walk() }
+            if (rings.commanding) { if (rings.clientSide) { ChatLib.command(rings.cmd, true) } else { ChatLib.command(rings.cmd, false) } }
             switch (rings.type) {
                 case "jump":
                     chat("Jumping")
@@ -210,7 +213,7 @@ const renderMove = register("renderWorld", () => {
                     break
                 case "bonzo":
                     chat("Bonzoing")
-                    swapToItem("Bonzo's Staff")
+                    swapToItem("Staff")
                     if (rings.silent) {
                         ServerRotations.set(rings.yaw, rings.pitch)
                         if (rings.delaying) { Client.scheduleTask(int(rings.delay), () => { rightClick(); ServerRotations.resetRotations() }) }
@@ -252,6 +255,15 @@ register("worldLoad", () => {
     renderMove.unregister()
     renderRing.unregister()
 });
+
+register("Step", () => {
+    if (Settings().autoSave) {
+        data.rings = rings
+        data.save()
+    }
+    if (Settings().routeP1On || Settings().routeP3On) return
+    selectedRoute = parseInt(Settings().route)
+}).setFps(1)
 
 //inTerminal check for leap ring
 

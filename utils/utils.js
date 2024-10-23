@@ -21,10 +21,10 @@ export function rightClick() {
 }
 
 export const swapToItem = (targetItemName) => {
-    const itemSlot = Player.getInventory().getItems().findIndex(item => item?.getName().toLowerCase().includes(targetItemName.toLowerCase()))
+    const itemSlot = Player?.getInventory()?.getItems()?.findIndex(item => { return item?.getName()?.toLowerCase()?.includes(targetItemName.toLowerCase()) })
     if (itemSlot === -1 || itemSlot > 7) {
         chat(`Unable to find "${targetItemName}" in your hotbar`)
-        throw new Error(`Unable to find "${targetItemName}" in your hotbar`)
+        return
     } else {
         heldItem = Player.getHeldItemIndex() // Does this do anything????????????????????
         Player.setHeldItemIndex(itemSlot)
@@ -225,3 +225,31 @@ register("Command", () => {
 export function getIdOfBlock(x, y, z) {
     return World.getBlockAt(x, y, z).type.getID()
 }
+
+let yawPitchRender = false
+
+const mc = Client.getMinecraft().func_175598_ae()
+
+const yawPitchOverlay = register("renderOverlay", () => {
+    if (!yawPitchRender) return
+    let freeCamYaw = (mc.field_78735_i % 360)
+
+    if (freeCamYaw < -180) {
+        freeCamYaw += 360
+    }
+    
+    let text = freeCamYaw.toFixed(4) + ", " + mc.field_78732_j.toFixed(4)
+    let scale = 1.5
+    Renderer.scale(scale)
+    Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
+}).unregister()
+
+register("command", () => {
+    if (!yawPitchRender) {
+        yawPitchRender = true
+        yawPitchOverlay.register()
+    } else {
+        yawPitchRender = false
+        yawPitchOverlay.unregister()
+    }
+}).setName("showyaw")
