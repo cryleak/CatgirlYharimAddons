@@ -735,8 +735,14 @@ config
     .addKeybind({
         category: "Clip",
         description: "",
-        title: "Bar Phase Keybind",
+        title: "Bar Phase Toggle",
         configName: "barPhaseKeybind"
+    })
+    .addSwitch({
+        category: "Clip",
+        description: "",
+        title: "Bar Phase",
+        configName: "barPhaseToggle"
     })
 /*
 .addSwitch({

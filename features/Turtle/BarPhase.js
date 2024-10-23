@@ -3,25 +3,24 @@ import Settings from "../../config"
 
 let lastUse = Date.now()
 let lastPress = Date.now()
-let toggled = false
 
 register("tick", () => {
     if (!Keyboard.isKeyDown(Settings().barPhaseKeybind)) return
     if (Date.now() - lastPress < 200) return
     lastPress = Date.now()
     if (Client.isInGui()) return
-    if (toggled) {
+    if (Settings().barPhaseToggle) {
         chat("Barphase off")
-        toggled = false
+        Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", false)
         barPhase.unregister()
     } else {
         chat("Barphase on")
-        toggled = true
+        Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", true)
         barPhase.register()
     }
 })
 const barPhase = register("renderWorld", () => {
-    if (!toggled) return
+    if (!Settings().barPhaseToggle) return
     if (Date.now() - lastUse < 50) return
     lastUse = Date.now()
     if (!Player.getPlayer().field_70124_G || !Player.getPlayer().field_70123_F) return
