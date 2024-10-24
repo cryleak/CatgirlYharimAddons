@@ -65,7 +65,7 @@ const getPrio = () => {
     if (!split) playerTeam = 0
     else if (playerClass === "Archer" || playerClass === "Tank" || playerClass === "Healer" && Settings().healerGoWithArch && !spawningDrags.includes(0)) playerTeam = 1
     else if (playerClass === "Berserk" || playerClass === "Mage" || playerClass === "Healer") playerTeam = 0
-    else { chat("There was an error getting class!"); playerTeam = 0 }
+    else { chat("There was an error getting class!"); playerTeam = 1 }
 
     return parseInt(priority[playerTeam])
 }

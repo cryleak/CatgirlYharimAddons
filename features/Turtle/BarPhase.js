@@ -12,14 +12,12 @@ register("tick", () => {
     if (Settings().barPhaseToggle) {
         chat("Barphase off")
         Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", false)
-        barPhase.unregister()
     } else {
         chat("Barphase on")
         Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", true)
-        barPhase.register()
     }
 })
-const barPhase = register("renderWorld", () => {
+register("tick", () => {
     if (!Settings().barPhaseToggle) return
     if (Date.now() - lastUse < 50) return
     lastUse = Date.now()
@@ -42,16 +40,14 @@ const barPhase = register("renderWorld", () => {
         Player.getPlayer().func_70107_b(Player.getX() + distanceX * 5, Player.getY(), Player.getZ() + distanceZ * 5)
         repressMovementKeys()
     })
-}).unregister()
+})
 
 register("command", () => {
     if (toggled) {
         chat("Barphase off")
-        toggled = false
-        barPhase.unregister()
+        Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", false)
     } else {
         chat("Barphase on")
-        toggled = true
-        barPhase.register()
+        Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", true)
     }
 }).setName("barphase")
