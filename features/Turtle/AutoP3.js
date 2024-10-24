@@ -28,7 +28,7 @@ register("chat", (message) => {
 
 register("Chat", () => {
     if (Settings().routeP3On) {
-        selectedRoute = parseInt(Settings().routeP3)
+        selectedRoute = Settings().routeP3
     }
 }).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
 
@@ -53,18 +53,11 @@ register("Chat", () => {
 
 //command registers
 
-register("Command", () => {
-    selectedRoute = parseInt(Settings().route)
+register("command", (route) => {
+    Settings().getConfig().setConfigValue("Terminals", "route", route);
+    selectedRoute = Settings().route
+    chat(`Route ${route} loaded!`)
 }).setName("load")
-
-register("Command", (route) => {
-    if (isNaN(route)) return
-    selectedRoute = parseInt(route)
-}).setName("route")
-
-register("Command", () => {
-    ChatLib.chat(Client.getMinecraft().func_175598_ae().field_78732_j)
-}).setName("render")
 
 register("command", () => {
     data.rings = rings
@@ -98,8 +91,8 @@ register("command", (range) => {
 }).setName("removering")
 
 register("command", () => {
-    if (!editMode) { editMode = true; chat("Editmode on!") }
-    else { editMode = false; chat("Editmode off") }
+    if (!Settings().editMode) { Settings().getConfig().setConfigValue("Terminals", "editMode", true); chat("Editmode on!") }
+    else { Settings().getConfig().setConfigValue("Terminals", "editMode", false); chat("Editmode off!") }
 }).setName("editmode")
 
 register("Command", () => {
@@ -117,14 +110,13 @@ register("Command", () => {
 }).setName("stopp3")
 
 register("command", (...args) => {
-    let [type, active, route, x, y, z, yaw, pitch] = [args[0].toLowerCase(), true, parseInt(selectedRoute), Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2, mc.field_78735_i, mc.field_78732_j]
-    if (!["look", "jump", "stop", "boom", "hclip", "bonzo", "block", "vclip", "edge", "leap", "cmd"].includes(type)) { chat("invalid ring type!"); return }
+    let [type, active, route, x, y, z, yaw, pitch] = [args[0].toLowerCase(), true, selectedRoute, Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2, mc.field_78735_i, mc.field_78732_j]
+    if (!["look", "jump", "stop", "boom", "hclip", "bonzo", "block", "vclip", "edge", "leap"].includes(type)) { chat("Invalid ring type!"); return }
     let [looking, walking, stopping, clientSide, delaying, commanding, silent, cmd] = [false, false, false, false, false, false, false, ""]
     let [h, w] = [float(args[1]), float(args[2])]
     let [lookX, lookY, lookZ] = [float(args[3]), float(args[4]), float(args[5])]
     let action = args[3]
     let delay = 0
-
     args.slice(2).forEach((arg, index) => {
         if (arg === "stop") { stopping = true }
         if (arg === "look") { looking = true }
@@ -134,9 +126,9 @@ register("command", (...args) => {
         if (arg.startsWith("delay:")) { delaying = true; delay = int(arg.slice(6)) }
         if (arg.startsWith("cmd:")) { commanding = true; cmd = args.slice(index + 2).join(' ').slice(4) }
     })
-
+    if (isNaN(h)) h = 1;
+    if (isNaN(w)) w = 1;
     let toPush = { type, active, route, x, y, z, w, h, yaw, pitch }
-
     if (delaying) { toPush.delaying = delaying; toPush.delay = delay }
     if (commanding) { toPush.commanding = commanding; toPush.cmd = cmd }
     if (silent) { toPush.silent = silent }
@@ -146,7 +138,6 @@ register("command", (...args) => {
     if (clientSide) { toPush.clientSide = clientSide }
     if (type === "block") { toPush.lookX = lookX; toPush.lookY = lookY; toPush.lookZ = lookZ; }
     if (["vclip", "leap"].includes(type)) { toPush.action = action }
-
     cooldown = true
     Client.scheduleTask(19, () => { cooldown = false })
     rings.push(toPush)
@@ -171,7 +162,7 @@ const renderMove = register("renderWorld", () => {
     if (!Settings().autop3 || Settings().editMode) return;
     if (!inp3) return
     let [playerX, playerY, playerZ] = [mc.field_78730_l, mc.field_78731_m, mc.field_78728_n]
-
+    if (Client.isInGui()) return
     rings.forEach(rings => {
         let distanceX = Math.abs(playerX - rings.x)
         let distanceY = (playerY - rings.y)
@@ -261,8 +252,7 @@ register("Step", () => {
         data.rings = rings
         data.save()
     }
-    if (Settings().routeP1On || Settings().routeP3On) return
-    selectedRoute = parseInt(Settings().route)
+    selectedRoute = Settings().route
 }).setFps(1)
 
 //inTerminal check for leap ring

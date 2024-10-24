@@ -63,6 +63,10 @@ export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
 }
 
+export function format(message) {
+    return "§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor)
+}
+
 export function float(value) {
     return parseFloat(value)
 }
@@ -208,6 +212,7 @@ const vclip = register("tick", () => {
 const veloPacket = register("packetReceived", (packet, event) => {
     if (!toggled) return
     if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
+    chat(packet.func_149410_e())
     if (packet.func_149410_e() !== 28000) return;
     cancel(event)
     veloPacket.unregister()
@@ -237,7 +242,7 @@ const yawPitchOverlay = register("renderOverlay", () => {
     if (freeCamYaw < -180) {
         freeCamYaw += 360
     }
-    
+
     let text = freeCamYaw.toFixed(4) + ", " + mc.field_78732_j.toFixed(4)
     let scale = 1.5
     Renderer.scale(scale)

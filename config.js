@@ -189,13 +189,6 @@ config
     })
     .addSwitch({
         category: "Terminals",
-        configName: "silentLook",
-        title: "SilentLook",
-        description: "Causes you not to rotate clientside when you Bonzo Staff & Superboom.",
-        subcategory: "Auto P3"
-    })
-    .addSwitch({
-        category: "Terminals",
         configName: "activeOnce",
         title: "Activate rings once",
         description: "Causes every ring to activate only once. Resets when stepping out of the ring.",
