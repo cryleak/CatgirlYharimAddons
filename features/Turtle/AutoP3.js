@@ -1,7 +1,7 @@
 import { autoP3Data as data } from "../../utils/data"
 import Settings from "../../config"
 import { stop, walk, jump, noWalk, renderBoxes, renderRings, edge } from "../../utils/AutoP3Utils"
-import { float, int, lavaclip, leftClick, rightClick } from "../../utils/utils"
+import { float, int, lavaclip, leftClick, rightClick, setVelocity } from "../../utils/utils"
 import { swapToItem, calcYawPitch, chat, rotate, slingshot, leap } from "../../utils/utils"
 import ServerRotations from "../../utils/ServerRotations"
 
@@ -110,6 +110,7 @@ register("Command", () => {
 }).setName("stopp3")
 
 register("command", (...args) => {
+    if (!args) { chat("/ring <type> [h] [w] [args]"); return }
     let [type, active, route, x, y, z, yaw, pitch] = [args[0].toLowerCase(), true, selectedRoute, Math.round(mc.field_78730_l * 2) / 2, Math.round(mc.field_78731_m * 2) / 2, Math.round(mc.field_78728_n * 2) / 2, mc.field_78735_i, mc.field_78732_j]
     if (!["look", "jump", "stop", "boom", "hclip", "bonzo", "block", "vclip", "edge", "leap"].includes(type)) { chat("Invalid ring type!"); return }
     let [looking, walking, stopping, clientSide, delaying, commanding, silent, cmd] = [false, false, false, false, false, false, false, ""]
@@ -196,7 +197,19 @@ const renderMove = register("renderWorld", () => {
                     break
                 case "hclip":
                     chat("Hclipping")
+                    //setVelocity(0, Player.getMotionY(), 0)
                     slingshot(rings.yaw)
+                    if (rings.walking) {
+                        if (Player.getPlayer().field_70122_E) {
+                            Client.scheduleTask(4, () => {
+                                walk()
+                            })
+                        } else {
+                            Client.scheduleTask(1, () => {
+                                walk()
+                            })
+                        }
+                    }
                     break
                 case "vclip":
                     chat("Vclipping")
