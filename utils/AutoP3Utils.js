@@ -44,22 +44,15 @@ export const edgeJump = register("renderOverlay", () => {
 }).unregister()
 
 const ringColors = new Map([
-    ["walk", [0, 1, 0]],
-    ["walk2", [0, 1, 0]],
     ["jump", [1, 0, 1]],
-    ["jump2", [1, 0, 1]],
     ["stop", [1, 0, 0]],
     ["boom", [0, 1, 1]],
     ["hclip", [0, 0, 0]],
-    ["hclip2", [0, 0, 0]],
     ["bonzo", [1, 1, 1]],
-    ["bonzo2", [1, 1, 1]],
     ["look", [1, 0, 1]],
-    ["aura", [1, 1, 0]],
     ["cmd", [1, 1, 0]],
     ["vclip", [1, 1, 0]],
     ["block", [0, 0, 1]],
-    ["block2", [0, 0, 1]],
     ["edge", [1, 0, 1]],
     ["leap", [0, 0, 1]]
 ])
@@ -69,7 +62,7 @@ export function renderRings(x, y, z, w, type) {
     RenderLibV2.drawCyl(x, y, z, w / 2, w / 2, -0.01, 120, 1, 90, 0, 0, r, g, b, 1, false, true);
 }
 
-export function renderBoxes(x, y, z, h, w, type) {
+export function renderHotBoxes(x, y, z, h, w, type) {
     const [r, g, b] = ringColors.get(type)
     RenderLibV2.drawEspBoxV2(x, y, z, w, h, w, r, g, b, 1, false);
 }
@@ -83,3 +76,10 @@ export function getClass() {
     return match[1];
 }
 
+export function renderBoxes(x, y, z, h, w, type) {
+    const [r, g, b] = ringColors.get(type)
+    for (let i = 0; i < h + 0.1; i += 0.5) {
+        RenderLibV2.drawEspBoxV2(x, y + i + 0.01, z, w, 0, w, r, g, b, 1, false);
+        RenderLibV2.drawInnerEspBoxV2(x, y + i + 0.01, z, w, 0, w, r, g, b, 0.15, false);
+    }
+}

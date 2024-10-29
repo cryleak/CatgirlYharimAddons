@@ -1,5 +1,6 @@
 export const soundNames = ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"]
 export const classes = ["Archer", "Berserk", "Mage", "Healer", "Tank"]
+export const mc = Client.getMinecraft().func_175598_ae()
 
 // Plays a sound!!!
 export function playSound(soundName, volume, pitch) {
@@ -139,8 +140,26 @@ const keybinds = [
     Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
 ];
 
+export function distanceToPlayer2D(x, z) {
+    return Math.sqrt(
+        (mc.field_78730_l - x) ** 2 +
+        (mc.field_78728_n - z) ** 2
+    )
+}
+
+export function distanceToPlayerY(y) {
+    return (mc.field_78731_m - y)
+}
+
+export function distanceToPlayer(x, y, z) {
+    return Math.sqrt(
+        (mc.field_78730_l - x) ** 2 +
+        (mc.field_78731_m - y) ** 2 +
+        (mc.field_78728_n - z) ** 2
+    )
+}
 export function slingshot(direction) {
-    speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
+    const speed = Player.getPlayer().field_71075_bZ.func_75094_b() * 2.7 + (0.22 * (Player.getPlayer().field_71075_bZ.func_75094_b() / 1.32))
 
     unpressAllMovementKeys()
     setVelocity(0, Player.getPlayer().field_70181_x, 0)
@@ -150,7 +169,7 @@ export function slingshot(direction) {
         jump()
     }
 
-    Client.scheduleTask(onGround ? 3 : 1, () => {
+    Client.scheduleTask(1, () => {
         Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
         Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
         pressAllPressedMovementKeys()
@@ -231,8 +250,6 @@ export function getIdOfBlock(x, y, z) {
 }
 
 let yawPitchRender = false
-
-const mc = Client.getMinecraft().func_175598_ae()
 
 const yawPitchOverlay = register("renderOverlay", () => {
     if (!yawPitchRender) return

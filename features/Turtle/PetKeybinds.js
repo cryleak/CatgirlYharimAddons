@@ -23,7 +23,7 @@ function getPet(input) {
 }
 
 const overlay = register("renderOverlay", () => {
-    let text = format("Equiping Wardrobe")
+    let text = format("Equiping Pet")
     let scale = 1.5
     Renderer.scale(scale)
     Renderer.drawStringWithShadow(text, (Renderer.screen.getWidth() / scale - Renderer.getStringWidth(text)) / 2, Renderer.screen.getHeight() / scale / 2 + 16)
@@ -50,10 +50,12 @@ function click(slot) {
 
 register("packetSent", () => {
     cwid = -1
+    overlay.unregister()
 }).setFilteredClass(C0DPacketCloseWindow)
 
 register("packetReceived", () => {
     cwid = -1
+    overlay.unregister()
 }).setFilteredClass(S2EPacketCloseWindow)
 
 register("Tick", () => {
