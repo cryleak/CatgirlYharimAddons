@@ -2,9 +2,9 @@ import Settings from "../config"
 
 const fakeKeybinds = []
 
-function onKeyPress(varName, code) {
+function onKeyPress(_keyBindName, code) {
     keyPressListener.register()
-    fakeKeybinds.push({ keybindName: varName, exec: code })
+    fakeKeybinds.push({ keybindName: _keyBindName, exec: code })
 }
 
 export default { onKeyPress }
