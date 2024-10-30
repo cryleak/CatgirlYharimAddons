@@ -35,8 +35,7 @@ register("step", () => { // Main thread
     if (!active) return
     if (Player?.getHeldItem()?.getID() !== 261) return
     if (getDistanceToCoord(63.5, 127, 35.5) > 0.75) return
-    let bowCooldown = 250
-    if (!Player?.getHeldItem()?.getName()?.includes("Terminator")) bowCooldown = getBowCooldown() // I'm gonna assume you have 100 attack speed if you have a term cause yeah
+    const bowCooldown = getBowCooldown()
     if (Date.now() - lastShot < bowCooldown) return
 
     let blockToShoot
@@ -93,7 +92,7 @@ register("chat", () => {
         return
     }
     else {
-        Client.scheduleTask(50, () => {
+        Client.scheduleTask(45, () => {
             if (getDistanceToCoord(63.5, 127, 35.5) > 0.75) return
             if (!active) return
             active = false

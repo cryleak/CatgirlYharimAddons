@@ -237,7 +237,7 @@ const yawPitchOverlay = register("renderOverlay", () => {
     if (freeCamYaw < -180) {
         freeCamYaw += 360
     }
-    
+
     let text = freeCamYaw.toFixed(4) + ", " + mc.field_78732_j.toFixed(4)
     let scale = 1.5
     Renderer.scale(scale)

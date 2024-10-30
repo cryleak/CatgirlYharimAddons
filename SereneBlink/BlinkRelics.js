@@ -1,14 +1,13 @@
 import Settings from "../config"
-import { chat } from "../utils/utils"
 import { getDistanceToCoord, getDistanceToEntity } from "../../BloomCore/utils/Utils"
 import registerTriggerbot from "../features/Serenity/Relic"
 
-let ticksStill = 0
-
 const standStillTicks = 28
 const ArmorStand = Java.type("net.minecraft.entity.item.EntityArmorStand")
+const C03PacketPlayer = Java.type("net.minecraft.network.play.client.C03PacketPlayer")
 const C04PacketPlayerPosition = Java.type("net.minecraft.network.play.client.C03PacketPlayer$C04PacketPlayerPosition")
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
+const m = []
 const orangePackets = [
     [89.49532717466354, 6, 55.435900926589966, true],
     [88.59915296836067, 6.0625, 55.02760376077882, true],
@@ -66,7 +65,6 @@ const redPackets = [
 
 register("chat", () => {
     if (Settings().blinkRelics) {
-        blinkRelicRegister.register()
         renderText.register()
         packetCollector.register()
     }
@@ -78,16 +76,14 @@ register("chat", resetVariables).setCriteria("[BOSS] Wither King: You... again?"
 register("worldUnload", resetVariables)
 
 function resetVariables() {
-    blinkRelicRegister.unregister()
     renderText.unregister()
     packetCollector.unregister()
     relicAura.unregister()
-    ticksStill = 0
+    while (m.length) m.pop()
 }
 
 /*
 register("command", () => {
-    blinkRelicRegister.unregister()
     packetCollector.unregister()
     renderText.unregister()
     if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
@@ -124,33 +120,38 @@ const interactWithEntity = (entity) => {
     if (Settings().blinkRelics) performTeleport(helmetName)
 }
 
-const blinkRelicRegister = register("tick", () => {
-    if (!Player.getPlayer().field_70124_G || Player.getPlayer().field_70159_w !== 0 || Player.getPlayer().field_70179_y !== 0) ticksStill = 0
-    else if (ticksStill < standStillTicks) ticksStill++
-}).unregister()
+register("packetSent", (packet, event) => {
+    Client.scheduleTask(0, () => {
+        if (event.isCancelled()) m.push(Date.now())
+        else m.pop()
+
+        while (m.length && Date.now() - m[0] > 10000) m.shift()
+    })
+}).setFilteredClasses([C03PacketPlayer])
 
 const packetCollector = register("packetSent", (packet, event) => {
-    if (getDistanceToCoord(90.075, 6, 55.700) < 0.01 || getDistanceToCoord(22.925, 6, 57.700) < 0.01) if (ticksStill !== 0) cancel(event)
-}).setFilteredClasses([net.minecraft.network.play.client.C03PacketPlayer]).unregister()
+    if (getDistanceToCoord(90.075, 6, 55.700) < 0.05 || getDistanceToCoord(22.925, 6, 57.700) < 0.05) cancel(event)
+}).setFilteredClasses([C03PacketPlayer]).unregister()
 
 const renderText = register("renderOverlay", () => {
     Renderer.scale(2)
-    const text = `§cBLINK READY IN ${standStillTicks - ticksStill} TICKS`
+    const t = standStillTicks - m.length
+    const text = `§cBLINK READY IN ${t <= 0 ? 0 : t} TICKS`
     Renderer.drawString(text, Renderer.screen.getWidth() / 4 - Renderer.getStringWidth(text) / 2, Renderer.screen.getHeight() / 3.8)
 }).unregister()
 
 
 // This is the peak of lazy coding. It features reused code from my old RelicLook feature that has awful code. I will clean this up if I feel like it.
 const performTeleport = (helmetName) => {
-    blinkRelicRegister.unregister()
     packetCollector.unregister()
     renderText.unregister()
 
     if (Settings().relicLook) {
         if (helmetName === "Corrupted Orange Relic") {
-            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+            if (Settings().blinkRelics && m.length >= standStillTicks && getDistanceToCoord(90.075, 6, 55.700) < 0.05 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
                 Player.setHeldItemIndex(8)
                 Client.scheduleTask(0, () => {
+                    rotate(40, 0) // im so fucking lazy
                     orangePackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
                     const finalPacketPos = [orangePackets[orangePackets.length - 1][0], orangePackets[orangePackets.length - 1][1], orangePackets[orangePackets.length - 1][2],]
                     Player.getPlayer().func_70107_b(...finalPacketPos)
@@ -159,7 +160,7 @@ const performTeleport = (helmetName) => {
             } else KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
 
         } else if (helmetName === "Corrupted Red Relic") {
-            if (Settings().blinkRelics && ticksStill >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.01 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
+            if (Settings().blinkRelics && m.length >= standStillTicks && getDistanceToCoord(22.925, 6, 57.700) < 0.05 && Player.getPlayer().func_110148_a(net.minecraft.entity.SharedMonsterAttributes.field_111263_d).func_111126_e() > 0.49) {
                 Player.setHeldItemIndex(8)
                 Client.scheduleTask(0, () => {
                     redPackets.forEach(packet => Client.sendPacket(new C04PacketPlayerPosition(...packet)))
@@ -170,5 +171,10 @@ const performTeleport = (helmetName) => {
             } else KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), true)
         }
     }
-    ticksStill = 0
+}
+
+function rotate(yaw, pitch) {
+    const player = Player.getPlayer()
+    player.field_70177_z = yaw
+    player.field_70125_A = pitch
 }
