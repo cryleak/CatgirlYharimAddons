@@ -1,9 +1,8 @@
 import { chat, releaseMovementKeys, repressMovementKeys, getIdOfBlock } from "../../utils/utils"
-import onKeyPress from "../../utils/fakeKeybind"
+import fakeKeybinds from "../../utils/fakeKeybind"
 import Settings from "../../config"
 
 let lastUse = Date.now()
-let lastPress = Date.now()
 
 register("tick", () => {
     if (!Settings().barPhaseToggle) return
@@ -40,7 +39,7 @@ register("command", () => {
     }
 }).setName("barphase")
 
-onKeyPress("barPhaseKeybind", () => {
+fakeKeybinds.onKeyPress("barPhaseKeybind", () => {
     if (Settings().barPhaseToggle) {
         chat("Barphase off")
         Settings().getConfig().setConfigValue("Clip", "barPhaseToggle", false)

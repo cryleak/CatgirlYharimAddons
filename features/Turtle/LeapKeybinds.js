@@ -1,6 +1,7 @@
 import Settings from "../../config"
 import { rightClick, swapToItem, leap } from "../../utils/utils"
 import Dungeons from "../../../Atomx/skyblock/Dungeons"
+import fakeKeybinds from "../../utils/fakeKeybind"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 const C0EPacketClickWindow = Java.type("net.minecraft.network.play.client.C0EPacketClickWindow");
@@ -20,17 +21,14 @@ function leaping() {
     Client.scheduleTask(19, () => { leapCooldown = false })
 }
 
-register("Tick", () => {
-    if (Client.isInGui()) return
-    if (leapCooldown) return
-    if (Keyboard.isKeyDown(Settings().tankKeybind)) { leaping(); leap("Tank") }
-    if (Keyboard.isKeyDown(Settings().mageKeybind)) { leaping(); leap("Mage") }
-    if (Keyboard.isKeyDown(Settings().berserkKeybind)) { leaping(); leap("Berserk") }
-    if (Keyboard.isKeyDown(Settings().archerKeybind)) { leaping(); leap("Archer") }
-    if (Keyboard.isKeyDown(Settings().healerKeybind)) { leaping(); leap("Healer") }
-})
+fakeKeybinds.onKeyPress("tankKeybind", () => leap("Tank"))
+fakeKeybinds.onKeyPress("mageKeybind", () => leap("Mage"))
+fakeKeybinds.onKeyPress("berserkKeybind", () => leap("Berserk"))
+fakeKeybinds.onKeyPress("archerKeybind", () => leap("Archer"))
+fakeKeybinds.onKeyPress("healerKeybind", () => leap("Healer"))
 
 function leap(target) {
+    if (leapCooldown) return
     const teamMembers = Dungeons.getTeamMembers()
     swapToItem("leap")
     Client.scheduleTask(0, () => rightClick())

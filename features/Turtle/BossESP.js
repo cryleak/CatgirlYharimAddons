@@ -1,4 +1,5 @@
 import RenderLibV2 from "../../../RenderLibV2"
+import fakeKeybinds from "../../utils/fakeKeybind"
 import { calcYawPitch, chat, rotate } from "../../utils/utils"
 import Settings from "../../config"
 
@@ -7,9 +8,7 @@ const EntityWither = Java.type("net.minecraft.entity.boss.EntityWither")
 let toggled = false
 let toggleCooldown = false
 
-register("tick", () => {
-    if (Client.isInGui()) return
-    if (!Keyboard.isKeyDown(Settings().witherAimbot)) return
+fakeKeybinds.onKeyPress("witherAimbot", () => {
     if (toggleCooldown) return
     toggleCooldown = true
     Client.scheduleTask(4, () => toggleCooldown = false)

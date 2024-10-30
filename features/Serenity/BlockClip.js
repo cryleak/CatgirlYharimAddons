@@ -1,12 +1,9 @@
 import { chat, releaseMovementKeys, repressMovementKeys, clipForward } from "../../utils/utils"
-import Settings from "../../config"
+import fakeKeybinds from "../../utils/fakeKeybind"
 
 let lastUse = Date.now()
 
-register("tick", () => {
-    if (!Keyboard.isKeyDown(Settings().blockClipKeybind)) return
-    if (Date.now() - lastUse < 300) return
-    if (Client.isInGui()) return
+fakeKeybinds.onKeyPress("blockClipKeybind", () => {
     if (!Player.getPlayer().field_70124_G) return
     lastUse = Date.now()
 

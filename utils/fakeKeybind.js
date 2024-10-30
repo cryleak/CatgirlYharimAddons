@@ -7,12 +7,13 @@ function onKeyPress(varName, code) {
     fakeKeybinds.push({ keybindName: varName, exec: code })
 }
 
-export default onKeyPress
+export default { onKeyPress }
 
 const keyListener = register(net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent, () => {
     if (Client.isInGui() || !World.isLoaded()) return
     if (!Keyboard.getEventKeyState()) return
     const keyCode = Keyboard.getEventKey()
+    if (!keyCode) return
 
     const settings = Settings()
     const pressedKeybind = fakeKeybinds.find(key => settings[key.keybindName] === keyCode)

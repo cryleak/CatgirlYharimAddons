@@ -1,11 +1,10 @@
 import Settings from "../../config";
+import fakeKeybinds from "../../utils/fakeKeybind"
 import { slingshot } from "../../utils/utils";
 
 hclipCooldown = false
 
-register("Tick", () => {
-    if (Client.isInGui()) return
-    if (!Keyboard.isKeyDown(Settings().hclipKeybind)) return
+fakeKeybinds.onKeyPress("hclipKeybind", () => {
     if (hclipCooldown) return
     hclipCooldown = true
     slingshot(Player.getYaw())

@@ -1,5 +1,6 @@
 import Settings from "../../config"
 import { format, chat } from "../../utils/utils";
+import fakeKeybinds from "../../utils/fakeKeybind"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow");
 const C0DPacketCloseWindow = Java.type("net.minecraft.network.play.client.C0DPacketCloseWindow");
@@ -12,6 +13,7 @@ let awaitingPet = false
 let index = 10
 
 function getPet(input) {
+    if (petCooldown) return
     if (!input || isNaN(input)) return
     index = input
     petCooldown = true
@@ -58,12 +60,8 @@ register("packetReceived", () => {
     overlay.unregister()
 }).setFilteredClass(S2EPacketCloseWindow)
 
-register("Tick", () => {
-    if (Client.isInGui()) return
-    if (petCooldown) return
-    if (Keyboard.isKeyDown(Settings().petOneKeybind)) { getPet(Settings().petOne) }
-    if (Keyboard.isKeyDown(Settings().petTwoKeybind)) { getPet(Settings().petTwo) }
-    if (Keyboard.isKeyDown(Settings().petThreeKeybind)) { getPet(Settings().petThree) }
-    if (Keyboard.isKeyDown(Settings().petFourKeybind)) { getPet(Settings().petFour) }
-    if (Keyboard.isKeyDown(Settings().petFiveKeybind)) { getPet(Settings().petFive) }
-})
+fakeKeybinds.onKeyPress("petOneKeybind", () => getPet(Settings().petOne))
+fakeKeybinds.onKeyPress("petTwoKeybind", () => getPet(Settings().petTwo))
+fakeKeybinds.onKeyPress("petThreeKeybind", () => getPet(Settings().petThree))
+fakeKeybinds.onKeyPress("petFourKeybind", () => getPet(Settings().petFour))
+fakeKeybinds.onKeyPress("petFiveKeybind", () => getPet(Settings().petFive))

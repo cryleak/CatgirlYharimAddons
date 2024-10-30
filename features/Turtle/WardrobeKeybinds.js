@@ -1,5 +1,6 @@
 import Settings from "../../config"
 import { format } from "../../utils/utils";
+import fakeKeybinds from "../../utils/fakeKeybind"
 
 const S2DPacketOpenWindow = Java.type("net.minecraft.network.play.server.S2DPacketOpenWindow")
 const C0EPacketClickWindow = Java.type("net.minecraft.network.play.client.C0EPacketClickWindow");
@@ -12,6 +13,7 @@ let awaitingWardrobe = false
 let index = 36
 
 function wardrobe() {
+    if (wardrobeCooldown) return
     if (!index || isNaN(index)) return
     wardrobeCooldown = true
     awaitingWardrobe = true
@@ -43,18 +45,42 @@ const clickSlot = register("packetReceived", (packet, event) => {
     })
 }).setFilteredClass(S2DPacketOpenWindow).unregister()
 
-register("Tick", () => {
-    if (Client.isInGui()) return
-    if (wardrobeCooldown) return
-    if (Keyboard.isKeyDown(Settings().wdOneKeybind)) { wardrobe(); index = 36 }
-    if (Keyboard.isKeyDown(Settings().wdTwoKeybind)) { wardrobe(); index = 37 }
-    if (Keyboard.isKeyDown(Settings().wdThreeKeybind)) { wardrobe(); index = 38 }
-    if (Keyboard.isKeyDown(Settings().wdFourKeybind)) { wardrobe(); index = 39 }
-    if (Keyboard.isKeyDown(Settings().wdFiveKeybind)) { wardrobe(); index = 40 }
-    if (Keyboard.isKeyDown(Settings().wdSixKeybind)) { wardrobe(); index = 41 }
-    if (Keyboard.isKeyDown(Settings().wdSevenKeybind)) { wardrobe(); index = 42 }
-    if (Keyboard.isKeyDown(Settings().wdEightKeybind)) { wardrobe(); index = 43 }
-    if (Keyboard.isKeyDown(Settings().wdNineKeybind)) { wardrobe(); index = 44 }
+// bro turtle wtf is this can u fix this shit
+fakeKeybinds.onKeyPress("wdOneKeybind", () => {
+    wardrobe()
+    index = 36
+})
+fakeKeybinds.onKeyPress("wdTwoKeybind", () => {
+    wardrobe()
+    index = 37
+})
+fakeKeybinds.onKeyPress("wdThreeKeybind", () => {
+    wardrobe()
+    index = 38
+})
+fakeKeybinds.onKeyPress("wdFourKeybind", () => {
+    wardrobe()
+    index = 39
+})
+fakeKeybinds.onKeyPress("wdFiveKeybind", () => {
+    wardrobe()
+    index = 40
+})
+fakeKeybinds.onKeyPress("wdSixKeybind", () => {
+    wardrobe()
+    index = 41
+})
+fakeKeybinds.onKeyPress("wdSevenKeybind", () => {
+    wardrobe()
+    index = 42
+})
+fakeKeybinds.onKeyPress("wdEightKeybind", () => {
+    wardrobe()
+    index = 43
+})
+fakeKeybinds.onKeyPress("wdNineKeybind", () => {
+    wardrobe()
+    index = 55
 })
 
 function click(slot) {

@@ -1,4 +1,5 @@
 import Settings from "../../config"
+import fakeKeybinds from "../../utils/fakeKeybind"
 import { lavaclip } from "../../utils/utils"
 
 const S08PacketPlayerPosLook = Java.type("net.minecraft.network.play.server.S08PacketPlayerPosLook")
@@ -8,9 +9,7 @@ let delay = 0
 
 let active = true
 
-register("Tick", () => {
-    if (Client.isInGui()) return
-    if (!Keyboard.isKeyDown(Settings().lavaVclipKeybind)) return
+fakeKeybinds.onKeyPress("lavaVclipKeybind", () => { // what the fuck is this capitalization turtle
     if (!active) return
     active = false
     Client.scheduleTask(5, () => { active = true })
