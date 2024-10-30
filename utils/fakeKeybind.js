@@ -3,13 +3,13 @@ import Settings from "../config"
 const fakeKeybinds = []
 
 function onKeyPress(varName, code) {
-    keyListener.register()
+    keyPressListener.register()
     fakeKeybinds.push({ keybindName: varName, exec: code })
 }
 
 export default { onKeyPress }
 
-const keyListener = register(net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent, () => {
+const keyPressListener = register(net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent, () => {
     if (Client.isInGui() || !World.isLoaded()) return
     if (!Keyboard.getEventKeyState()) return
     const keyCode = Keyboard.getEventKey()
