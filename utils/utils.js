@@ -159,16 +159,15 @@ export function distanceToPlayer(x, y, z) {
     )
 }
 export function slingshot(direction) {
-    const speed = Player.getPlayer().field_71075_bZ.func_75094_b() * 2.7 + (0.22 * (Player.getPlayer().field_71075_bZ.func_75094_b() / 1.32))
-
-    unpressAllMovementKeys()
-    setVelocity(0, Player.getPlayer().field_70181_x, 0)
-
+    const speed = Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8
     const onGround = Player.getPlayer().field_70122_E
     if (onGround) {
         jump()
     }
-
+    Client.scheduleTask(0, () => {
+        unpressAllMovementKeys()
+        setVelocity(0, Player.getPlayer().field_70181_x, 0)
+    })
     Client.scheduleTask(1, () => {
         Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
         Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed

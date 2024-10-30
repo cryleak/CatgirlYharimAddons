@@ -183,7 +183,6 @@ const renderMove = register("renderWorld", () => {
                     break
                 case "hclip":
                     chat("Hclipping")
-                    //setVelocity(0, Player.getMotionY(), 0)
                     slingshot(rings.yaw)
                     if (rings.walking) {
                         if (Player.getPlayer().field_70122_E) {
