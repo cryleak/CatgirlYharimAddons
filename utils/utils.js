@@ -1,5 +1,6 @@
 export const soundNames = ["note.pling", "mob.blaze.hit", "fire.ignite", "random.orb", "mob.cat.meow"]
 export const classes = ["Archer", "Berserk", "Mage", "Healer", "Tank"]
+export const mc = Client.getMinecraft().func_175598_ae()
 
 // Plays a sound!!!
 export function playSound(soundName, volume, pitch) {
@@ -61,6 +62,10 @@ export function rotate(yaw, pitch) {
 const defaultColor = "§7"
 export function chat(message) {
     ChatLib.chat("§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor))
+}
+
+export function format(message) {
+    return "§0[§6Yharim§0] " + defaultColor + message.toString().replaceAll("§r", defaultColor)
 }
 
 export function float(value) {
@@ -135,35 +140,52 @@ const keybinds = [
     Client.getMinecraft().field_71474_y.field_74368_y.func_151463_i()
 ];
 
+export function distanceToPlayer2D(x, z) {
+    return Math.sqrt(
+        (mc.field_78730_l - x) ** 2 +
+        (mc.field_78728_n - z) ** 2
+    )
+}
+
+export function distanceToPlayerY(y) {
+    return (mc.field_78731_m - y)
+}
+
+export function distanceToPlayer(x, y, z) {
+    return Math.sqrt(
+        (mc.field_78730_l - x) ** 2 +
+        (mc.field_78731_m - y) ** 2 +
+        (mc.field_78728_n - z) ** 2
+    )
+}
 export function slingshot(direction) {
-    if (Player.asPlayerMP().isOnGround()) {
+    const speed = Player.getPlayer().field_71075_bZ.func_75094_b() * 2.7 + (0.22 * (Player.getPlayer().field_71075_bZ.func_75094_b() / 1.32))
+
+    unpressAllMovementKeys()
+    setVelocity(0, Player.getPlayer().field_70181_x, 0)
+
+    const onGround = Player.getPlayer().field_70122_E
+    if (onGround) {
         jump()
-        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.7);
-
-        Client.scheduleTask(3, () => {
-            Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-        })
-
-        Client.scheduleTask(4, () => {
-            Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
-            Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
-            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
-        })
-    } else {
-        let speed = ((Player.getPlayer().field_71075_bZ.func_75094_b()) * 2.8);
-
-        keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false)) // Release all keybinds
-        Player.getPlayer().func_70016_h(0, Player.getPlayer().field_70181_x, 0);
-
-        Client.scheduleTask(0, () => {
-            Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
-            Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
-            //Player.getPlayer().func_70016_h(-Math.sin((direction) * Math.PI / 180) * speed, Player.getPlayer().field_70181_x, Math.cos((direction) * Math.PI / 180) * speed);
-            keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
-        })
     }
 
+    Client.scheduleTask(1, () => {
+        Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
+        Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
+        pressAllPressedMovementKeys()
+    })
+}
+
+export function setVelocity(x, y, z) {
+    Player.getPlayer().func_70016_h(x, y, z);
+}
+
+export function unpressAllMovementKeys() {
+    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, false))
+}
+
+export function pressAllPressedMovementKeys() {
+    keybinds.forEach(keybind => KeyBinding.func_74510_a(keybind, Keyboard.isKeyDown(keybind))) // Press down all keys that are physically pressed
 }
 
 let toggled = false
@@ -208,6 +230,7 @@ const vclip = register("tick", () => {
 const veloPacket = register("packetReceived", (packet, event) => {
     if (!toggled) return
     if (Player.getPlayer().func_145782_y() !== packet.func_149412_c()) return;
+    chat(packet.func_149410_e())
     if (packet.func_149410_e() !== 28000) return;
     cancel(event)
     veloPacket.unregister()
@@ -227,8 +250,6 @@ export function getIdOfBlock(x, y, z) {
 }
 
 let yawPitchRender = false
-
-const mc = Client.getMinecraft().func_175598_ae()
 
 const yawPitchOverlay = register("renderOverlay", () => {
     if (!yawPitchRender) return
