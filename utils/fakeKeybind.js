@@ -16,8 +16,8 @@ const keyListener = register(net.minecraftforge.fml.common.gameevent.InputEvent.
     if (!keyCode) return
 
     const settings = Settings()
-    const pressedKeybind = fakeKeybinds.find(key => settings[key.keybindName] === keyCode)
-    if (!pressedKeybind) return
+    const pressedKeybinds = fakeKeybinds.filter(keybind => settings[keybind.keybindName] === keyCode)
+    if (!pressedKeybinds.length) return
 
-    pressedKeybind.exec() // Execute the code associated with the pressed keybind
+    pressedKeybinds.forEach(keybind => keybind.exec()) // Execute the code associated with the pressed keybinds. There can be multiple on the same key.
 }).unregister()
