@@ -46,7 +46,7 @@ register("Chat", () => {
         renderMove.register()
     }
     if (Settings().routeP1On) {
-        selectedRoute = parseInt(Settings().routeP1)
+        selectedRoute = Settings().routeP1
         ChatLib.command("startp3", true)
     }
 }).setCriteria("[BOSS] Maxor: WELL! WELL! WELL! LOOK WHO'S HERE!")
@@ -136,6 +136,7 @@ const renderRing = register("renderWorld", () => {
     if (!inp3) return;
     rings.forEach(rings => {
         if (rings.route !== selectedRoute) return;
+        if (!rings.active) return
         if (Settings().render) {
             renderRings(rings.x, rings.y, rings.z, rings.w, rings.type)
         } else {
