@@ -174,6 +174,13 @@ config
         }
     })
     .addSwitch({
+        configName: "autoEquip",
+        title:"Equip Mask on pop",
+        description:"Equips Bonzo's Mask on Spirit Mask proc and vice verse.",
+        category: "Dungeons",
+        subcategory: "Masks"
+    })
+    .addSwitch({
         category: "Terminals",
         configName: "autop3",
         title: "AutoP3",

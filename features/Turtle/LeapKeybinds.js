@@ -14,6 +14,8 @@ const classes = ["Archer", "Berserk", "Mage", "Healer", "Tank"]
 let cwid = -1
 let leapCooldown = false
 let awaitingLeap = false
+let playerName = ""
+let items = []
 
 function leaping() {
     leapCooldown = true
