@@ -17,6 +17,13 @@ config
         category: "General",
     })
     .addSwitch({
+        configName: "bonzoStop",
+        title: "\"Fix\" Bonzo's Staff with 500 speed",
+        description: "Attempts to rectify Bonzo's Staff not working at all with 500 speed if you are running in a straight line.\nThis fix is not perfect, and there may be issues. Let me know if you find any issues and I may try to fix them.",
+        category: "Dungeons",
+        subcategory: "Bonzo's Staff"
+    })
+    .addSwitch({
         configName: "stormTickTimerEnabled",
         title: "Storm Tick Timer",
         description: "Tick timer for when the pad will pad, and also when storm will get crushed. Tick is every 1 second. The timer goes red 0.15s before the tick.",
@@ -24,7 +31,7 @@ config
         subcategory: "Storm"
     })
     .addButton({
-        configName: "moveStorkTickTimer",
+        configName: "moveStormTickTimer",
         title: "Move Timer",
         description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
         category: "Dungeons",

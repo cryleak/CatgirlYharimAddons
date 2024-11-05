@@ -10,6 +10,7 @@ import "./features/Serenity/StonkSwapDing"
 import "./features/Serenity/PartyFinderSound"
 import "./features/Serenity/BlockClip"
 import "./features/Serenity/AlwaysSprint"
+import "./features/Serenity/BonzoStop"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 
 // gatekeep for now maybe

@@ -91,21 +91,21 @@ register("chat", () => {
         chat("Rod not found in your hotbar!")
         return
     }
-    else {
-        Client.scheduleTask(45, () => {
-            if (getDistanceToCoord(63.5, 127, 35.5) > 0.75) return
-            if (!active) return
-            active = false
-            const heldItemIndex = Player.getHeldItemIndex()
-            chat("Rod Swapping.")
-            Client.scheduleTask(1, () => Player.setHeldItemIndex(rodSlot))
-            Client.scheduleTask(2, () => rightClick())
-            Client.scheduleTask(3, () => {
-                Player.setHeldItemIndex(heldItemIndex)
-                active = true
-            })
+
+
+    setTimeout(() => {
+        if (getDistanceToCoord(63.5, 127, 35.5) > 0.75) return
+        if (!active) return
+        active = false
+        const heldItemIndex = Player.getHeldItemIndex()
+        chat("Rod Swapping.")
+        Client.scheduleTask(1, () => Player.setHeldItemIndex(rodSlot))
+        Client.scheduleTask(2, () => rightClick())
+        Client.scheduleTask(3, () => {
+            Player.setHeldItemIndex(heldItemIndex)
+            active = true
         })
-    }
+    }, 2500)
 }).setCriteria(/^(?:Your (?:⚚ )?Bonzo's Mask saved your life!|Second Wind Activated! Your Spirit Mask saved your life!)$/)
 
 // start prefiring
