@@ -162,11 +162,15 @@ export function distanceToPlayer(x, y, z) {
 let direction
 
 export function slingshot(dir = Player.getYaw()) {
-    direction = dir
-    unpressAllMovementKeys()
-    setVelocity(0, Player.getPlayer().field_70181_x, 0)
-    movementPacketListener.register()
 
+    direction = dir
+    if (Player.getPlayer().field_70122_E) jump()
+
+    Client.scheduleTask(0, () => {
+        unpressAllMovementKeys()
+        setVelocity(0, Player.getPlayer().field_70181_x, 0)
+        movementPacketListener.register()
+    })
     Client.scheduleTask(1, pressAllPressedMovementKeys)
 }
 
