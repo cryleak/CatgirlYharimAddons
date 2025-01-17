@@ -23,7 +23,7 @@ const rows = [
     [{ x: 64, y: 130, z: 50 }, { x: 66, y: 130, z: 50 }, { x: 68, y: 130, z: 50 }]
 ]
 */
-const unshotBlocks = []
+let unshotBlocks = []
 const predictedBlocks = new Set()
 let shots = 0
 let timeStarted
@@ -65,12 +65,12 @@ register("step", () => { // Main thread
             const shotBlocks = [unshotBlocks[index], unshotBlocks[index + 1]]
             predictedBlocks.add(shotBlocks[0]) // I don't think rhino lets you put an iterable object in a set
             predictedBlocks.add(shotBlocks[1])
-            Client.scheduleTask((Settings().auto4PredictionTimeout * 5) - 4, () => { predictedBlocks.delete(shotBlocks[0]); predictedBlocks.delete(shotBlocks[1]); })
+            Client.scheduleTask((Settings().auto4PredictionTimeout * 5 * (getBowCooldown() / 250)) - 4, () => { predictedBlocks.delete(shotBlocks[0]); predictedBlocks.delete(shotBlocks[1]); })
         }
         else {
             const shotBlocks = unshotBlocks[index]
             predictedBlocks.add(shotBlocks)
-            Client.scheduleTask((Settings().auto4PredictionTimeout * 5) - 4, () => predictedBlocks.delete(shotBlocks))
+            Client.scheduleTask((Settings().auto4PredictionTimeout * 5 * (getBowCooldown() / 250)) - 4, () => predictedBlocks.delete(shotBlocks))
         }
     }
     let offset = 0.5
@@ -111,9 +111,7 @@ register("chat", () => {
 // start prefiring
 register("chat", () => {
     if (!Settings().auto4) return
-    while (unshotBlocks.length) unshotBlocks.pop()
-    blocks.forEach(block => unshotBlocks.push(block)) // ???????????????????????????????????????????????????????????
-    // Ok apparently you can't set a variable to another array without updating the other one. WHAT THE FUCK IS HAPPENING
+    unshotBlocks = [...blocks] // Duplicate array
 
     active = true
 }).setCriteria("[BOSS] Storm: I should have known that I stood no chance.")
@@ -137,8 +135,7 @@ register("chat", (name) => {
 // test command
 register("command", () => {
     if (!Settings().auto4) return
-    while (unshotBlocks.length) unshotBlocks.pop()
-    blocks.forEach(block => unshotBlocks.push(block))
+    unshotBlocks = [...blocks]
 
     active = !active
     chat(`auto4 ${active ? "enabled" : "disabled"} (this is a debug command)`)
@@ -161,8 +158,7 @@ register("renderWorld", () => {
 
 register("worldUnload", () => {
     predictedBlocks.clear()
-    while (unshotBlocks.length) unshotBlocks.pop()
-    blocks.forEach(block => unshotBlocks.push(block))
+    unshotBlocks = [...blocks]
 })
 
 // Detect when the emerald block gets shot

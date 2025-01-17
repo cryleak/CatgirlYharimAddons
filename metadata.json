@@ -1,7 +1,7 @@
 {
     "name": "Catgirl Yharim Addons",
     "creator": "ITheSerenity, turtleonfire2 and teeTu97",
-    "version": "1.1.0",
+    "version": "1.1.2",
     "description": "bomb denmark",
     "entry": "index.js",
 	"requires": [

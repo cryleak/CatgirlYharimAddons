@@ -7,12 +7,7 @@ const forwardKey = Client.getMinecraft().field_71474_y.field_74351_w.func_151463
 
 
 register("playerInteract", (action) => {
-    if (!Settings().bonzoStop) return
-    if (action.toString() !== "RIGHT_CLICK_EMPTY") return
-    if (!Player.asPlayerMP().isOnGround()) return
-    if (Player.getPlayer().field_71075_bZ.func_75094_b() < 0.41) return // Return if speed is too low
-    if (!Player.isSprinting()) return // Return if you aren't sprinting because bonzo should work then because you're so slow
-    if (Player.getPitch() < 30) return // Make sure you're looking down
+    if (!Settings().bonzoStop || action?.toString() !== "RIGHT_CLICK_EMPTY" || !Player.asPlayerMP().isOnGround() || Player.getPlayer().field_71075_bZ.func_75094_b() < 0.41 || !Player.isSprinting() || Player.getPitch() < 30) return
 
     if (Player.getHeldItem()?.getName().includes("Bonzo's Staff")) {
         const [x, y, z] = [Player.getMotionX(), Player.getMotionY(), Player.getMotionZ()]

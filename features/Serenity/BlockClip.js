@@ -8,9 +8,9 @@ fakeKeybinds.onKeyPress("blockClipKeybind", () => {
     lastUse = Date.now()
 
     releaseMovementKeys()
-    clipForward(0.062)
+    clipForward(0.0625)
     Client.scheduleTask(0, () => {
-        clipForward(1.4756)
+        clipForward(1.4755)
         repressMovementKeys()
         chat("Clipped.")
     })

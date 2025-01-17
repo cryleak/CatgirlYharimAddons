@@ -34,7 +34,7 @@ register("Command", (y) => {
         pearlclip.register()
         doShit("Ender Pearl")
     } else chat("Distance has to be between 40 and 3.")
-}).setName("pearlclip")
+}).setName("cgypearlclip")
 
 register("Command", () => {
     pearlclip.unregister()

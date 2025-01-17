@@ -158,22 +158,29 @@ export function distanceToPlayer(x, y, z) {
         (mc.field_78728_n - z) ** 2
     )
 }
-export function slingshot(direction) {
-    const speed = Player.getPlayer().field_71075_bZ.func_75094_b() * 2.8
-    const onGround = Player.getPlayer().field_70122_E
-    if (onGround) {
-        jump()
-    }
-    Client.scheduleTask(0, () => {
-        unpressAllMovementKeys()
-        setVelocity(0, Player.getPlayer().field_70181_x, 0)
-    })
-    Client.scheduleTask(1, () => {
-        Player.getPlayer().field_70159_w = -Math.sin((direction) * Math.PI / 180) * speed
-        Player.getPlayer().field_70179_y = Math.cos((direction) * Math.PI / 180) * speed
-        pressAllPressedMovementKeys()
-    })
+
+let direction
+
+export function slingshot(dir = Player.getYaw()) {
+    direction = dir
+    unpressAllMovementKeys()
+    setVelocity(0, Player.getPlayer().field_70181_x, 0)
+    movementPacketListener.register()
+
+    Client.scheduleTask(1, pressAllPressedMovementKeys)
 }
+
+const movementPacketListener = register("packetSent", () => {
+    movementPacketListener.unregister()
+
+
+    const movementSpeed = Player.getPlayer().field_71075_bZ.func_75094_b()
+    const speed = movementSpeed * (43 / 15)
+    const radians = direction * Math.PI / 180
+    Player.getPlayer().field_70159_w = -Math.sin(radians) * speed
+    Player.getPlayer().field_70179_y = Math.cos(radians) * speed
+
+}).setFilteredClass(net.minecraft.network.play.client.C03PacketPlayer).unregister()
 
 export function setVelocity(x, y, z) {
     Player.getPlayer().func_70016_h(x, y, z);
@@ -244,8 +251,8 @@ register("Command", () => {
     vclipOverlay.unregister()
 }).setName("noclip")
 
-export function getIdOfBlock(x, y, z) {
-    return World.getBlockAt(x, y, z).type.getID()
+export function getIdOfBlock(x, y, z, mathFunc = "floor") {
+    return World.getBlockAt(Math[mathFunc](x), Math[mathFunc](y), Math[mathFunc](z)).type.getID()
 }
 
 let yawPitchRender = false

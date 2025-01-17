@@ -67,7 +67,7 @@ const placeListener = register("playerInteract", (action, pos) => {
 const relicClickListener = register("packetSent", (packet) => {
     const entity = packet.func_149564_a(World.getWorld())
     if (!entity instanceof ArmorStand) return
-    const entityWornHelmet = entity.func_82169_q(3)
+    const entityWornHelmet = entity?.func_82169_q(3)
     if (!entityWornHelmet) return
     const helmetName = ChatLib.removeFormatting(new Item(entityWornHelmet).getName())
     if (!helmetName.includes("Relic")) return

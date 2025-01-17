@@ -355,10 +355,10 @@ config
     .addSlider({
         configName: "auto4PredictionTimeout",
         title: "Max Prediction Blocks",
-        description: "Max amount of blocks that will get predicted before repredicting them.\nOptimal setting may vary with ping.",
+        description: "Max amount of blocks that will get predicted before repredicting them.\nOptimal setting may vary with ping and attack speed.",
         category: "Terminals",
         subcategory: "Auto 4",
-        options: [2, 4],
+        options: [1, 4],
         value: 2,
         shouldShow(data) {
             return data.auto4
