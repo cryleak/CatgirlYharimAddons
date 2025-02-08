@@ -1,5 +1,6 @@
 import Settings from "../config"
 import RenderLibV2 from "../../RenderLibV2"
+import fakeKeybinds from "../utils/fakeKeybind"
 import { drawLine3d } from "../../BloomCore/utils/Utils"
 
 const C03PacketPlayer = Java.type("net.minecraft.network.play.client.C03PacketPlayer")
@@ -25,9 +26,7 @@ function toggleBlink(state = !toggle) {
 }
 export default toggleBlink
 
-register("tick", () => {
-    if (!Keyboard.isKeyDown(Settings().blinkKey)) return
-    if (Client.isInGui()) return
+fakeKeybinds.onKeyPress("blinkKey", () => {
     if (Date.now() - lastToggle < 300) return
     lastToggle = Date.now()
     toggleBlink()

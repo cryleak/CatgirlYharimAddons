@@ -2,9 +2,9 @@ import Settings from "../config"
 
 const fakeKeybinds = []
 
-function onKeyPress(_keyBindName, code) {
+function onKeyPress(keyBindName, exec) {
     keyPressListener.register()
-    fakeKeybinds.push({ keybindName: _keyBindName, exec: code })
+    fakeKeybinds.push({ keyBindName, exec })
 }
 
 export default { onKeyPress }
@@ -16,7 +16,7 @@ const keyPressListener = register(net.minecraftforge.fml.common.gameevent.InputE
     if (!keyCode) return
 
     const settings = Settings()
-    const pressedKeybinds = fakeKeybinds.filter(keybind => settings[keybind.keybindName] === keyCode)
+    const pressedKeybinds = fakeKeybinds.filter(keybind => settings[keybind.keyBindName] === keyCode)
     if (!pressedKeybinds.length) return
 
     pressedKeybinds.forEach(keybind => keybind.exec()) // Execute the code associated with the pressed keybinds. There can be multiple on the same key.

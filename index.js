@@ -11,6 +11,7 @@ import "./features/Serenity/PartyFinderSound"
 import "./features/Serenity/BlockClip"
 import "./features/Serenity/AlwaysSprint"
 import "./features/Serenity/BonzoStop"
+import "./features/Serenity/FPSCounter"
 // import "./features/Serenity/TickShift" // DO NOT USEEEEE
 
 import "./SereneBlink/Blink"

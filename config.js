@@ -4,6 +4,7 @@ import Settings from "../Amaterasu/core/Settings"
 // Movable guis
 export const stormTickTimerGui = new Gui()
 export const melodyWarningGui = new Gui()
+export const fpsCounterGui = new Gui()
 // export const tickShiftGui = new Gui()
 
 const config = new DefaultConfig("CatgirlYharimAddons", "data/settings.json")
@@ -15,6 +16,32 @@ config
         title: "Always Sprint",
         description: "Will make you always sprint.\nUnlike Bloom's, this one does not require your Sprint keybind to be bound.",
         category: "General",
+    })
+    .addSwitch({
+        configName: "fpsCounter",
+        title: "FPS Counter",
+        description: "don't ask why i made this",
+        category: "General",
+    })
+    .addButton({
+        configName: "moveFPSCounter",
+        title: "Move FPS Counter",
+        description: "You can set exact positions in the posData.json file in CatgirlYharim's directory.",
+        category: "General",
+        title: "Move",
+        shouldShow: data => data.fpsCounter,
+        onClick() {
+            fpsCounterGui.open()
+        }
+    })
+    .addSlider({
+        configName: "fpsCounterUpdateInterval",
+        title: "Update Interval (ms)",
+        description: "",
+        category: "General",
+        options: [50, 500],
+        value: 100,
+        shouldShow: data => data.fpsCounter
     })
     .addSwitch({
         configName: "bonzoStop",
@@ -175,8 +202,8 @@ config
     })
     .addSwitch({
         configName: "autoEquip",
-        title:"Equip Mask on pop",
-        description:"Equips Bonzo's Mask on Spirit Mask proc and vice verse.",
+        title: "Equip Mask on pop",
+        description: "Equips Bonzo's Mask on Spirit Mask proc and vice verse.",
         category: "Dungeons",
         subcategory: "Masks"
     })
