@@ -38,7 +38,7 @@ register("worldUnload", () => {
 
 const render = register("renderWorld", () => {
     if (!Settings().espWither) return
-    const wither = World.getAllEntitiesOfType(EntityWither).find(entity => entity.getEntity().func_82212_n() !== 800)
+    const wither = World.getAllEntitiesOfType(EntityWither).find(entity => entity.getEntity().func_82212_n() !== 800 && !entity.isInvisible())
     if (!wither) return
     const rgb = [Settings().witherESPColor[0], Settings().witherESPColor[1], Settings().witherESPColor[2]]
     const alpha = Settings().witherESPColor[3] / 255
@@ -47,7 +47,7 @@ const render = register("renderWorld", () => {
 }).unregister()
 
 const aimbot = register("renderWorld", () => {
-    const wither = World.getAllEntitiesOfType(EntityWither).find(entity => entity.getEntity().func_82212_n() !== 800)
+    const wither = World.getAllEntitiesOfType(EntityWither).find(entity => entity.getEntity().func_82212_n() !== 800 && !entity.isInvisible())
     if (!wither) return
     const [yaw, pitch] = calcYawPitch(wither.getRenderX(), wither.getRenderY(), wither.getRenderZ())
     rotate(yaw, pitch)
