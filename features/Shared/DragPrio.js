@@ -17,6 +17,7 @@ const particleCoords = [
 const spawningDrags = []
 let ticks = 0
 let inP5 = false
+let split = false
 let dragonIndex
 
 register("packetReceived", () => {
@@ -26,6 +27,7 @@ register("packetReceived", () => {
 
 register("chat", () => {
     inP5 = true
+    split = true
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
 register("packetReceived", (packet) => {
@@ -41,14 +43,13 @@ register("packetReceived", (packet) => {
     const dragon = particleCoords.findIndex(({ x, y, z }) => getDistance3D(x, y, z, particleX, particleY, particleZ) < 1) // Gets which dragon the particles are near
     if (dragon === -1 || spawningDrags.includes(dragon)) return
     spawningDrags.push(dragon)
-    Client.scheduleTask(0, () => {
-        if (!spawningDrags.length) return
-        dragonIndex = getPrio()
-        while (spawningDrags.length) spawningDrags.pop()
-        if (!dragonIndex && dragonIndex !== 0) return
-        ticks = 100
-        render.register()
-    })
+    if (!spawningDrags.length || split && spawningDrags.length !== 2) return
+    split = false
+    dragonIndex = getPrio()
+    while (spawningDrags.length) spawningDrags.pop()
+    if (!dragonIndex && dragonIndex !== 0) return
+    ticks = 100
+    render.register()
 }).setFilteredClass(net.minecraft.network.play.server.S2APacketParticles)
 
 const getPrio = () => {
@@ -62,7 +63,7 @@ const getPrio = () => {
 
     const playerClass = Dungeons.getCurrentClass()
     let playerTeam // 1 = arch team 0 = bers team
-    if (!split) playerTeam = 0
+    if (!split) playerTeam = 1
     else if (playerClass === "Archer" || playerClass === "Tank" || playerClass === "Healer" && Settings().healerGoWithArch && !spawningDrags.includes(0)) playerTeam = 1
     else if (playerClass === "Berserk" || playerClass === "Mage" || playerClass === "Healer") playerTeam = 0
     else { chat("There was an error getting class!"); playerTeam = 1 }

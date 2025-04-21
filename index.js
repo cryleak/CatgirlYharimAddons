@@ -187,3 +187,16 @@ function sendRandomPacket(index) {
     ChatLib.chat(`Sent packet ${selectedPacket.packet.class.getSimpleName()} with args: ${args.length === 0 ? "none" : args?.toString()}.`)
 }
     */
+
+register("command", () => {
+    fakeBan("Cheating through the use of unfair game advantages.", "29d 23h 59m 57s", "C451CF53")
+}).setName("fakeban")
+
+function fakeBan(reason, length, banid) { // skidded from some ct module on the website
+    Client.getMinecraft().func_147114_u().func_147298_b().func_150718_a(new net.minecraft.util.ChatComponentText(
+        "§cYou are temporarily banned for §f" + length + "§c from this server!\n\n" +
+        `§7Reason: §r${reason}\n` +
+        "§7Find out more: §b§nhttps://www.hypixel.net/appeal\n\n§7Ban ID: §r#"
+        + banid + // iteserneity banid
+        "\n§7Sharing your Ban ID may affect the processing of your appeal!"))
+}
