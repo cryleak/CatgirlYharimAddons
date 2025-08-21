@@ -56,6 +56,9 @@ export function open(ping, clicks = [], time) {
     });
     applyState();
 
+    let calculatedDelay = Math.ceil(ping / 50) - 1
+    if (calculatedDelay < 0) calculatedDelay = 0
+
     gui.onClick((slot) => { // This somehow works. I have no idea how.
         if (!clicked) {
             const index = allowedSlots.indexOf(slot)
@@ -63,7 +66,7 @@ export function open(ping, clicks = [], time) {
             if (index !== -1) {
                 if (firstClick) firstClickTime = Date.now() - time
                 firstClick = false
-                setTimeout(() => {
+                Client.scheduleTask(calculatedDelay, () => {
                     const alreadyClicked = clicks.indexOf(slot)
 
                     if (alreadyClicked !== -1) clicks.splice(alreadyClicked, 1)
@@ -81,7 +84,7 @@ export function open(ping, clicks = [], time) {
                         firstClick = true
                         Client.scheduleTask(20, () => open(ping))
                     }
-                }, ping);
+                });
             } else {
                 setTimeout(() => {
                     gui.setCursor();
@@ -99,8 +102,14 @@ function getPane(meta, count = 1) {
 
 function playSound(soundName, volume, pitch) {
     try {
-        new S29PacketSoundEffect(soundName, Player.getX(), Player.getY(), Player.getZ(), volume, pitch).func_148833_a(Client.getConnection());
-    } catch (error) { }
+        fireChannelRead(new S29PacketSoundEffect(soundName, Player.getX(), Player.getY(), Player.getZ(), volume, pitch))
+    } catch (e) {
+        console.log(e)
+    }
+}
+
+function fireChannelRead(packet) {
+    Client.getConnection().func_147298_b().channel().pipeline().fireChannelRead(packet);
 }
 
 export default { open };

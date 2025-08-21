@@ -5,6 +5,7 @@ import Settings from "../Amaterasu/core/Settings"
 export const stormTickTimerGui = new Gui()
 export const melodyWarningGui = new Gui()
 export const fpsCounterGui = new Gui()
+export const secretSpawnTimerGui = new Gui()
 // export const tickShiftGui = new Gui()
 
 const config = new DefaultConfig("CatgirlYharimAddons", "data/settings.json")
@@ -206,6 +207,24 @@ config
         description: "Equips Bonzo's Mask on Spirit Mask proc and vice verse.",
         category: "Dungeons",
         subcategory: "Masks"
+    })
+    .addSwitch({
+        configName: "secretSpawnTimer",
+        title: "Secret Spawn Timer",
+        description: "Shows how many ticks until the scoreboard updates and secrets spawn.",
+        category: "Dungeons",
+        subcategory: "Secrets"
+    })
+    .addButton({
+        configName: "moveSecretSpawnTimer",
+        title: "Move Secret Spawn Timer",
+        description: "You can set exact positions in the posData.json file in CatgirlYharimAddons's directory.",
+        category: "Dungeons",
+        subcategory: "Secrets",
+        placeholder: "Move",
+        onClick() {
+            secretSpawnTimerGui.open()
+        }
     })
     .addSwitch({
         category: "Terminals",

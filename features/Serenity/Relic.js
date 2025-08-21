@@ -12,7 +12,7 @@ let p5StartTime
 let spawnTime
 let pickedColor
 
-const relicCountdownTicks = 44
+const relicCountdownTicks = 46
 const KeyBinding = Java.type("net.minecraft.client.settings.KeyBinding")
 const ArmorStand = Java.type("net.minecraft.entity.item.EntityArmorStand")
 
@@ -27,6 +27,7 @@ register("chat", () => {
         timer.register()
     }
     relicClickListener.register()
+    // pmo.register()
 
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
@@ -40,6 +41,24 @@ const tickListener = register("packetReceived", () => {
     ticks--
     if (ticks < 1) tickListener.unregister() // Unregister if ticks = 0
 }).setFilteredClass(net.minecraft.network.play.server.S32PacketConfirmTransaction).unregister()
+
+/*
+const pmo = register("RenderWorld", () => {
+    const existingRelics = World.getAllEntitiesOfType(ArmorStand).filter(entity => new EntityLivingBase(entity.getEntity()).getItemInSlot(4)?.getName()?.removeFormatting()?.includes("Relic"))
+    if (!existingRelics || !existingRelics?.length) return // If there are any armor stands wearing a relic head or whatever
+    existingRelics?.forEach(relic => {
+        try {
+            const entity = relic.getEntity()
+            console.log(`${new EntityLivingBase(entity)?.getItemInSlot(4)?.getName()?.removeFormatting()} (${relic.getX()} ${relic.getY()} ${relic.getZ()})`)
+        } catch (e) {
+            console.log(e)
+        }
+    })
+    setTimeout(() => {
+        pmo.unregister()
+    }, 100);
+}).unregister()
+*/
 
 
 const relicDetect = register("RenderWorld", () => {
@@ -142,15 +161,16 @@ function rightClick() {
     rightClickMethod.invoke(Client.getMinecraft(), null)
 }
 
-const triggerbot = register("RenderWorld", () => {
+const triggerbot = register("tick", () => {
     const block = Player.lookingAt()
     const blockID = block?.getType()?.getID()
     if (blockID !== 118 && blockID !== 145) return
+    if (Player.getHeldItemIndex() !== 8) return
 
     const cauldronCoords = cauldrons[pickedColor]
-    if (cauldronCoords["x"] !== block.getX() || cauldronCoords["z"] !== block.getZ() || cauldronCoords["y"] !== block.getY() && cauldronCoords["y"] - 1 !== block.getY()) return // yeah
+    if (cauldronCoords.x !== block.getX() || cauldronCoords.z !== block.getZ() || cauldronCoords.y !== block.getY() && cauldronCoords.y - 1 !== block.getY()) return // yeah
     rightClick()
-    KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), false)
+    // KeyBinding.func_74510_a(Client.getMinecraft().field_71474_y.field_74351_w.func_151463_i(), false)
     triggerbot.unregister()
 }).unregister()
 

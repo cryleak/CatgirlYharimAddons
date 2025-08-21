@@ -17,7 +17,7 @@ const particleCoords = [
 const spawningDrags = []
 let ticks = 0
 let inP5 = false
-let split = false
+let twoDragsSpawning = false
 let dragonIndex
 
 register("packetReceived", () => {
@@ -27,7 +27,7 @@ register("packetReceived", () => {
 
 register("chat", () => {
     inP5 = true
-    split = true
+    twoDragsSpawning = true
 }).setCriteria("[BOSS] Necron: All this, for nothing...")
 
 register("packetReceived", (packet) => {
@@ -43,8 +43,8 @@ register("packetReceived", (packet) => {
     const dragon = particleCoords.findIndex(({ x, y, z }) => getDistance3D(x, y, z, particleX, particleY, particleZ) < 1) // Gets which dragon the particles are near
     if (dragon === -1 || spawningDrags.includes(dragon)) return
     spawningDrags.push(dragon)
-    if (!spawningDrags.length || split && spawningDrags.length !== 2) return
-    split = false
+    if (!spawningDrags.length || twoDragsSpawning && spawningDrags.length !== 2) return
+    twoDragsSpawning = false
     dragonIndex = getPrio()
     while (spawningDrags.length) spawningDrags.pop()
     if (!dragonIndex && dragonIndex !== 0) return

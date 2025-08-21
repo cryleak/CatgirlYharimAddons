@@ -19,15 +19,15 @@ register("renderWorld", () => {
 register("renderOverlay", () => {
     if (!Settings().fpsCounter) return
     Renderer.scale(data.fpsCounter.scale)
-    Renderer.drawStringWithShadow(`§f${fpsCounter.toFixed(0)} fps`, data.fpsCounter.x, data.fpsCounter.y)
+    Renderer.drawStringWithShadow(`§f${fpsCounter.toFixed(0)} fps`, Renderer.screen.getWidth() * data.fpsCounter.x, Renderer.screen.getHeight() * data.fpsCounter.y)
 })
 
 
 register("dragged", (_0, _1, x, y, bn) => {
     if (!fpsCounterGui.isOpen()) return
     if (bn === 2) return
-    data.fpsCounter.x = x / data.fpsCounter.scale
-    data.fpsCounter.y = y / data.fpsCounter.scale
+    data.fpsCounter.x = (x / data.fpsCounter.scale) / Renderer.screen.getWidth()
+    data.fpsCounter.y = (y / data.fpsCounter.scale) / Renderer.screen.getHeight()
     data.save()
 })
 

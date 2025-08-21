@@ -63,13 +63,13 @@ register("renderOverlay", () => {
     if (melodyWarningGui.isOpen()) {
         const displayMessage = `&${melodyColors[Settings().melodyColor]}ITheSerenity has Melody! 3/4`
         Renderer.scale(data.melodyWarning.scale)
-        Renderer.drawStringWithShadow(displayMessage, data.melodyWarning.x - (Renderer.getStringWidth(displayMessage)), data.melodyWarning.y)
+        Renderer.drawStringWithShadow(displayMessage, Renderer.screen.getWidth() * data.melodyWarning.x - (Renderer.getStringWidth(displayMessage)), Renderer.screen.getHeight() * data.melodyWarning.y)
         return
     }
     if (!melodyProgress || !inP3) return
     const displayMessage = `&${melodyColors[Settings().melodyColor] + playerName} has Melody! ${melodyProgress}`
     Renderer.scale(data.melodyWarning.scale)
-    Renderer.drawStringWithShadow(displayMessage, data.melodyWarning.x - (Renderer.getStringWidth(displayMessage)), data.melodyWarning.y)
+    Renderer.drawStringWithShadow(displayMessage, Renderer.screen.getWidth() * data.melodyWarning.x - (Renderer.getStringWidth(displayMessage)), Renderer.screen.getHeight() * data.melodyWarning.y)
 })
 
 const resetMelody = () => {
@@ -102,8 +102,8 @@ register("worldLoad", () => { // China
 register("dragged", (_0, _1, x, y, bn) => {
     if (!melodyWarningGui.isOpen()) return
     if (bn === 2) return
-    data.melodyWarning.x = Math.round(x / data.melodyWarning.scale)
-    data.melodyWarning.y = Math.round(y / data.melodyWarning.scale)
+    data.melodyWarning.x = (x / data.melodyWarning.scale) / Renderer.screen.getWidth()
+    data.melodyWarning.y = (y / data.melodyWarning.scale) / Renderer.screen.getHeight()
     data.save()
 })
 

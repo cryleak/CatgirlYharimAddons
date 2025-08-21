@@ -1,13 +1,16 @@
 import Settings from "../../config"
 import { stormTickTimerGui } from "../../config"
 import data from "../../utils/data"
+import { onChatPacket } from "../../../BloomCore/utils/Events"
 
 
 const timePerTick = 20
 let ticks = null
 let enabled = 0
 
-const tickListener = register("packetReceived", () => {
+const tickListener = register("packetReceived", (packet) => {
+    if (packet.func_148890_d() > 0) return
+
     if (ticks <= 0) ticks = timePerTick
     ticks--
 }).setFilteredClass(net.minecraft.network.play.server.S32PacketConfirmTransaction).unregister()
@@ -15,29 +18,26 @@ const tickListener = register("packetReceived", () => {
 register("renderOverlay", () => {
     if (stormTickTimerGui.isOpen()) {
         Renderer.scale(data.stormTickTimer.scale)
-        Renderer.drawStringWithShadow("§a1.00s", data.stormTickTimer.x, data.stormTickTimer.y)
+        Renderer.drawStringWithShadow("§a1.00s", Renderer.screen.getWidth() * data.stormTickTimer.x, Renderer.screen.getHeight() * data.stormTickTimer.y)
         return
     }
     if (!ticks && ticks != 0) return
     Renderer.scale(data.stormTickTimer.scale)
-    Renderer.drawStringWithShadow((ticks > 3 ? "§a" : "§c") + (ticks / 20).toFixed(2) + "s", data.stormTickTimer.x, data.stormTickTimer.y)
+    Renderer.drawStringWithShadow((ticks > 3 ? "§a" : "§c") + (ticks / 20).toFixed(2) + "s", Renderer.screen.getWidth() * data.stormTickTimer.x, Renderer.screen.getHeight() * data.stormTickTimer.y)
 })
 
-
-register("chat", (message) => {
+onChatPacket(() => {
     if (!Settings().stormTickTimerEnabled) return
-    if (message === "[BOSS] Storm: Pathetic Maxor, just like expected.") {
-        ticks = timePerTick
-        tickListener.register()
-    } else if (message === "[BOSS] Storm: I should have known that I stood no chance." || message === "[BOSS] Storm: Bahahaha! Not a single intact pillar remains!") {
-        tickListener.unregister()
-        ticks = null
-    }
-    // You can't sync the ticks this way because the dialogue is sometimes delayed if he is saying another line of dialogue right as he is getting crushed.
-    // else if (message.includes("[BOSS] Storm: Oof") || message.includes("[BOSS] Storm: Ouch, that hurt!")) {
-    // ticks = timePerTick
-    // }
-}).setChatCriteria("${message}")
+    ticks = timePerTick
+    tickListener.register()
+}).setCriteria("[BOSS] Storm: Pathetic Maxor, just like expected.")
+
+onChatPacket(() => {
+    if (!Settings().stormTickTimerEnabled) return
+    tickListener.unregister()
+    ticks = null
+}).setCriteria(/\[BOSS] Storm: I should have known that I stood no chance.|\[BOSS] Storm: Bahahaha! Not a single intact pillar remains!/)
+
 
 register("command", () => {
     if (!Settings().stormTickTimerEnabled) return
@@ -59,8 +59,8 @@ register("worldUnload", () => {
 register("dragged", (_0, _1, x, y, bn) => {
     if (!stormTickTimerGui.isOpen()) return
     if (bn === 2) return
-    data.stormTickTimer.x = x / data.stormTickTimer.scale
-    data.stormTickTimer.y = y / data.stormTickTimer.scale
+    data.stormTickTimer.x = (x / data.stormTickTimer.scale) / Renderer.screen.getWidth()
+    data.stormTickTimer.y = (y / data.stormTickTimer.scale) / Renderer.screen.getHeight()
     data.save()
 })
 

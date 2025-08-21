@@ -1,8 +1,9 @@
 import Settings from "../../config"
 
-const wKey = Client.getMinecraft().field_71474_y.field_74351_w
+const Keybinding = Java.type("net.minecraft.client.settings.KeyBinding")
+const sprintKey = Client.getMinecraft().field_71474_y.field_151444_V.func_151463_i()
 
 register("tick", () => {
     if (!Settings().alwaysSprint) return
-    Player.getPlayer().func_70031_b((wKey.func_151470_d() && !Player.isSneaking()))
+    Keybinding.func_74510_a(sprintKey, !Keyboard.isKeyDown(sprintKey))
 })
