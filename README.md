@@ -1,5 +1,3 @@
-Owbu is goat
-
 Bomb Denmark & France
 
 Austria > Germany
